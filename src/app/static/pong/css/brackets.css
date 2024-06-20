@@ -1,0 +1,35 @@
+.bracket {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.round {
+  display: flex;
+  gap: 3rem;
+}
+
+.matchup {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.player {
+  width: 24ch;
+  background-color: #161719;
+  padding: 0.625rem 2ch;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.bottom-border {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding-bottom: 1rem;
+}

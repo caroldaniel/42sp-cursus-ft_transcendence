@@ -1,0 +1,39 @@
+{% load static %}
+{% csrf_token %}
+{% block content %}
+  <h1 class="text-center mt-3">Edit Profile</h1>
+  <form id="profile-form" class="d-flex flex-column gap-3 mt-5">
+    <div class="form-group">
+      <label for="display-name" class="form-label">Update your display name</label>
+      <input type="text"
+             class="form-control"
+             id="display-name"
+             aria-describedby="Display Name"
+             placeholder="{{ user.display_name }}"
+             minlength="3"
+             maxlength="20" />
+    </div>
+    <div class="form-group">
+      <label for="avatar" class="form-label">Upload your avatar</label>
+      <input type="file"
+             accept=".jpg,.jpeg,.png,.ico"
+             class="form-control"
+             id="avatar"
+             aria-describedby="Avatar" />
+    </div>
+    <button type="submit" class="btn btn-lg btn-primary mt-3">Update</button>
+    <div class="toast align-items-center bg-danger border-0"
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true"
+         id="toast">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-body">Error message</div>
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="toast"
+                aria-label="Close"></button>
+      </div>
+    </div>
+  </form>
+{% endblock content %}

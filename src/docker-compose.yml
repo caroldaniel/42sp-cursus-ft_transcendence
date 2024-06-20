@@ -1,0 +1,71 @@
+version: '3.8'
+
+# Network
+networks:
+  transcendence:
+    name: transcendence
+    driver: bridge
+  
+# Services
+services:
+  # Database Service: Postgres
+  postgres:
+    container_name: postgres
+    image: postgres:16.3-alpine
+    networks:
+      - transcendence
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ./app/postgres:/var/lib/postgresql/data
+    restart: on-failure:5
+    healthcheck:
+      test: pg_isready -U ${DB_USER}
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Backend Service: Django
+  django:
+    container_name: django
+    build:
+      context: ./requirements/django
+      dockerfile: Dockerfile
+    networks:
+      - transcendence
+    volumes:
+      - ./app:/app
+    env_file:
+      - .env
+    command:
+      - sh
+      - -c
+      - |
+        python3 manage.py makemigrations
+        python3 manage.py migrate --noinput
+        gunicorn -c gunicorn_config.py --reload
+    restart: on-failure:5
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Server Service: Nginx
+  nginx:
+    container_name: nginx
+    image: nginx:alpine
+    networks:
+      - transcendence
+    ports:
+      - "443:443"
+    volumes:
+      - ./app/static:/var/www/static
+      - ./app/media:/var/www/media
+      - ./app/nginx/certs:/etc/nginx/certs
+      - ./app/nginx/conf.d:/etc/nginx/conf.d
+    restart: on-failure:5
+    depends_on:
+      - django

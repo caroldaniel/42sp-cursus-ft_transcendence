@@ -1,0 +1,9 @@
+{% load static %}
+{% block buttons %}
+  <h1 class="text-center mt-3">Transcendence</h1>
+  <div class="d-flex flex-column mt-5 gap-5 col-12 align-items-center">
+    {% include "../components/avatar.html" %}
+    {% include "../components/buttons/play-local.html" %}
+    {% include "../components/buttons/play-tournament.html" %}
+  </div>
+{% endblock buttons %}
