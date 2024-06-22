@@ -6,7 +6,7 @@
 #    By: cado-car <cado-car@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/20 18:52:02 by cado-car          #+#    #+#              #
-#    Updated: 2024/06/20 20:51:19 by cado-car         ###   ########.fr        #
+#    Updated: 2024/06/21 22:50:25 by cado-car         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -45,34 +45,61 @@ all: up
 
 up:
 	@echo "${YELLOW}Building Docker Compose${NC}"
-	$(COMPOSE_CMD) -f $(COMPOSE_PATH) up -d --build
+	@$(COMPOSE_CMD) -f $(COMPOSE_PATH) up -d --build
 	@echo "${GREEN}Docker Compose is up and running${NC}"
 
 stop:
 	@echo "${YELLOW}Stopping Docker Compose${NC}"
-	$(COMPOSE_CMD) -f $(COMPOSE_PATH) stop
+	@$(COMPOSE_CMD) -f $(COMPOSE_PATH) stop
 	@echo "${GREEN}Docker Compose has stopped${NC}"
 
 restart: stop up
 
 down:
 	@echo "${YELLOW}Removing Docker Compose containers${NC}"
-	$(COMPOSE_CMD) -f $(COMPOSE_PATH) down --rmi all --remove-orphans -v
-	@echo "${GREEN}Docker Compose containers have been removed${NC}"
+	@$(COMPOSE_CMD) -f $(COMPOSE_PATH) down --rmi all --remove-orphans -v
+	@echo "${GREEN}Docker Compose containers have been removed\n${NC}"
 
 clean: down
-	@echo "${YELLOW}Cleaning Docker${NC}"
-	docker stop $(shell docker ps -qa); docker rm $(shell docker ps -qa); docker rmi -f $(shell docker images -qa); docker volume rm $(shell docker volume ls -q); docker network rm $(shell docker network ls -q) 2>/dev/null
-	@echo "${GREEN}Docker containers have been cleaned${NC}"
+	@echo "${YELLOW}Deep cleaning the container's past files and repositories${NC}"
+	@rm -f $(SRC_DIR)/app/logs/*.log
+	@rm -rf $(SRC_DIR)/app/pong/migrations/0*
+	@sudo rm -rf  $(SRC_DIR)/app/postgres
+	@echo "${GREEN}All Docker past files and repositories have been cleaned${NC}"
 
-fclean:
-	@echo "${YELLOW}Deep cleaning the container's past files${NC}"
-	rm -f $(SRC_DIR)/app/logs/*.log
-	rm -rf $(SRC_DIR)/app/pong/migrations/0*
-	sudo rm -rf  $(SRC_DIR)/app/postgres
-	@echo "${GREEN}Docker past files have been removed${NC}"
+fclean: clean
+	@echo "${YELLOW}Cleaning Docker components${NC}"
+	@if [ -z "$$(docker ps -qa)" ]; then \
+		echo "${RED}No other docker containers to clean${NC}"; \
+	else \
+		echo "${RED}Cleaning docker containers${NC}"; \
+		docker stop $$(docker ps -qa); \
+		docker rm $$(docker ps -qa); \
+	fi
+	@if [ -z "$$(docker images -qa)" ]; then \
+		echo "${RED}No other docker images to clean${NC}"; \
+	else \
+		docker rmi -f $$(docker images -qa); \
+	fi
+	@if [ -z "$$(docker volume ls -q)" ]; then \
+		echo "${RED}No other docker volumes to clean${NC}"; \
+	else \
+		docker volume rm $$(docker volume ls -q); \
+	fi
+	@if [ -z "$$(docker network ls -q)" ]; then \
+		echo "${RED}No other docker networks to clean${NC}"; \
+	else \
+		for network in $(shell docker network ls -q); do \
+			network_name=$$(docker network inspect $$network | grep Name | sed 's/.*: *"\(.*\)",*/\1/'); \
+			if [ "$$network_name" = "bridge" ] || [ "$$network_name" = "host" ] || [ "$$network_name" = "none" ]; then \
+				continue; \
+			fi; \
+			docker network rm $$network; \
+		done; \
+	fi
+	@echo "${GREEN}Docker components have been cleaned${NC}\n"
 
-re: clean fclean all
+re: clean all
 	
 
 # ---------------------------------------------------------------------------- #
