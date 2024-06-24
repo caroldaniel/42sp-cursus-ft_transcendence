@@ -6,7 +6,7 @@
 #    By: cado-car <cado-car@student.42sp.org.br>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/06/20 18:52:02 by cado-car          #+#    #+#              #
-#    Updated: 2024/06/21 22:50:25 by cado-car         ###   ########.fr        #
+#    Updated: 2024/06/23 21:55:09 by cado-car         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,9 +62,9 @@ down:
 
 clean: down
 	@echo "${YELLOW}Deep cleaning the container's past files and repositories${NC}"
-	@rm -f $(SRC_DIR)/app/logs/*.log
-	@rm -rf $(SRC_DIR)/app/pong/migrations/0*
-	@sudo rm -rf  $(SRC_DIR)/app/postgres
+	@rm -f $(SRC_DIR)/transcendence/django/logs/*.log
+	@rm -rf $(SRC_DIR)/transcendence/django/pong/migrations/0*
+	@sudo rm -rf  $(SRC_DIR)/transcendence/postgres
 	@echo "${GREEN}All Docker past files and repositories have been cleaned${NC}"
 
 fclean: clean

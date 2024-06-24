@@ -21,7 +21,7 @@ services:
     ports:
       - "${DB_PORT}:${DB_PORT}"
     volumes:
-      - ./app/postgres:/var/lib/postgresql/data
+      - ./transcendence/postgres:/var/lib/postgresql/data
     restart: on-failure:5
     healthcheck:
       test: pg_isready -U ${DB_USER}
@@ -33,12 +33,13 @@ services:
   django:
     container_name: django
     build:
-      context: ./requirements/django
+      context: ./transcendence/django
       dockerfile: Dockerfile
     networks:
       - transcendence
     volumes:
-      - ./app:/app
+      - ./transcendence/django:/app
+      - ./utils/certs:/app/certs
     env_file:
       - .env
     command:
@@ -62,10 +63,10 @@ services:
     ports:
       - "443:443"
     volumes:
-      - ./app/static:/var/www/static
-      - ./app/media:/var/www/media
-      - ./app/nginx/certs:/etc/nginx/certs
-      - ./app/nginx/conf.d:/etc/nginx/conf.d
+      - ./transcendence/django/static:/var/www/static
+      - ./transcendence/django/media:/var/www/media
+      - ./transcendence/nginx:/etc/nginx/conf.d
+      - ./utils/certs:/etc/nginx/certs
     restart: on-failure:5
     depends_on:
       - django
