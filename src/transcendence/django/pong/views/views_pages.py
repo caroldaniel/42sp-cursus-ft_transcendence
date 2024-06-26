@@ -18,6 +18,11 @@ def get_login_page(request):
 		return render(request, "pages/login.html")
 	return render(request, "sections/login.html")
 
+def get_register_page(request):
+	if request.headers.get('X-Custom-Header') != 'self':
+		return render(request, "pages/register.html")
+	return render(request, "sections/register.html")
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
 def get_game_page(request):

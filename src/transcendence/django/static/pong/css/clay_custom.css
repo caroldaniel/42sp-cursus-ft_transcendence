@@ -1,0 +1,75 @@
+:root[data-bs-theme="clay"] {
+    --bs-body-bg: #f5f5dc; /* Beige background */
+    --bs-body-color: #3e3e3e; /* Dark text */
+
+    --bs-primary: #a0522d; /* Sienna secondary color */
+    --bs-secondary: #d2b48c; /* Tan primary color */
+    --bs-success: #556b2f; /* Dark Olive Green */
+    --bs-info: #8b4513; /* Saddle Brown */
+    --bs-warning: #d2691e; /* Chocolate */
+    --bs-danger: #a52a2a; /* Brown */
+    --bs-light: #ffefd5; /* Papaya Whip light color */
+    --bs-dark: #8b0000; /* Dark Red */
+    --bs-link-color: #a52a2a; /* Brown */
+    --bs-link-color-rgb: #a52a2a; /* Brown */
+    --bs-link-color-visited: #8b4513; /* Saddle Brown */
+    --bs-link-hover-color: #8b0000; /* Dark Red */
+    --bs-link-hover-color-rgb: #8b0000; /* Dark Red */
+
+  }
+
+  /* Additional styling to showcase the theme */
+  body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+  }
+
+  .btn-primary-clay {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  .btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+  }
+
+  .btn-secondary-clay {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+
+  .btn-secondary {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+
+  .btn-success {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+  }
+
+  .btn-info {
+    background-color: var(--bs-info);
+    border-color: var(--bs-info);
+  }
+
+  .btn-warning {
+    background-color: var(--bs-warning);
+    border-color: var(--bs-warning);
+  }
+
+  .btn-danger {
+    background-color: var(--bs-danger);
+    border-color: var(--bs-danger);
+  }
+
+  .btn-light {
+    background-color: var(--bs-light);
+    border-color: var(--bs-light);
+  }
+
+  .btn-dark {
+    background-color: var(--bs-dark);
+    border-color: var(--bs-dark);
+  }
