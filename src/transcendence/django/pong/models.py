@@ -73,7 +73,7 @@ class IntraUserManager(BaseUserManager):
 	Custom manager for the IntraUser model.
 	"""
 
-	def create_user(self, intra_name):
+	def create_user(self, username, email):
 		"""
 		Create a new user with the given Intra name.
 
@@ -84,13 +84,14 @@ class IntraUserManager(BaseUserManager):
 			User: The created user object.
 		"""
 		user = self.model(
-			intra_name=intra_name,
+			username=username,
+			email=email
 		)
 		user.is_superuser = False
 		user.save(using=self._db)
 		return user
 
-	def create_superuser(self, intra_name):
+	def create_superuser(self, username, email):
 		"""
 		Create a new superuser with the given Intra name.
 
@@ -101,7 +102,8 @@ class IntraUserManager(BaseUserManager):
 			User: The created superuser object.
 		"""
 		user = self.model(
-			intra_name=intra_name,
+			intra_name=username,
+			email=email
 		)
 		user.is_superuser = True
 		user.save(using=self._db)
@@ -132,13 +134,19 @@ class User(AbstractBaseUser):
 		Use this model to represent users in your Django application.
 	"""
 
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	intra_name = models.CharField(max_length=150, unique=True)
-
+	# Custom manager
 	objects = IntraUserManager()
-	USERNAME_FIELD = "intra_name"
+	USERNAME_FIELD = 'username'
 
+	# Required fields
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	username = models.CharField(max_length=150, unique=True)
 	display_name = models.CharField(max_length=150, unique=True)
+	email = models.EmailField(unique=True)
+	password = models.CharField(max_length=128)
+	first_name = models.CharField(max_length=30, blank=True)
+	last_name = models.CharField(max_length=150, blank=True)
+	is_intra_user = models.BooleanField(default=False)
 
 	avatar = models.FileField(
 		blank=True,
@@ -155,9 +163,6 @@ class User(AbstractBaseUser):
 
 	created_at = models.DateTimeField(default=timezone.now)
 	updated_at = AutoDateTimeField(default=timezone.now)
-
-	email = models.EmailField(unique=True)
-	password = models.CharField(max_length=128)
 
 	def __str__(self):
 		"""
@@ -176,13 +181,8 @@ class User(AbstractBaseUser):
 			It sets the display_name if it is not already set.
 		"""
 		if not self.display_name:
-			self.display_name = self.intra_name
-			while User.objects.filter(display_name=self.display_name).exists():
-				if self.intra_name[-1].isdigit():
-					digit = int(self.intra_name[-1])
-					self.display_name = self.intra_name[:-1] + str(digit + 1)
-				else:
-					self.display_name = self.intra_name + str(0)
+			self.display_name = self.username
+
 		super().save(*args, **kwargs)
 	
 		return self

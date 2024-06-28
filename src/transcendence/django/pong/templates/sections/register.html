@@ -30,11 +30,19 @@
         <hr class="col-5 my-4">
       </div>
       <div id="app" class="d-flex justify-content-center">
-        <form method="POST" >
+        <form method="POST" action="{% url 'register-user' %}"">
           {% csrf_token %}
           <div class="col-15 mb-3">
             <label for="username" class="form-label">Display Name</label>
             <input type="text" class="form-control" id="username" name="username" required>
+          </div>
+          <div class="col-15 mb-3">
+            <label for="first_name" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" required>
+          </div>
+          <div class="col-15 mb-3">
+            <label for="last_name" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" required>
           </div>
           <div class="col-15 mb-3">
             <label for="email" class="form-label">E-mail</label>
