@@ -8,7 +8,6 @@ from django.utils import timezone # Required for timezone.now()
 
 
 # Custom Validators
-
 def file_size_validator(file):
 	"""
 	Validates the size of a file.
@@ -30,7 +29,6 @@ def file_size_validator(file):
 
 
 # Custom Fields
-
 class AutoDateTimeField(models.DateTimeField):
 	"""
 	A custom DateTimeField that automatically sets the current datetime value before saving.
@@ -67,13 +65,12 @@ class AutoDateTimeField(models.DateTimeField):
 
 
 # Custom User Model
-
 class IntraUserManager(BaseUserManager):
 	"""
 	Custom manager for the IntraUser model.
 	"""
 
-	def create_user(self, username, email):
+	def create_user(self, username):
 		"""
 		Create a new user with the given Intra name.
 
@@ -83,15 +80,22 @@ class IntraUserManager(BaseUserManager):
 		Returns:
 			User: The created user object.
 		"""
-		user = self.model(
-			username=username,
-			email=email
-		)
+
+		# Check if user already exists
+		try:
+			user = self.get(username=username)
+			return None
+		except self.model.DoesNotExist:
+			user = self.model(
+				username=username
+			)
+
 		user.is_superuser = False
 		user.save(using=self._db)
 		return user
 
-	def create_superuser(self, username, email):
+
+	def create_superuser(self, username):
 		"""
 		Create a new superuser with the given Intra name.
 
@@ -101,10 +105,16 @@ class IntraUserManager(BaseUserManager):
 		Returns:
 			User: The created superuser object.
 		"""
-		user = self.model(
-			intra_name=username,
-			email=email
-		)
+		
+		# Check if user already exists
+		try:
+			user = self.get(username=username)
+			return None
+		except self.model.DoesNotExist:
+			user = self.model(
+				username=username
+			)
+
 		user.is_superuser = True
 		user.save(using=self._db)
 		return user
@@ -143,7 +153,7 @@ class User(AbstractBaseUser):
 	username = models.CharField(max_length=150, unique=True)
 	display_name = models.CharField(max_length=150, unique=True)
 	email = models.EmailField(unique=True)
-	password = models.CharField(max_length=128)
+	password = models.CharField(max_length=128, blank=True)
 	first_name = models.CharField(max_length=30, blank=True)
 	last_name = models.CharField(max_length=150, blank=True)
 	is_intra_user = models.BooleanField(default=False)
@@ -188,7 +198,6 @@ class User(AbstractBaseUser):
 		return self
 
 # Match History
-
 class MatchHistory(models.Model):
 	"""
 	Model to store the match history of 1v1 games.
