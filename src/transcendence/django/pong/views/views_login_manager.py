@@ -30,9 +30,11 @@ def intra_login(request):
 # After logging in on Intra, user is redirected here with a code
 def intra_login_redirect(request: HttpRequest):
 	intra_code = request.GET.get('code')
+	print(f"Received code: {intra_code}")
 	if intra_code is None:
 		raise BadRequest('Failure to retrieved code from request')
 	intra_user = get_intra_user_from_code(intra_code)
+
 	try:
 		authorized_user = authenticate(request=request,user=intra_user['login'])
 		if authorized_user is None:

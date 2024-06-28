@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Racket Handle -->
+  <rect x="90" y="120" width="20" height="60" fill="#8B4513" stroke="#7B3F00" stroke-width="2" transform="rotate(-45 100 100)"/>
+
+  <!-- Racket Head -->
+  <circle cx="100" cy="80" r="50" fill="#FF4500" stroke="#CD3700" stroke-width="5" transform="rotate(-45 100 100)"/>
+
+  <!-- Ball -->
+  <circle cx="140" cy="40" r="15" fill="#FF6347" stroke="#FF4500" stroke-width="2" transform="rotate(-45 100 100)"/>
+</svg>
