@@ -13,12 +13,18 @@ def get_home_page(request):
 		return render(request, "pages/home.html")
 	return render(request, "sections/home.html")
 
+
 def get_login_page(request):
-	if request.headers.get('X-Custom-Header') != 'self':
+	if request.user.is_authenticated:
+		return redirect("/")
+	elif request.headers.get('X-Custom-Header') != 'self':
 		return render(request, "pages/login.html")
-	return render(request, "sections/login.html")
+	else:
+		return render(request, "sections/login.html")
 
 def get_register_page(request):
+	if request.user.is_authenticated:
+		return redirect("/")
 	if request.headers.get('X-Custom-Header') != 'self':
 		return render(request, "pages/register.html")
 	return render(request, "sections/register.html")
