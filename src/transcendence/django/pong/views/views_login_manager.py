@@ -166,8 +166,8 @@ def register(request: HttpRequest):
 		except ValidationError as e:
 			return JsonResponse({'error': e.messages}, status=400)
 
-		# Redirect to the login page
-		return redirect('/login')
+		# Return a success response
+		return JsonResponse({'success': 'User registered successfully'}, status=200)
 
 	# Return an error response for invalid requests
 	return JsonResponse({'error': 'Invalid request'}, status=400)
@@ -212,7 +212,7 @@ def manual_login(request: HttpRequest):
 		)
 		if user is not None:
 			login(request, user)
-			return redirect('/')
+			return JsonResponse({'success': True, 'redirect': '/'}, status=200)
 		else:
 			return JsonResponse({'error': 'Invalid login credentials. Please check your username and password and try again.'}, status=401)
 	return JsonResponse({'error': 'Invalid request'}, status=400)
