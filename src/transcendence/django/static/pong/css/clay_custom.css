@@ -1,7 +1,6 @@
 :root[data-bs-theme="clay"] {
     --bs-body-bg: #f5f5dc; /* Beige background */
     --bs-body-color: #3e3e3e; /* Dark text */
-
     --bs-primary: #a0522d; /* Sienna secondary color */
     --bs-secondary: #d2b48c; /* Tan primary color */
     --bs-success: #556b2f; /* Dark Olive Green */
@@ -24,22 +23,52 @@
     color: var(--bs-body-color);
   }
 
-  .btn-primary-clay {
-    background-color: var(--bs-primary);
-    border-color: var(--bs-primary);
-  }
-
   .btn-primary {
     background-color: var(--bs-primary);
     border-color: var(--bs-primary);
   }
 
-  .btn-secondary-clay {
+  .btn-primary:hover {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-primary:active {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-primary:focus {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-primary:disabled {
     background-color: var(--bs-secondary);
     border-color: var(--bs-secondary);
   }
 
   .btn-secondary {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+
+  .btn-secondary:hover {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-secondary:active {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-secondary:focus {
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
+  }
+
+  .btn-secondary:disabled {
     background-color: var(--bs-secondary);
     border-color: var(--bs-secondary);
   }
@@ -70,6 +99,17 @@
   }
 
   .btn-dark {
-    background-color: var(--bs-dark);
-    border-color: var(--bs-dark);
+    background-color: var(--bs-body-color);
+    border-color: var(--bs-body-color);
   }
+
+  .btn-disabled {
+    background-color: var(--bs-secondary);
+    border-color: var(--bs-secondary);
+  }
+
+  .btn-hover {
+    background-color: var(--bs-light);
+    border-color: var(--bs-light);
+  }
+

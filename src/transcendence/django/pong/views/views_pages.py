@@ -18,9 +18,9 @@ def get_login_page(request):
 	if request.user.is_authenticated:
 		return redirect("/")
 	elif request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/login.html")
+		return render(request, "pages/loginForm.html")
 	else:
-		return render(request, "sections/login.html")
+		return render(request, "sections/loginForm.html")
 
 def get_register_page(request):
 	if request.user.is_authenticated:

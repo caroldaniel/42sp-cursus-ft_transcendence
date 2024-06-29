@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     path("", views.get_home_page, name="home-page"),
     path("login/", views.get_login_page, name="login-page"),
-    path("register/", views.get_register_page, name="register-page"),
     path("register/user/", views.register, name="register-user"),
 	path("login/oauth2/", views.intra_login, name="login-oauth2"),
 	path("login/oauth2/redirect/", views.intra_login_redirect, name="login-oauth2-redirect"),
