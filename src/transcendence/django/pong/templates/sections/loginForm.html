@@ -7,8 +7,7 @@
 			<p>New to PonGame? <a href="#" data-bs-toggle="modal" data-bs-target="#registerModel">Sign up for free</a></p>
 	</div>
 	<div class="d-flex justify-content-center mt-3">
-		
-		<form method="POST" action="{% url 'login-manual' %}">
+		<form id="loginForm" method="POST" action="{% url 'login-manual' %}">
 			{% csrf_token %}
 			<div class="form-floating mb-3">
 				<input type="username" class="form-control" id="floatingInput" id="username" name="username" required>
@@ -25,78 +24,9 @@
 				</a>
 			</div>
 		</form>
-
 	</div>
 </div>
 
-<div class="modal fade" id="registerModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModelLabel" aria-hidden="true">	
-	<div class="modal-dialog">
-		<div class="modal-content" style="background-color: rgba(255, 255, 255, 0.95);">
-			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="registerModelLabel">Register to play</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div id="app" class="d-flex justify-content-center mt-3">
-					<form method="POST" action="{% url 'register-user' %}">
-						{% csrf_token %}
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="username" name="username" required>
-							<label for="username" class="form-label">Username</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="first_name" name="first_name" required>
-							<label for="first_name" class="form-label">First Name</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="last_name" name="last_name" required>
-							<label for="last_name" class="form-label">Last Name</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="email" class="form-control" id="email" name="email" required>
-							<label for="email" class="form-label">E-mail</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="password" name="password" required>
-							<label for="password" class="form-label">Password</label>
-						</div>
-						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-							<label for="confirm_password" class="form-label">Confirm Password</label>
-							<div id="password-match-warning" style="color: green;"></div>
-						</div>
-						<script>
-								const usernameInput = document.getElementById('username');
-								const firstnameInput = document.getElementById('first_name');
-								const lastnameInput = document.getElementById('last_name');
-								const emailInput = document.getElementById('email');
-								const passwordInput = document.getElementById('password');
-								const confirmPasswordInput = document.getElementById('confirm_password');
-								const passwordMatchWarning = document.getElementById('password-match-warning');
-								
-								confirmPasswordInput.addEventListener('input', () => {
-									if (passwordInput.value === confirmPasswordInput.value) {
-											passwordMatchWarning.textContent = 'Passwords match';
-											passwordMatchWarning.style.color = 'green';
-											document.getElementById('register-button').disabled = false;
-									} else {
-											passwordMatchWarning.textContent = 'Passwords do not match';
-											passwordMatchWarning.style.color = 'red';
-											document.getElementById('register-button').disabled = true;
-									}
-								});
-						</script>
-						</div>
-						<div class="modal-footer">
-							<button type="submit" class="btn btn-primary" id="register-button" disabled>Sign up</button>
-						</div>
-					</form>
-        </div>
-			</div>
-    </div>
-	</div>
-</div>
-
-
-
+{% include "../components/modals/error.html" %}
+{% include "../components/modals/register.html" %}
 {% endblock content %}

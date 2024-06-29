@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="clay">
+<html lang="en" data-bs-theme="auto">
   <head>
     {% load static %}
     <meta charset="UTF-8" />
@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="{% static 'pong/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'pong/css/brackets.css' %}">
     <link rel="stylesheet" href="{% static 'pong/css/avatar.css' %}">
-    <link rel="stylesheet" href="{% static 'pong/css/clay_custom.css' %}">
 
     {% block scripts %}
       <script src="{% static 'pong/js/router.js' %}"></script>
@@ -33,7 +32,7 @@
 
   <style>
     body {
-        background: url('../../static/pong/img/synthetic-clay.jpg') no-repeat center center fixed;
+        background: url('../../static/pong/img/pong-background.png') no-repeat center center fixed;
         background-size: cover;
         height: 100vh;
         margin: 0;

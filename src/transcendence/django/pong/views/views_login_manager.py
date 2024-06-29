@@ -4,11 +4,11 @@ import requests
 from urllib.parse import urlencode, quote_plus
 
 # Django imports
-from django.core.exceptions import BadRequest
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
+from django.http import HttpRequest, JsonResponse
+from django.core.exceptions import ValidationError
 
 # Project imports
 from pong.models import User
@@ -93,11 +93,10 @@ def intra_login_redirect(request: HttpRequest):
 	"""
 	intra_code = request.GET.get('code')
 	if intra_code is None:
-		raise BadRequest('Failure to retrieve code from request')
-	
+		return JsonResponse({'error': 'Failure to retrieve code from request'}, status=400)	
 	intra_user = get_intra_user_from_code(intra_code)
 	if intra_user is None:
-		raise JsonResponse({'error': 'Failure to retrieve user information'}, status=401)
+		return JsonResponse({'error': 'Failure to retrieve user information'}, status=401)
 
 	# Get user's data from Intra API
 	username = intra_user['login']
@@ -121,7 +120,7 @@ def intra_login_redirect(request: HttpRequest):
 	# Authenticate user
 	authorized_user = authenticate(request, username=username)
 	if authorized_user is None:
-		raise JsonResponse({'error': 'Failure to authenticate'}, status=401)
+		return JsonResponse({'error': 'Failure to authenticate'}, status=401)
 	
 	login(request=request, user=authorized_user)
 	return redirect('/')
@@ -147,18 +146,25 @@ def register(request: HttpRequest):
 		email = request.POST.get('email')
 		password = request.POST.get('password')
 
-		# Create a new user object
-		user = User.objects.create_user(
-			username=username
-		)
-		if user is None:
-			raise JsonResponse({'error': 'User already exists'}, status=400)
+		# Error handling for input
+		if User.objects.filter(username=username).exists():
+			return JsonResponse({'error': 'Username already exists'}, status=400)
 
-		user.first_name = first_name
-		user.last_name = last_name
-		user.email = email
-		user.set_password(password)
-		user.save()
+		if User.objects.filter(email=email).exists():
+			return JsonResponse({'error': 'E-mail already registered'}, status=400)
+
+		# Create a new user object
+		try:
+			user = User.objects.create_user(
+				username=username
+			)
+			user.first_name = first_name
+			user.last_name = last_name
+			user.email = email
+			user.set_password(password)
+			user.save()
+		except ValidationError as e:
+			return JsonResponse({'error': e.messages}, status=400)
 
 		# Redirect to the login page
 		return redirect('/login')
@@ -169,9 +175,36 @@ def register(request: HttpRequest):
 
 # Login from form
 def manual_login(request: HttpRequest):
+	"""
+	View function for manual login.
+
+	This view handles the manual login process. It expects a POST request with
+	'username' and 'password' parameters. It checks if the provided username
+	exists in the database and authenticates the user with the provided password.
+	If the authentication is successful, the user is logged in and redirected to
+	the home page. Otherwise, an appropriate error message is returned.
+
+	Args:
+		request (HttpRequest): The HTTP request object.
+
+	Returns:
+		JsonResponse: A JSON response containing the result of the login process.
+
+	Raises:
+		None.
+	"""
 	if request.method == 'POST':
 		username = request.POST.get('username')
 		password = request.POST.get('password')
+		
+		# Check if user exists in the database
+		try:
+			user = User.objects.get(username=username)
+		except User.DoesNotExist:
+			return JsonResponse({'error': 'No account found with the provided username.'}, status=401)
+		except Exception as e:
+			return JsonResponse({'error': 'An error occurred while trying to log in. Please try again later.'}, status=500)
+
 		user = authenticate(
 			request, 
 			username=username, 
@@ -181,7 +214,7 @@ def manual_login(request: HttpRequest):
 			login(request, user)
 			return redirect('/')
 		else:
-			return JsonResponse({'error': 'Invalid credentials'}, status=401)
+			return JsonResponse({'error': 'Invalid login credentials. Please check your username and password and try again.'}, status=401)
 	return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Logout the user
