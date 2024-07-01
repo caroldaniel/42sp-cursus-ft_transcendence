@@ -4,6 +4,7 @@ import requests
 from urllib.parse import urlencode, quote_plus
 
 # Django imports
+from django.utils.translation import gettext as _
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -93,10 +94,10 @@ def intra_login_redirect(request: HttpRequest):
 	"""
 	intra_code = request.GET.get('code')
 	if intra_code is None:
-		return JsonResponse({'error': 'Failure to retrieve code from request'}, status=400)	
+		return JsonResponse({'error': _('Failure to retrieve code from request')}, status=400)	
 	intra_user = get_intra_user_from_code(intra_code)
 	if intra_user is None:
-		return JsonResponse({'error': 'Failure to retrieve user information'}, status=401)
+		return JsonResponse({'error': _('Failure to retrieve user information')}, status=401)
 
 	# Get user's data from Intra API
 	username = intra_user['login']
@@ -120,7 +121,7 @@ def intra_login_redirect(request: HttpRequest):
 	# Authenticate user
 	authorized_user = authenticate(request, username=username)
 	if authorized_user is None:
-		return JsonResponse({'error': 'Failure to authenticate'}, status=401)
+		return JsonResponse({'error': _('Failure to authenticate')}, status=401)
 	
 	login(request=request, user=authorized_user)
 	return redirect('/')
@@ -148,10 +149,10 @@ def register(request: HttpRequest):
 
 		# Error handling for input
 		if User.objects.filter(username=username).exists():
-			return JsonResponse({'error': 'Username already exists'}, status=400)
+			return JsonResponse({'error': _('Username already exists')}, status=400)
 
 		if User.objects.filter(email=email).exists():
-			return JsonResponse({'error': 'E-mail already registered'}, status=400)
+			return JsonResponse({'error': _('E-mail already registered')}, status=400)
 
 		# Create a new user object
 		try:
@@ -167,10 +168,10 @@ def register(request: HttpRequest):
 			return JsonResponse({'error': e.messages}, status=400)
 
 		# Return a success response
-		return JsonResponse({'success': 'User registered successfully'}, status=200)
+		return JsonResponse({'success': _('User registered successfully')}, status=200)
 
 	# Return an error response for invalid requests
-	return JsonResponse({'error': 'Invalid request'}, status=400)
+	return JsonResponse({'error': _('Invalid request')}, status=400)
 
 
 # Login from form
@@ -201,9 +202,9 @@ def manual_login(request: HttpRequest):
 		try:
 			user = User.objects.get(username=username)
 		except User.DoesNotExist:
-			return JsonResponse({'error': 'No account found with the provided username.'}, status=401)
+			return JsonResponse({'error': _('No account found with the provided username. Please check username field or sign up to continue.')}, status=401)
 		except Exception as e:
-			return JsonResponse({'error': 'An error occurred while trying to log in. Please try again later.'}, status=500)
+			return JsonResponse({'error': _('An error occurred while trying to log in. Please try again later.')}, status=500)
 
 		user = authenticate(
 			request, 
@@ -214,7 +215,7 @@ def manual_login(request: HttpRequest):
 			login(request, user)
 			return JsonResponse({'success': True, 'redirect': '/'}, status=200)
 		else:
-			return JsonResponse({'error': 'Invalid login credentials. Please check your username and password and try again.'}, status=401)
+			return JsonResponse({'error': _('Invalid login credentials. Please check your username and password and try again.')}, status=401)
 	return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Logout the user

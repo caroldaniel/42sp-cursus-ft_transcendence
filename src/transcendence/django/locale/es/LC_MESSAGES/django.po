@@ -1,0 +1,77 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-06-30 13:00-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? "
+"1 : 2;\n"
+#: pong/templates/components/modals/error.html:8
+msgid "Error"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:9
+msgid "Register to play"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:18
+#: pong/templates/sections/loginForm.html:17
+msgid "Username"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:22
+msgid "First Name"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:26
+msgid "Last Name"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:30
+msgid "E-mail"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:34
+#: pong/templates/sections/loginForm.html:21
+msgid "Password"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:38
+msgid "Confirm Password"
+msgstr ""
+
+#: pong/templates/components/modals/register.html:43
+msgid "Sign up"
+msgstr ""
+
+#: pong/templates/sections/loginForm.html:8
+msgid "Log in"
+msgstr ""
+
+#: pong/templates/sections/loginForm.html:10
+msgid "New to PonGame?"
+msgstr ""
+
+#: pong/templates/sections/loginForm.html:10
+msgid "Sign up for free"
+msgstr ""
+
+#: pong/templates/sections/loginForm.html:24
+msgid "Login"
+msgstr ""
+
+#: pong/templates/sections/loginForm.html:26
+msgid "Login with 42 Intra"
+msgstr ""

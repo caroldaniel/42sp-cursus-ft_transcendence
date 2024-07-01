@@ -1,39 +1,162 @@
-{% load static %}
-{% csrf_token %}
+{% load static i18n %}
 {% block content %}
-  <h1 class="text-center mt-3">Edit Profile</h1>
-  <form id="profile-form" class="d-flex flex-column gap-3 mt-5">
-    <div class="form-group">
-      <label for="display-name" class="form-label">Update your display name</label>
-      <input type="text"
-             class="form-control"
-             id="display-name"
-             aria-describedby="Display Name"
-             placeholder="{{ user.display_name }}"
-             minlength="3"
-             maxlength="20" />
-    </div>
-    <div class="form-group">
-      <label for="avatar" class="form-label">Upload your avatar</label>
-      <input type="file"
-             accept=".jpg,.jpeg,.png,.ico"
-             class="form-control"
-             id="avatar"
-             aria-describedby="Avatar" />
-    </div>
-    <button type="submit" class="btn btn-lg btn-primary mt-3">Update</button>
-    <div class="toast align-items-center bg-danger border-0"
-         role="alert"
-         aria-live="assertive"
-         aria-atomic="true"
-         id="toast">
-      <div class="d-flex">
-        <div class="toast-body" id="toast-body">Error message</div>
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="toast"
-                aria-label="Close"></button>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="p-4 mt-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+        <div class="text-center">
+
+          <h2 class="fs-1 mb-1">
+            <i class="bi bi-person me-2"></i>
+            {% trans "Profile" %}
+          </h2>
+
+          <hr>
+
+          <div class="d-flex justify-content-center align-items-center mb-3">
+            <h4 class="fw-bold">{{ user.display_name }}</h2>
+            <button class="btn btn-link ms-2" onclick="showEditModal('display_name')">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </div>
+          <div class="position-relative d-inline-block">
+            <img src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
+            <button class="btn btn-primary position-absolute bottom-0 start-0" onclick="showEditModal('avatar')" style="border-radius: 50%;">
+              <i class="bi bi-pencil"></i>
+            </button>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-md-6">
+
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <label for="username" class="form-label"><strong>{% trans "Username" %}</strong></label>
+                <p id="username">{{ user.username }}</p>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <label for="first_name" class="form-label"><strong>{% trans "First Name" %}</strong></label>
+                <p id="first_name" class="me-2">{{ user.first_name }}</p>
+              </div>
+              <button class="btn btn-link ms-2" onclick="showEditModal('first_name')">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+            
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <label for="last_name" class="form-label"><strong>{% trans "Last Name" %}</strong></label>
+                <p id="last_name" class="me-2">{{ user.last_name }}</p>
+              </div>
+              <button class="btn btn-link" onclick="showEditModal('last_name')">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+
+          </div>
+          <div class="col-md-6">
+
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <label for="email" class="form-label"><strong>{% trans "Email" %}</strong></label>
+                <p id="email" class="me-2">{{ user.email }}</p>
+              </div>
+              <button class="btn btn-link p-0" onclick="showEditModal('email')">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <div class="me-3">
+                <label for="password" class="form-label"><strong>{% trans "Password" %}</strong></label>
+                <p id="password" class="me-2">••••••••</p>
+              </div>
+              <button class="btn btn-link p-0" onclick="showEditModal('password')">
+                <i class="bi bi-pencil"></i>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">{% trans "Edit" %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" method="POST" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="mb-3" id="editInputContainer">
+            <label for="editInput" class="form-label">{% trans "New Value" %}</label>
+            <input type="text" class="form-control" id="editInput" name="new_value" required>
+          </div>
+          <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showEditModal(field) {
+    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    const form = document.getElementById('editForm');
+    const input = document.getElementById('editInput');
+    const label = document.getElementById('editModalLabel');
+    const editInputContainer = document.getElementById('editInputContainer');
+
+    form.action = `/profile/edit/${field}/`;
+    input.value = '';
+
+    if (field === 'avatar') {
+      label.textContent = '{% trans "Edit Avatar" %}';
+      editInputContainer.innerHTML = `
+        <label for="editInput" class="form-label">{% trans "Upload New Avatar" %}</label>
+        <input type="file" class="form-control" id="editInput" name="new_value" accept="image/*" required>
+      `;
+    } else if (field === 'display_name') {
+      label.textContent = '{% trans "Edit Display Name" %}';
+      editInputContainer.innerHTML = `
+        <label for="editInput" class="form-label">{% trans "New Display Name" %}</label>
+        <input type="text" class="form-control" id="editInput" name="new_value" required>
+      `;
+    } else {
+      switch (field) {
+        case 'first_name':
+          label.textContent = '{% trans "Edit First Name" %}';
+          break;
+        case 'last_name':
+          label.textContent = '{% trans "Edit Last Name" %}';
+          break;
+        case 'email':
+          label.textContent = '{% trans "Edit Email" %}';
+          break;
+        case 'password':
+          label.textContent = '{% trans "Edit Password" %}';
+          input.type = 'password';
+          break;
+        default:
+          label.textContent = '{% trans "Edit" %}';
+      }
+      editInputContainer.innerHTML = `
+        <label for="editInput" class="form-label">{% trans "New Value" %}</label>
+        <input type="text" class="form-control" id="editInput" name="new_value" required>
+      `;
+    }
+
+    modal.show();
+  }
+</script>
+
 {% endblock content %}

@@ -6,36 +6,43 @@
   <script src="{% static 'pong/js/game.js' %}" type="module"></script>
 {% endblock scripts %}
 {% block game %}
-  <div class="d-flex justify-content-evenly mt-5">
-    <div id="player-l" class="fs-3">
-      <span id="player-l-name" class="fw-bold">{{ user.display_name }}</span>
-      :
-      <span id="player-l-score"></span>
-    </div>
-    <div id="player-r" class="fs-3">
-      <span id="player-r-name" class="fw-bold">Guest</span>
-      :
-      <span id="player-r-score"></span>
-    </div>
-  </div>
-  <div id="game-wrapper"
-       class="position-relative"
-       style="width: 75dvw;
-              height: 75dvh">
-    <div id="game-over"
-         class="flex-column align-items-center justify-content-around position-absolute z-1 w-50 h-50 bg-secondary-subtle rounded-3"
-         style="top: 25%;
-                left: 25%;
-                display: none">
-      <div class="text-center fs-3">
-        <span id="popup-winner-name">intra_nickname</span>
-        <span>won!</span>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+      <div class="p-4 mt-5", style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+        <div class="d-flex justify-content-evenly mt-5">
+          <div id="player-l" class="fs-3">
+            <span id="player-l-name" class="fw-bold">{{ user.display_name }}</span>
+            :
+            <span id="player-l-score"></span>
+          </div>
+          <div id="player-r" class="fs-3">
+            <span id="player-r-name" class="fw-bold">Guest</span>
+            :
+            <span id="player-r-score"></span>
+          </div>
+        </div>
+        <div id="game-wrapper"
+            class="position-relative d-flex justify-content-center align-items-center"
+            style="height: 75vh;">
+          <div id="game-over"
+              class="flex-column align-items-center justify-content-around position-absolute z-1 w-50 h-50 bg-secondary-subtle rounded-3"
+              style="top: 25%;
+                      left: 25%;
+                      display: none;">
+            <div class="text-center fs-3">
+              <span id="popup-winner-name">intra_nickname</span>
+              <span>won!</span>
+            </div>
+            <button id="play-again" type="button" class="btn w-75 btn-primary fw-bold">PLAY AGAIN</button>
+            <a type="button"
+              class="btn w-75 btn-secondary fw-bold"
+              onclick="showSection('/')">CLOSE</a>
+          </div>
+          <canvas id="game-canvas" class="d-block mx-auto position-absolute"></canvas>
+        </div>
       </div>
-      <button id="play-again" type="button" class="btn w-75 btn-primary fw-bold">PLAY AGAIN</button>
-      <a type="button"
-         class="btn w-75 btn-secondary fw-bold"
-         onclick="showSection('/')">CLOSE</a>
     </div>
-    <canvas id="game-canvas" class="d-block mx-auto mt-1 position-absolute" />
   </div>
+</div>
 {% endblock game %}

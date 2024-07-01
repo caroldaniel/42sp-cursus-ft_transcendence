@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path("", views.get_home_page, name="home-page"),
+    path('set-language/', views.set_language, name='set_language'),
+    path("users/list/", views.user_list, name="user-list"),
     path("login/", views.get_login_page, name="login-page"),
     path("register/user/", views.register, name="register-user"),
 	path("login/oauth2/", views.intra_login, name="login-oauth2"),

@@ -1,0 +1,30 @@
+{% load static i18n %}
+{% block content %}
+
+{% if user.is_authenticated %}
+<div id="chatOffCanvas" class="offcanvas offcanvas-end" tabindex="-1" aria-labelledby="chatOffcanvasLabel">
+
+  <div class="offcanvas-header">
+    <h5 class="fs-3">
+      <i class="bi bi-people-fill me-2"></i>
+      {% trans "Social" %}
+      </h2>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  
+  <hr>
+
+  <div class="offcanvas-body">
+
+    <h5 class="offcanvas-title" id="offcanvasLabel">User List</h5>
+    <table id="userTable" class="table">
+      <tbody>
+          <!-- Table rows will be dynamically populated here -->
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+
+{% endblock %}

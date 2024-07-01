@@ -1,9 +1,12 @@
-<!-- registerModel -->
-<div class="modal fade" id="registerModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModelLabel" aria-hidden="true">	
+<!-- registerModal -->
+{% load static i18n %}
+{% block content %} 
+
+<div id="registerModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">	
 	<div class="modal-dialog modal-dialog-centered">
-		<div class="modal-content" style="background-color: rgba(255, 255, 255, 0.95);">
+		<div class="modal-content" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9);">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="registerModelLabel">Register to play</h1>
+				<h1 class="modal-title fs-5" id="registerModalLabel">{% trans "Register to play" %}</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
@@ -11,33 +14,33 @@
 					<form id="registerForm" method="POST" action="{% url 'register-user' %}">
 						{% csrf_token %}
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="username" name="username" required>
-							<label for="username" class="form-label">Username</label>
+							<input type="text" class="form-control" id="username" name="username" minlength="3" maxlength="20" required>
+							<label for="username" class="form-label">{% trans "Username" %}</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="text" class="form-control" id="first_name" name="first_name" required>
-							<label for="first_name" class="form-label">First Name</label>
+							<label for="first_name" class="form-label">{% trans "First Name" %}</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="text" class="form-control" id="last_name" name="last_name" required>
-							<label for="last_name" class="form-label">Last Name</label>
+							<label for="last_name" class="form-label">{% trans "Last Name" %}</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="email" class="form-control" id="email" name="email" required>
-							<label for="email" class="form-label">E-mail</label>
+							<label for="email" class="form-label">{% trans "E-mail" %}</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="password" class="form-control" id="password" name="password" required>
-							<label for="password" class="form-label">Password</label>
+							<label for="password" class="form-label">{% trans "Password" %}</label>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-							<label for="confirm_password" class="form-label">Confirm Password</label>
+							<label for="confirm_password" class="form-label">{% trans "Confirm Password" %}</label>
 							<div id="password-match-warning" style="color: green;"></div>
 						</div>
 						
 						<div class="modal-footer">
-							<button id="register-button" type="submit" class="btn btn-primary" disabled>Sign up</button>
+							<button id="register-button" type="submit" class="btn btn-primary" disabled>{% trans "Sign up" %}</button>
 						</div>
 					</form>
 				</div>
@@ -46,18 +49,22 @@
 	</div>
 </div>
 
-<!-- registerModelResponse -->
-<div class="modal fade" id="registerModelResponse" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+<!-- registerModalResponse -->
+<div id="registerModalResponse" class="modal fade" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="registerModelResponseLabel"></h1>
+				<h1 class="modal-title fs-5" id="registerModalResponseLabel"></h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div id="registerModelResponseContent" class="modal-body"></div>
+			<div id="registerModalResponseContent" class="modal-body"></div>
 			<div class="modal-footer">
-				<button id="returnToRegister" class="btn btn-primary" data-bs-target="#registerModel" data-bs-toggle="modal">Return to register</button>
+				<button id="returnToRegister" class="btn btn-primary" data-bs-target="#registerModal" data-bs-toggle="modal">Return to register</button>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script src="{% static 'pong/js/register.js' %}"></script>
+
+{% endblock content %}

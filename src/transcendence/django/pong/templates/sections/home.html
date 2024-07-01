@@ -1,9 +1,52 @@
-{% load static %}
+{% load static i18n %}
 {% block buttons %}
-  <h1 class="text-center mt-3">Transcendence</h1>
-  <div class="d-flex flex-column mt-5 gap-5 col-12 align-items-center">
-    {% include "../components/avatar.html" %}
-    {% include "../components/buttons/play-local.html" %}
-    {% include "../components/buttons/play-tournament.html" %}
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="p-4 mt-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+        <h2 class="text-center mt-3">{% trans "Let's play!" %}</h2>
+        
+        <!-- Introduction to Pong Game -->
+        <div class="mb-4">
+          <p class="text-center">
+            {% trans "Pong is a classic arcade game where players control paddles to hit a ball back and forth. The goal is to score points by making the ball pass the opponent's paddle." %}
+          </p>
+        </div>
+        
+        <!-- Gameplay Descriptions -->
+        <div class="row mt-4">
+          <div class="col-md-6">
+            <div class="card text-center h-100">
+              <div class="card-body">
+                <h3 class="card-title">{% trans "Local" %}</h3>
+                <p class="card-text">
+                  {% trans "You can play 1:1 against someone using the same computer. It's a great way to challenge friends or family in a quick match." %}
+                </p>
+                <button type="button" class="btn btn-primary" onclick="showSection('/game/')">
+                  <i class="bi bi-display me-2"></i>
+                  {% trans "Play Now" %}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card text-center h-100">
+              <div class="card-body">
+                <h3 class="card-title">{% trans "Tournament" %}</h3>
+                <p class="card-text">
+                  {% trans "Join a tournament with up to 8 friends. Compete in rounds until only one player remains as the winner. It's an exciting way to test your skills against others!" %}
+                </p>
+                <button type="button" class="btn btn-primary" onclick="showSection('/tournament/create/')">
+                  <i class="bi bi-trophy me-2"></i>
+                  {% trans "Join" %}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
 {% endblock buttons %}

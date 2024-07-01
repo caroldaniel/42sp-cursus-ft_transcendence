@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="auto">
+<html lang="en" data-bs-theme="light">
   <head>
-    {% load static %}
+    {% load static i18n %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>
@@ -16,17 +16,26 @@
     <link rel="stylesheet" href="{% static 'pong/css/style.css' %}">
     <link rel="stylesheet" href="{% static 'pong/css/brackets.css' %}">
     <link rel="stylesheet" href="{% static 'pong/css/avatar.css' %}">
+    <link rel="stylesheet" href="{% static 'pong/css/chat.css' %}">
+
+    <script>
+      window.translations = {
+          'error': '{% trans "Error" %}',
+          'body_error': '{% blocktrans %}{{ error }}: {{ body_error }}{% endblocktrans %}',
+          // Add more translations as needed
+      };
+    </script>
   </head>
   
   <body>
     {% include "./components/navBar.html" %}
     <div id="app" class="mx-auto">
       {% block content %}{% endblock content %}
+      {% include "./components/chat.html" %}
     </div>
     
     <script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'pong/js/login.js' %}"></script>
-    <script src="{% static 'pong/js/register.js' %}"></script>
+    <script src="{% static 'pong/js/navbar.js' %}"></script>
     
     {% block scripts %}
       <script src="{% static 'pong/js/router.js' %}"></script>

@@ -19,19 +19,35 @@ async function updateDisplayName(displayName, csrfToken) {
 async function updateAvatar(avatar, csrfToken) {
   const formData = new FormData();
   formData.append("file", avatar);
-  const response = await fetch("/user/update_avatar/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrfToken,
-    },
-    body: formData,
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    showErrorMessage(data.message);
+
+  try {
+    const response = await fetch("/user/update_avatar/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      body: formData,
+    });
+
+    // Check if the content type is JSON
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("application/json")) {
+      const text = await response.text();
+      throw new Error(`Expected JSON, got HTML: ${text}`);
+    }
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showErrorMessage(data.message);
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("There has been a problem with your fetch operation:", error);
+    showErrorMessage(error.message || "An unexpected error occurred.");
     return false;
   }
-  return true;
 }
 
 function showErrorMessage(message) {

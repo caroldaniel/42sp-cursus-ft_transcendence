@@ -4,12 +4,28 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('registerForm');
-    const registerModel = new bootstrap.Modal(document.getElementById('registerModel'));
-    const registerModelResponse = new bootstrap.Modal(document.getElementById('registerModelResponse'));
     const returnToRegisterButton = document.getElementById('returnToRegister');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm_password');
     const passwordMatchWarning = document.getElementById('password-match-warning');
+    
+    const registerModalElement = document.getElementById('registerModal');
+    
+    if (!registerModalElement) {
+        console.error('Error: #registerModal not found');
+        return;
+    }
+
+    const registerModal = new bootstrap.Modal(registerModalElement);
+
+    const registerModalResponseElement = document.getElementById('registerModalResponse');
+    
+    if (!registerModalResponseElement) {
+        console.error('Error: #registerModalResponse not found');
+        return;
+    }
+
+    const registerModalResponse = new bootstrap.Modal(registerModalResponseElement);
 
     passwordInput.addEventListener('input', () => {
         if (confirmPasswordInput === '' || passwordInput.value === '') {
@@ -55,16 +71,16 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                document.getElementById('registerModelResponseLabel').textContent = 'Error';
-                document.getElementById('registerModelResponseContent').textContent = data.error;
-                registerModel.hide(); // Hide registerModel
-                registerModelResponse.show(); // Show registerModelResponse
+                document.getElementById('registerModalResponseLabel').textContent = 'Error';
+                document.getElementById('registerModalResponseContent').textContent = data.error;
+                registerModal.hide(); // Hide registerModal
+                registerModalResponse.show(); // Show registerModalResponse
                 returnToRegisterButton.style.display = 'block'; // Ensure returnToRegister button is visible
             } else if (data.success) {
-                document.getElementById('registerModelResponseLabel').textContent = 'Success';
-                document.getElementById('registerModelResponseContent').textContent = 'User registered successfully';
-                registerModel.hide(); // Hide registerModel
-                registerModelResponse.show(); // Show registerModelResponse
+                document.getElementById('registerModalResponseLabel').textContent = 'Success';
+                document.getElementById('registerModalResponseContent').textContent = 'User registered successfully';
+                registerModal.hide(); // Hide registerModal
+                registerModalResponse.show(); // Show registerModalResponse
                 returnToRegisterButton.style.display = 'none'; // Hide returnToRegister button
             } else {
                 console.error('Unexpected response:', data);
@@ -72,22 +88,23 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById('registerModelResponseLabel').textContent = 'Error';
-            document.getElementById('registerModelResponseContent').textContent = 'An unexpected error occurred.';
-            registerModel.hide(); // Hide registerModel
-            registerModelResponse.show(); // Show registerModelResponse
+            document.getElementById('registerModalResponseLabel').textContent = 'Error';
+            document.getElementById('registerModalResponseContent').textContent = 'An unexpected error occurred.';
+            registerModal.hide(); // Hide registerModal
+            registerModalResponse.show(); // Show registerModalResponse
             returnToRegisterButton.style.display = 'block'; // Ensure returnToRegister button is visible
         });
     });
 
+    
     // Clear modal content when closed to prevent stale messages
-    registerModelResponse.addEventListener('hidden.bs.modal', function () {
-        document.getElementById('registerModelResponseContent').textContent = '';
+    registerModalResponse.addEventListener('hidden.bs.modal', function () {
+        document.getElementById('registerModalResponseContent').textContent = '';
     });
 
     // Close the register modal when the response modal is closed
-    registerModelResponse.addEventListener('hidden.bs.modal', function () {
-        registerModel.show(); // Show registerModel again
+    registerModalResponse.addEventListener('hidden.bs.modal', function () {
+        registerModal.show(); // Show registerModal again
     });
 
 });
