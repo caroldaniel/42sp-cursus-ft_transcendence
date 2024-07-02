@@ -15,11 +15,11 @@
   
           <!-- Display Name -->
           <div class="d-flex justify-content-center align-items-center mb-3">
-            <h4 class="fw-bold">{{ display_name }}</h2>
+            <h4 class="fw-bold">{{ user.display_name }}</h2>
           </div>
           <!-- Avatar -->
           <div class="position-relative d-inline-block">
-            <img src="{{ MEDIA_URL }}{{ avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
+            <img src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
           </div>
     
           <div class="d-flex gap-3 justify-content-center fs-5 mt-3">

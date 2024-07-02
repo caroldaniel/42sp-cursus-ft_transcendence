@@ -1,98 +1,146 @@
-// Run on page load
-function setupSocial() {
-	window.addEventListener("submit", async (event) => {
-		event.preventDefault()
+document.addEventListener('DOMContentLoaded', function () {
+  const openSocialOffCanvas = document.getElementById('openSocialOffCanvas');
+  const socialOffCanvasElement = document.getElementById('socialOffCanvas');
+  // User
+  const userTableBody = document.querySelector('#userTable tbody');
+  // Tournament
+  const tournamentContent = document.getElementById('tournamentContent');
+  // Chat
+  const chatContent = document.getElementById('chatContent');
+  const userSelector = document.getElementById('userSelector');
 
-		let success
 
-		const displayName = document.getElementById("add-friend-name").value
-		if (displayName)
-			success = await addFriend(displayName)
+  const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
-		if (success)
-			await showSection("/social/");
-	});
-}
+  function fetchData(url, callback) {
+    console.log('Fetching data from:', url);
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(data => callback(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }
 
-async function removeFriend(friendId) {
-	const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	const formData = new FormData()
+  function populateUserList(users) {
+    console.log('Populating user list with data:', users);
+    userTableBody.innerHTML = '';
+    users.forEach(user => {
+      const row = document.createElement('tr');
+      row.appendChild(createCell(user.display_name));
+      row.appendChild(createStatusCell(user.is_online));
+      row.appendChild(createActionsCell(user));
+      userTableBody.appendChild(row);
+    });
+  }
 
-	formData.append("friend_id", friendId)
+  function createCell(content) {
+    const cell = document.createElement('td');
+    cell.textContent = content;
+    return cell;
+  }
 
-	const response = await fetch('/friend/remove/', {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrfToken,
-		},
-		body: formData,
-	})
+  function createStatusCell(isOnline) {
+    const cell = document.createElement('td');
+    const statusIcon = document.createElement('i');
+    statusIcon.className = isOnline ? 'bi bi-circle-fill text-success' : 'bi bi-circle-fill text-danger';
+    cell.appendChild(statusIcon);
+    return cell;
+  }
 
-	await response.json()
-	await showSection('/social/')
-}
+  function createActionsCell(user) {
+    const cell = document.createElement('td');
+    cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
+    cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
+    cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
+    cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => blockUser(user)));
+    return cell;
+  }
 
-async function acceptFriendRequest(friendId) {
-	const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	const formData = new FormData()
+  function createButton(iconClass, buttonClass, onClick) {
+    const button = document.createElement('button');
+    button.className = buttonClass;
+    const icon = document.createElement('i');
+    icon.className = iconClass;
+    button.appendChild(icon);
+    button.addEventListener('click', onClick);
+    return button;
+  }
 
-	formData.append("friend_id", friendId)
+  function addFriend(user) {
+    console.log(`Adding ${user.display_name} as a friend...`);
+  }
 
-	const response = await fetch('/friend/accept/', {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrfToken,
-		},
-		body: formData,
-	})
+  function viewProfile(user) {
+    console.log(`Viewing profile of ${user.display_name}...`);
+    const userProfileModal = document.getElementById('userProfileModal');
+    const modal = new bootstrap.Modal(userProfileModal);
+    modal.show();
+  }
 
-	await response.json()
-	await showSection('/social/')
-}
+  function openChat(user) {
+    const chatTab = document.getElementById('chat-tab');
 
-async function denyFriendRequest(friendId) {
-	const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	const formData = new FormData()
+    chatTab.click();
+    userSelector.value = user.id;
+    userSelector.dispatchEvent(new Event('change'));
+  }
 
-	formData.append("friend_id", friendId)
+  function blockUser(user) {
+    console.log(`Blocking ${user.display_name}...`);
+  }
 
-	const response = await fetch('/friend/deny/', {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrfToken,
-		},
-		body: formData,
-	})
+  function populateTournament(data) {
+    console.log('Populating tournament with data:', data);
+    tournamentContent.innerHTML = data.content;
+  }
 
-	await response.json()
-	await showSection('/social/')
-}
+  // Chat
+  function populateChatUserList(users) {
+    
+    users.forEach(user => {
+      const userOption = document.createElement('option');
+      userOption.value = user.id;
+      userOption.textContent = user.display_name;
+      userSelector.appendChild(userOption);
+    });
+  }
 
-async function addFriend(displayName) {
-	const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-	const formData = new FormData()
+  function populateChat(users) {
+    userSelector.innerHTML = `
+      <option selected  disabled>---</option>
+    `;    
+    populateChatUserList(users);
+  }
 
-	formData.append("friend_name", displayName)
+  function loadTabContent(tabId) {
+    switch (tabId) {
+      case 'user-list-tab':
+        fetchData('/users/list/', populateUserList);
+        break;
+      case 'tournament-tab':
+        fetchData('/tournament/list/', populateTournament);
+        break;
+      case 'chat-tab':
+        fetchData('/users/list/', populateChat);
+        break;
+      default:
+        console.error('Unknown tab ID');
+    }
+  }
 
-	const response = await fetch('/friend/send/', {
-		method: 'POST',
-		headers: {
-			'X-CSRFToken': csrfToken,
-		},
-		body: formData,
-	})
-	const data = await response.json();
-	if (!response.ok) {
-		showErrorMessage(data.message);
-		return false;
-	}
-	return true;
-}
+  openSocialOffCanvas.addEventListener('click', function () {
+    loadTabContent('user-list-tab');
+    socialOffCanvas.show();
+  });
 
-function showErrorMessage(message) {
-	const toast = document.getElementById("toast");
-	const toastBody = document.getElementById("toast-body");
-	toastBody.innerHTML = message;
-	const toastInstance = bootstrap.Toast.getOrCreateInstance(toast);
-	toastInstance.show();
-}
+  document.querySelectorAll('#socialTabs button[data-bs-toggle="tab"]').forEach(button => {
+    button.addEventListener('show.bs.tab', function (event) {
+      const tabId = event.target.id;
+      loadTabContent(tabId);
+    });
+  });
+});

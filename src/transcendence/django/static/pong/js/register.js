@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     
-    // Clear modal content when closed to prevent stale messages
-    registerModalResponse.addEventListener('hidden.bs.modal', function () {
-        document.getElementById('registerModalResponseContent').textContent = '';
-    });
+    // // Clear modal content when closed to prevent stale messages
+    // // registerModalResponse.addEventListener('hidden.bs.modal', function () {
+    // //     document.getElementById('registerModalResponseContent').textContent = '';
+    // // });
 
-    // Close the register modal when the response modal is closed
-    registerModalResponse.addEventListener('hidden.bs.modal', function () {
-        registerModal.show(); // Show registerModal again
-    });
+    // // Close the register modal when the response modal is closed
+    // registerModalResponse.addEventListener('hidden.bs.modal', function () {
+    //     registerModal.show(); // Show registerModal again
+    // });
 
 });

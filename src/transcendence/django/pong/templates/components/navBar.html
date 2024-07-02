@@ -47,8 +47,7 @@
 
       <!-- Language Dropdown -->
       <div class="dropdown">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown"
-          aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
           {% if request.LANGUAGE_CODE == 'en' %}
             <img src="{% static 'pong/img/flags/us.png' %}" alt="US Flag" width="20" height="20" class="me-2">
           {% elif request.LANGUAGE_CODE == 'pt' %}
@@ -75,205 +74,14 @@
 
       <!-- Chat Button -->
       {% if user.is_authenticated %}
-      <button id="openChatOffCanvas" type="button" class="btn btn-primary position-relative expand-button ms-2 me-3"
-        data-bs-toggle="offcanvas" data-bs-target="#chatOffcanvas">
+      <button id="openSocialOffCanvas" type="button" class="btn btn-primary position-relative expand-button ms-2 me-3" data-bs-toggle="offcanvas" data-bs-target="#socialOffCanvas">
         <i class="bi bi-people-fill me-2"></i> {% trans "Social" %}
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-          99+
-        </span>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">42</span>
       </button>
       {% endif %}
     </div>
 
   </div>
 </div>
-
-<script>
-
-  /**
-   * Initializes the theme toggle functionality for the navigation bar.
-   * This function adds an event listener to the theme toggle button and updates 
-   * the theme based on user preference. It also saves the user's preference.
-   */
-  document.addEventListener('DOMContentLoaded', () => {
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
-    const root = document.documentElement;
-
-    // Load theme preference from localStorage
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    root.setAttribute('data-bs-theme', currentTheme);
-
-    // Set the initial icon based on theme
-    themeIcon.className = currentTheme === 'light' ? 'bi bi-moon' : 'bi bi-sun';
-
-    // Theme toggle event listener
-    themeToggleBtn.addEventListener('click', () => {
-      const newTheme = root.getAttribute('data-bs-theme') === 'light' ? 'dark' : 'light';
-      root.setAttribute('data-bs-theme', newTheme);
-
-      // Update the icon
-      themeIcon.className = newTheme === 'light' ? 'bi bi-moon' : 'bi bi-sun';
-
-      // Save the user's preference to localStorage
-      localStorage.setItem('theme', newTheme);
-    });
-  });
-
-
-  /**
-   * This function updates the user's display name using a POST request.
-   * @param {string} newDisplayName - The new display name to update.
-   * @param {string} csrfToken - The CSRF token to include in the request.
-   * @returns {Promise<boolean>} - A promise that resolves to true if the request is successful.
-   */
-  document.addEventListener("DOMContentLoaded", () => {
-    const profileForm = document.getElementById('profile-form');
-    if (profileForm) {
-      profileForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent the default form submission
-
-        const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-
-        // Update display name
-        const newDisplayName = document.getElementById("display-name").value;
-        if (newDisplayName) {
-          const successDisplayName = await updateDisplayName(newDisplayName, csrfToken);
-          if (successDisplayName) {
-            document.querySelector("#account-dropdown > div:last-child").textContent = newDisplayName;
-          } else {
-            console.error('Failed to update display name');
-            return; // Exit early if update fails
-          }
-        }
-
-        // Update avatar
-        const avatarFile = document.getElementById("avatar").files[0];
-        if (avatarFile) {
-          const successAvatar = await updateAvatar(avatarFile, csrfToken);
-          if (successAvatar) {
-            const avatarImg = document.querySelector("#account-dropdown > img");
-            avatarImg.src = `{{ MEDIA_URL }}${avatarFile.name}`;
-          } else {
-            console.error('Failed to update avatar');
-            return;
-          }
-        }
-      });
-    }
-  });
-
-  
-  /**
-   * This function fetches the user list and populates the chat offcanvas with the data.
-   * It also adds event listeners to the buttons in the offcanvas.
-   */
-  document.addEventListener('DOMContentLoaded', function () {
-    const openChatOffCanvas = document.getElementById('openChatOffCanvas');
-    const chatOffCanvasElement = document.getElementById('chatOffCanvas');
-
-    if (!openChatOffCanvas || !chatOffCanvasElement) {
-      console.error('Required elements not found.');
-      return;
-    }
-
-    const chatOffCanvas = new bootstrap.Offcanvas(chatOffCanvasElement);
-
-    openChatOffCanvas.addEventListener('click', function () {
-      // Fetch user list
-      fetch('/users/list/')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          const userTableBody = document.querySelector('#userTable tbody');
-          userTableBody.innerHTML = ''; // Clear previous content
-
-          data.forEach(user => {
-            const row = document.createElement('tr');
-
-            // Display Name column
-            const nameCell = document.createElement('td');
-            nameCell.textContent = user.display_name;
-            row.appendChild(nameCell);
-
-            // Online Status column with icon
-            const statusCell = document.createElement('td');
-            const statusIcon = document.createElement('i');
-            statusIcon.className = user.is_online ? 'bi bi-circle-fill text-success' : 'bi bi-circle-fill text-danger';
-            statusCell.appendChild(statusIcon);
-            row.appendChild(statusCell);
-
-            // Action column with buttons
-            const actionCell = document.createElement('td');
-
-            // Add Friend button
-            const addButton = document.createElement('button');
-            addButton.className = 'btn btn-primary btn-sm me-2';
-            const addIcon = document.createElement('i');
-            addIcon.className = 'bi bi-person-plus-fill';
-            addButton.appendChild(addIcon);
-            addButton.addEventListener('click', function () {
-              // Add friend functionality, e.g., send request
-              console.log(`Adding ${user.display_name} as a friend...`);
-            });
-            actionCell.appendChild(addButton);
-
-            // View Profile button
-            const viewProfileButton = document.createElement('button');
-            viewProfileButton.className = 'btn btn-primary btn-sm me-2';
-            const viewProfileIcon = document.createElement('i');
-            viewProfileIcon.className = 'bi bi-person-lines-fill';
-            viewProfileButton.setAttribute('onclick', `showSection('/stats/${user.id}/')`);
-            viewProfileButton.appendChild(viewProfileIcon);
-            viewProfileButton.addEventListener('click', function () {
-              // Redirect to user profile page or handle view profile functionality
-              console.log(`Viewing profile of ${user.display_name}...`);
-            });
-            actionCell.appendChild(viewProfileButton);
-
-            // Chat button
-            const chatButton = document.createElement('button');
-            chatButton.className = 'btn btn-primary btn-sm me-2';
-            const chatIcon = document.createElement('i');
-            chatIcon.className = 'bi bi-chat-dots-fill';
-            chatButton.appendChild(chatIcon);
-            chatButton.addEventListener('click', function () {
-              // Open chat functionality, e.g., open chat window with user
-              console.log(`Opening chat with ${user.display_name}...`);
-            });
-            actionCell.appendChild(chatButton);
-
-            // Block button
-            const blockButton = document.createElement('button');
-            blockButton.className = 'btn btn-danger btn-sm';
-            const blockIcon = document.createElement('i');
-            blockIcon.className = 'bi bi-ban';
-            blockButton.appendChild(blockIcon);
-            blockButton.addEventListener('click', function () {
-              // Block user functionality, e.g., block user from interactions
-              console.log(`Blocking ${user.display_name}...`);
-            });
-            actionCell.appendChild(blockButton);
-
-            row.appendChild(actionCell);
-            userTableBody.appendChild(row);
-          });
-
-          // Show the offcanvas
-          chatOffCanvas.show();
-        })
-        .catch(error => console.error('Error fetching user list:', error));
-    });
-
-    // Add similar fetch logic for Friends, Chat, and Tournament tabs as needed
-    // For example, fetch('/friends/list/'), fetch('/chat/list/'), fetch('/tournament/list/')
-  });
-
-
-</script>
 
 {% endblock %}

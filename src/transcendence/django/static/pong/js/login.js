@@ -30,14 +30,14 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 window.location.href = data.redirect;
             } else {
-                // Ensure `data.error` is already translated
-                document.getElementById('errorMessage').textContent = window.translations.body_error.replace('{{ body_error }}', data.error);
+                console.log('Error:', data.error);
+                document.getElementById('errorMessage').textContent = data.error;
                 errorModal.show();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById('errorMessage').textContent = window.translations.error + ': An unexpected error occurred. Please try again.';
+            document.getElementById('errorMessage').textContent = 'An unexpected error occurred. Please try again.';
             errorModal.show();
         });
     });
