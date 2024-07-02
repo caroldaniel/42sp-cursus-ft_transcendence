@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
   }
   const editModal = new bootstrap.Modal(editModalElement);
-  console.log('Edit Modal:', editModal);
 
   // Edit Modal Response
   const editModalResponseElement = document.getElementById('editModalResponse');
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return;
   }
   const editModalResponse = new bootstrap.Modal(editModalResponseElement);
-  console.log('Edit Modal Response:', editModalResponse);
 
   // Reload Page Button
   const reloadPageButton = document.getElementById('reloadPageButton');

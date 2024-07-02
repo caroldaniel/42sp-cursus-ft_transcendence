@@ -265,3 +265,34 @@ class Relationship(models.Model):
 		if Relationship.objects.filter(user1=self.user2, user2=self.user1).exists():
 			raise ValidationError('Relationship already exists')
 		super().save(*args, **kwargs)
+
+
+# Chat message model
+class Message(models.Model):
+	"""
+	Model to represent a chat message between two users.
+	
+	Attributes:
+		sender (ForeignKey): The user who sent the message.
+		receiver (ForeignKey): The user who received the message.
+		content (TextField): The content of the message.
+		timestamp (DateTimeField): The datetime when the message was sent.
+	"""
+	sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
+	receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
+	content = models.TextField()
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.sender} -> {self.receiver}: {self.content[:20]}"
+	
+	def save(self, *args, **kwargs):
+		"""
+		Overrides the save method to update the timestamp before saving.
+		
+		Usage:
+			This method is automatically called by Django before saving the model instance.
+			It updates the timestamp to the current datetime value before saving.
+		"""
+		self.timestamp = timezone.now()
+		super().save(*args, **kwargs)
