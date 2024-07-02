@@ -31,8 +31,8 @@
     {% include "./components/navBar.html" %}
     <div id="app" class="mx-auto">
       {% block content %}{% endblock content %}
-      {% include "./components/chat.html" %}
     </div>
+    {% include "./components/chat.html" %}
     
     <script src="{% static 'pong/js/bootstrap/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'pong/js/navbar.js' %}"></script>

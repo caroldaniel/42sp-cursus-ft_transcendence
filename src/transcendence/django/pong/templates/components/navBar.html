@@ -180,6 +180,7 @@
     const chatOffCanvas = new bootstrap.Offcanvas(chatOffCanvasElement);
 
     openChatOffCanvas.addEventListener('click', function () {
+      // Fetch user list
       fetch('/users/list/')
         .then(response => {
           if (!response.ok) {
@@ -206,12 +207,14 @@
             statusCell.appendChild(statusIcon);
             row.appendChild(statusCell);
 
-            // Action column with Add Friend button
+            // Action column with buttons
             const actionCell = document.createElement('td');
+
+            // Add Friend button
             const addButton = document.createElement('button');
             addButton.className = 'btn btn-primary btn-sm me-2';
             const addIcon = document.createElement('i');
-            addIcon.className = 'bi bi-person-plus-fill me-1';
+            addIcon.className = 'bi bi-person-plus-fill';
             addButton.appendChild(addIcon);
             addButton.addEventListener('click', function () {
               // Add friend functionality, e.g., send request
@@ -219,16 +222,44 @@
             });
             actionCell.appendChild(addButton);
 
+            // View Profile button
+            const viewProfileButton = document.createElement('button');
+            viewProfileButton.className = 'btn btn-primary btn-sm me-2';
+            const viewProfileIcon = document.createElement('i');
+            viewProfileIcon.className = 'bi bi-person-lines-fill';
+            viewProfileButton.setAttribute('onclick', `showSection('/stats/${user.id}/')`);
+            viewProfileButton.appendChild(viewProfileIcon);
+            viewProfileButton.addEventListener('click', function () {
+              // Redirect to user profile page or handle view profile functionality
+              console.log(`Viewing profile of ${user.display_name}...`);
+            });
+            actionCell.appendChild(viewProfileButton);
+
             // Chat button
             const chatButton = document.createElement('button');
-            chatButton.className = 'btn btn-primary btn-sm';
+            chatButton.className = 'btn btn-primary btn-sm me-2';
             const chatIcon = document.createElement('i');
-            chatIcon.className = 'bi bi-chat-dots-fill me-1';
+            chatIcon.className = 'bi bi-chat-dots-fill';
             chatButton.appendChild(chatIcon);
-
+            chatButton.addEventListener('click', function () {
+              // Open chat functionality, e.g., open chat window with user
+              console.log(`Opening chat with ${user.display_name}...`);
+            });
             actionCell.appendChild(chatButton);
-            row.appendChild(actionCell);
 
+            // Block button
+            const blockButton = document.createElement('button');
+            blockButton.className = 'btn btn-danger btn-sm';
+            const blockIcon = document.createElement('i');
+            blockIcon.className = 'bi bi-ban';
+            blockButton.appendChild(blockIcon);
+            blockButton.addEventListener('click', function () {
+              // Block user functionality, e.g., block user from interactions
+              console.log(`Blocking ${user.display_name}...`);
+            });
+            actionCell.appendChild(blockButton);
+
+            row.appendChild(actionCell);
             userTableBody.appendChild(row);
           });
 
@@ -237,7 +268,11 @@
         })
         .catch(error => console.error('Error fetching user list:', error));
     });
+
+    // Add similar fetch logic for Friends, Chat, and Tournament tabs as needed
+    // For example, fetch('/friends/list/'), fetch('/chat/list/'), fetch('/tournament/list/')
   });
+
 
 </script>
 

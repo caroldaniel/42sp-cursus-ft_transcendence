@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from pong.models import User
 
 def user_list(request):
-    users = User.objects.all().values('display_name', 'is_online')
+    users = User.objects.all().values('id', 'display_name', 'is_online')
     return JsonResponse(list(users), safe=False)
 
 
