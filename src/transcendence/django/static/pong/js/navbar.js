@@ -15,62 +15,18 @@ function updateNavbar(user) {
     }
 }
 
-// Example function to update display name using fetch
 /**
- * Updates the display name of the user.
- * @param {string} newDisplayName - The new display name to be updated.
- * @param {string} csrfToken - The CSRF token for authentication.
- * @returns {Promise<boolean>} - A promise that resolves to true if the display name is updated successfully, or false otherwise.
+ * Sets the language for the application.
+ * @param {string} language - The language to set.
  */
-async function updateDisplayName(newDisplayName, csrfToken) {
-    try {
-        const response = await fetch('/update_display_name/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken,
-            },
-            body: JSON.stringify({ name: newDisplayName }),
-        });
-        if (!response.ok) {
-            throw new Error('Failed to update display name');
+function setLanguage(language) {
+    fetch(`/set_language?language=${language}`)
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            console.error('Failed to set language');
         }
-        const data = await response.json();
-        updateNavbar(data.user); // Update navbar after successful update
-        return true;
-    } catch (error) {
-        console.error('Error updating display name:', error);
-        return false;
-    }
-}
-
-/**
- * Updates the user's avatar by sending a POST request to the server.
- * 
- * @param {File} avatarFile - The avatar file to be uploaded.
- * @param {string} csrfToken - The CSRF token for authentication.
- * @returns {Promise<boolean>} - A promise that resolves to true if the avatar is updated successfully, or false otherwise.
- */
-async function updateAvatar(avatarFile, csrfToken) {
-    const formData = new FormData();
-    formData.append('file', avatarFile);
-
-    try {
-        const response = await fetch('/update_avatar/', {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-            },
-            body: formData,
-        });
-        if (!response.ok) {
-            throw new Error('Failed to update avatar');
-        }
-        const data = await response.json();
-        updateNavbar(data.user); // Update navbar after successful update
-        return true;
-    } catch (error) {
-        console.error('Error updating avatar:', error);
-        return false;
-    }
+    });
 }

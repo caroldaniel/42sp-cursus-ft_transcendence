@@ -1,55 +1,3 @@
-async function updateDisplayName(displayName, csrfToken) {
-  const formData = new FormData();
-  formData.append("name", displayName);
-  const response = await fetch("/user/update_name/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrfToken,
-    },
-    body: formData,
-  });
-  const data = await response.json();
-  if (!response.ok) {
-    showErrorMessage(data.message);
-    return false;
-  }
-  return true;
-}
-
-async function updateAvatar(avatar, csrfToken) {
-  const formData = new FormData();
-  formData.append("file", avatar);
-
-  try {
-    const response = await fetch("/user/update_avatar/", {
-      method: "POST",
-      headers: {
-        "X-CSRFToken": csrfToken,
-      },
-      body: formData,
-    });
-
-    // Check if the content type is JSON
-    const contentType = response.headers.get("content-type");
-    if (!contentType || !contentType.includes("application/json")) {
-      const text = await response.text();
-      throw new Error(`Expected JSON, got HTML: ${text}`);
-    }
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      showErrorMessage(data.message);
-      return false;
-    }
-    return true;
-  } catch (error) {
-    console.error("There has been a problem with your fetch operation:", error);
-    showErrorMessage(error.message || "An unexpected error occurred.");
-    return false;
-  }
-}
-
 function showErrorMessage(message) {
   const toast = document.getElementById("toast");
   const toastBody = document.getElementById("toast-body");
@@ -59,23 +7,75 @@ function showErrorMessage(message) {
 }
 
 function setupProfile() {
-  window.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const csrfToken = document.querySelector(
-      "[name=csrfmiddlewaretoken]",
-    ).value;
+  return ;
+}
 
-    let haveSucceeded;
+async function updateField(field, newValue, csrfToken) {
+  try {
+      let response;
 
-    const displayName = document.getElementById("display-name").value;
-    if (displayName)
-      haveSucceeded = await updateDisplayName(displayName, csrfToken);
-    if (haveSucceeded == false) return;
+      if (field === 'avatar') {
+          const avatarFile = document.getElementById(`editInput_${field}`).files[0];
+          response = await updateAvatar(avatarFile, csrfToken);
+      } else {
+          response = await fetch(`/profile/edit/${field}/`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify({ field, new_value: newValue })
+          });
 
-    const avatar = document.getElementById("avatar").files[0];
-    if (avatar) haveSucceeded = await updateAvatar(avatar, csrfToken);
-    if (haveSucceeded == false) return;
+          if (!response.ok) {
+              throw new Error(`Failed to update ${field}`);
+          }
+      }
 
-    showSection("/");
-  });
+      const result = await response.json();
+
+      if (result.success) {
+          console.log(`Field "${field}" updated successfully`);
+          return true;
+      } else {
+          console.error(`Failed to update ${field}: ${result.message}`);
+          return false;
+      }
+  } catch (error) {
+      console.error(`Error updating ${field}:`, error);
+      return false;
+  }
+}
+
+// Example updateAvatar function (replace with your actual implementation)
+async function updateAvatar(avatarFile, csrfToken) {
+  try {
+      const formData = new FormData();
+      formData.append('avatar', avatarFile);
+
+      const response = await fetch('/profile/edit/avatar/', {
+          method: 'POST',
+          headers: {
+              'X-CSRFToken': csrfToken
+          },
+          body: formData
+      });
+
+      if (!response.ok) {
+          throw new Error('Failed to update avatar');
+      }
+
+      const result = await response.json();
+
+      if (result.success) {
+          console.log('Avatar updated successfully');
+          return true;
+      } else {
+          console.error('Failed to update avatar:', result.message);
+          return false;
+      }
+  } catch (error) {
+      console.error('Error updating avatar:', error);
+      return false;
+  }
 }

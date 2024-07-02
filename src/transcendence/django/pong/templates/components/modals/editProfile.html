@@ -1,0 +1,47 @@
+{% load static i18n %}
+{% block content %}
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">	
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9);">
+			<div class="modal-header">
+        <h5 id="editModalLabel" class="modal-title">{% trans "Edit" %}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div id="app" class="d-flex justify-content-center mt-3">
+					<form id="editForm" method="POST" action="{% url 'profile-edit-page' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3" id="editInputContainer">
+              <!-- Input field will be added dynamically here -->
+            </div>
+            <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
+          </form>
+				</div>
+			</div>
+    	</div>
+	</div>
+</div>
+
+<!-- editModalResponse -->
+<div id="editModalResponse" class="modal fade" aria-hidden="true" aria-labelledby="editModalResponseLabel" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editModalResponseLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div id="editModalResponseContent" class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="reloadPageButton">Reload Page</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="{% static 'pong/js/editProfile.js' %}"></script>
+
+
+{% endblock content %}

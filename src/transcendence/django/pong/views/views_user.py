@@ -1,8 +1,11 @@
+import uuid
 # Django imports
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
+from django.utils.translation import gettext as _
+from django.contrib.auth.decorators import login_required
+
 
 # Project imports
 from pong.models import User
@@ -34,47 +37,55 @@ def validate_name(name: str):
 		raise Exception('Display name already in use')
 
 
-@login_required(login_url="/login")
-def update_display_name(request):
+@login_required
+def edit_profile_field(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-    new_display_name = request.POST.get('name')
-    try:
-        if not new_display_name:
-            raise ValueError("'name' is empty")
-
-        user = request.user
-        user.display_name = new_display_name
-        user.save()
-
-        return JsonResponse({'success': True, 'user': {'avatar': user.avatar.url, 'display_name': user.display_name}})
     
-    except ValueError as ve:
-        return JsonResponse({'success': False, 'message': str(ve)}, status=400)
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)}, status=500)
-    
+    field = request.POST.get('field')
+    user = request.user
 
-@login_required(login_url="/login")
-def update_avatar(request):
-    if request.method != "POST":
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+    # Handle different fields
+    if field == 'avatar':
+        avatar_file = request.FILES.get('new_value')
+        try:
+            if not avatar_file:
+                raise ValidationError("'file' is empty")
 
-    uploaded_file = request.FILES.get('file')
-    try:
-        if not uploaded_file:
-            raise ValidationError("'file' is empty")
+            FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])(avatar_file)
 
-        FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])(uploaded_file)
+            # Save the file with a name based on a id
+            random_id = uuid.uuid4()
+            new_name = f'{random_id}.{avatar_file.name.split(".")[-1]}'
+            user.avatar.save(new_name, avatar_file)
 
-        # Save the file
-        user = request.user
-        user.avatar.save(uploaded_file.name, uploaded_file)
+            return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
+            
+        except ValidationError as ve:
+            return JsonResponse({'error': _('Avatar format not valid.')}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': _('An error occurred while trying to upload the avatar. Try again later.')}, status=500)
+    else:
+        new_value = request.POST.get('new_value')
+        # Handle other fields (username, first_name, last_name, email, password)
+        try:
+            if not field:
+                raise ValueError("'field' is empty")
+            if field == 'display_name':
+                user.display_name = new_value
+            elif field == 'first_name':
+                user.first_name = new_value
+            elif field == 'last_name':
+                user.last_name = new_value
+            elif field == 'email':
+                user.email = new_value
+            elif field == 'password':
+                user.set_password(new_value)
+            user.save()
 
-        return JsonResponse({'success': True, 'user': {'avatar': user.avatar.url, 'display_name': user.display_name}})
-    
-    except ValidationError as ve:
-        return JsonResponse({'success': False, 'message': str(ve)}, status=400)
-    except Exception as e:
-        return JsonResponse({'success': False, 'message': str(e)}, status=500)
+            return JsonResponse({'success': _('Field updated successfully.')}, status=200)
+        
+        except ValidationError as ve:
+            return JsonResponse({'error': _('New value is not in a valid format.')}, status=400)
+        except Exception as e:
+            return JsonResponse({'error': _('An error occurred while trying to update field. Try again later.')}, status=500)

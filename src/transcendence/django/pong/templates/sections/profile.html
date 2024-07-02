@@ -5,8 +5,9 @@
   <div class="row justify-content-center">
     <div class="col-md-8">
       <div class="p-4 mt-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+        
         <div class="text-center">
-
+          <!-- Title -->
           <h2 class="fs-1 mb-1">
             <i class="bi bi-person me-2"></i>
             {% trans "Profile" %}
@@ -14,12 +15,15 @@
 
           <hr>
 
+          <!-- Display Name -->
           <div class="d-flex justify-content-center align-items-center mb-3">
             <h4 class="fw-bold">{{ user.display_name }}</h2>
             <button class="btn btn-link ms-2" onclick="showEditModal('display_name')">
               <i class="bi bi-pencil"></i>
             </button>
           </div>
+
+          <!-- Avatar -->
           <div class="position-relative d-inline-block">
             <img src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
             <button class="btn btn-primary position-absolute bottom-0 start-0" onclick="showEditModal('avatar')" style="border-radius: 50%;">
@@ -27,18 +31,25 @@
             </button>
           </div>
         </div>
+
+
         <div class="row mt-4">
           <div class="col-md-6">
 
+            <!-- Username -->
             <div class="d-flex align-items-center">
-              <div class="me-3">
+              <div class="me-1">
                 <label for="username" class="form-label"><strong>{% trans "Username" %}</strong></label>
                 <p id="username">{{ user.username }}</p>
               </div>
+              <button type="button" class="btn btn-link" id="username-info" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top">
+                <i class="bi bi-info-circle"></i>
+              </button>
             </div>
 
+            <!-- First Name -->
             <div class="d-flex align-items-center">
-              <div class="me-3">
+              <div class="me-1">
                 <label for="first_name" class="form-label"><strong>{% trans "First Name" %}</strong></label>
                 <p id="first_name" class="me-2">{{ user.first_name }}</p>
               </div>
@@ -47,8 +58,9 @@
               </button>
             </div>
             
+            <!-- Last Name -->
             <div class="d-flex align-items-center">
-              <div class="me-3">
+              <div class="me-1">
                 <label for="last_name" class="form-label"><strong>{% trans "Last Name" %}</strong></label>
                 <p id="last_name" class="me-2">{{ user.last_name }}</p>
               </div>
@@ -60,8 +72,9 @@
           </div>
           <div class="col-md-6">
 
+            <!-- Email -->
             <div class="d-flex align-items-center">
-              <div class="me-3">
+              <div class="me-1">
                 <label for="email" class="form-label"><strong>{% trans "Email" %}</strong></label>
                 <p id="email" class="me-2">{{ user.email }}</p>
               </div>
@@ -70,8 +83,9 @@
               </button>
             </div>
 
+            <!-- Password -->
             <div class="d-flex align-items-center">
-              <div class="me-3">
+              <div class="me-1">
                 <label for="password" class="form-label"><strong>{% trans "Password" %}</strong></label>
                 <p id="password" class="me-2">••••••••</p>
               </div>
@@ -79,6 +93,7 @@
                 <i class="bi bi-pencil"></i>
               </button>
             </div>
+
           </div>
         </div>
       </div>
@@ -86,77 +101,97 @@
   </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editModalLabel">{% trans "Edit" %}</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editForm" method="POST" action="" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="mb-3" id="editInputContainer">
-            <label for="editInput" class="form-label">{% trans "New Value" %}</label>
-            <input type="text" class="form-control" id="editInput" name="new_value" required>
-          </div>
-          <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+{% include "../components/modals/editProfile.html" %}
 
 <script>
-  function showEditModal(field) {
-    const modal = new bootstrap.Modal(document.getElementById('editModal'));
-    const form = document.getElementById('editForm');
-    const input = document.getElementById('editInput');
-    const label = document.getElementById('editModalLabel');
+
+  /**
+   * Show edit modal
+   * @param {string} field - Field to edit
+   */
+   function showEditModal(field) {
+    // Get modal Element
+    const modal = document.getElementById('editModal');
+
+    // Check if modal exists
+    if (!modal) {
+      console.error('Edit Modal not found');
+      return;
+    }
+
+    // Get modal instance for future use
+    const modalInstance = new bootstrap.Modal(modal);
+
+    // Get form elements
+    const title = document.getElementById('editModalLabel');
     const editInputContainer = document.getElementById('editInputContainer');
 
-    form.action = `/profile/edit/${field}/`;
-    input.value = '';
+    let newLabel = '';
+
+    // Add hidden input for field
+    const hiddenFieldInput = `<input type="hidden" name="field" value="${field}">`;
 
     if (field === 'avatar') {
-      label.textContent = '{% trans "Edit Avatar" %}';
+      title.textContent = '{% blocktrans %}Change your avatar{% endblocktrans %}';
       editInputContainer.innerHTML = `
-        <label for="editInput" class="form-label">{% trans "Upload New Avatar" %}</label>
+        ${hiddenFieldInput}
+        <label for="editInput" class="form-label">{% blocktrans %}Upload New Avatar{% endblocktrans %}</label>
         <input type="file" class="form-control" id="editInput" name="new_value" accept="image/*" required>
       `;
-    } else if (field === 'display_name') {
-      label.textContent = '{% trans "Edit Display Name" %}';
-      editInputContainer.innerHTML = `
-        <label for="editInput" class="form-label">{% trans "New Display Name" %}</label>
-        <input type="text" class="form-control" id="editInput" name="new_value" required>
-      `;
-    } else {
+    }
+    else {
       switch (field) {
+        case 'display_name':
+          title.textContent = '{% blocktrans %}Edit Display Name{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New Display Name{% endblocktrans %}';
+          break;
         case 'first_name':
-          label.textContent = '{% trans "Edit First Name" %}';
+          title.textContent = '{% blocktrans %}Edit First Name{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New First Name{% endblocktrans %}';
           break;
         case 'last_name':
-          label.textContent = '{% trans "Edit Last Name" %}';
+          title.textContent = '{% blocktrans %}Edit Last Name{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New Last Name{% endblocktrans %}';
           break;
         case 'email':
-          label.textContent = '{% trans "Edit Email" %}';
+          title.textContent = '{% blocktrans %}Edit Email{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New Email{% endblocktrans %}';
           break;
         case 'password':
-          label.textContent = '{% trans "Edit Password" %}';
-          input.type = 'password';
+          title.textContent = '{% blocktrans %}Edit Password{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New Password{% endblocktrans %}';
           break;
         default:
-          label.textContent = '{% trans "Edit" %}';
+          title.textContent = '{% blocktrans %}Edit{% endblocktrans %}';
+          newLabel = '{% blocktrans %}New Value{% endblocktrans %}';
       }
+
       editInputContainer.innerHTML = `
-        <label for="editInput" class="form-label">{% trans "New Value" %}</label>
+        ${hiddenFieldInput}
+        <label for="editInput" class="form-label">${newLabel}</label>
         <input type="text" class="form-control" id="editInput" name="new_value" required>
       `;
     }
 
-    modal.show();
+    // Show modal
+    modalInstance.show();
   }
+
+
+  /**
+   * Popover for username info
+   */
+  document.addEventListener('DOMContentLoaded', function () {
+    var popoverTrigger = document.getElementById('username-info');
+    var popoverContent = '{% blocktrans %}You cannot edit the username.{% endblocktrans %}';
+    
+    // Create a new Popover instance
+    var popover = new bootstrap.Popover(popoverTrigger, {
+      content: popoverContent,
+      trigger: 'hover',  // Adjust trigger behavior if needed
+      placement: 'top'   // Adjust placement if needed
+    });
+  });
 </script>
 
 {% endblock content %}

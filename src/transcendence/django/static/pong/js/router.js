@@ -21,10 +21,10 @@ function setupSection(section) {
     loadTournamentForm();
   } else if (section === "/tournament/winner/") {
     setWinner();
-  } else if (section === "/profile/") {
-    setupProfile();
   } else if (section === "/social/") {
     setupSocial();
+  } else if (section === "/profile/") {
+    setupProfile();
   } else if (section === "/") {
     setupHome();
   }

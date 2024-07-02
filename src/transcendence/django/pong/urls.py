@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path("", views.get_home_page, name="home-page"),
-    path('set-language/', views.set_language, name='set_language'),
+    path('set-language/', views.set_language, name='set-language'),
     path("users/list/", views.user_list, name="user-list"),
     path("login/", views.get_login_page, name="login-page"),
     path("register/user/", views.register, name="register-user"),
@@ -25,9 +25,8 @@ urlpatterns = [
     path("tournament/create/", views.get_tournament_form_page, name="tournament-form-page"),
     path("tournament/game/", views.get_tournament_game_page, name="tournament-game-page"),
     path("tournament/winner/", views.get_winner_page, name="tournament-winner-page"),
-    path("user/update_name/", views.update_display_name, name="update-display-name"),
-    path("user/update_avatar/", views.update_avatar, name="update-avatar" ),
     path("profile/", views.get_profile_page, name="profile-page"),
+    path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
 
 	# # ! Uncomment this to populate database
     # path("populate_db/", views.populate_db, name="populate-db"),
