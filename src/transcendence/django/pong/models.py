@@ -151,7 +151,7 @@ class User(AbstractBaseUser):
 	# Required fields
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	username = models.CharField(max_length=150, unique=True)
-	display_name = models.CharField(max_length=150, unique=True)
+	display_name = models.CharField(max_length=150)
 	email = models.EmailField(unique=True)
 	password = models.CharField(max_length=128, blank=True)
 	first_name = models.CharField(max_length=30, blank=True)

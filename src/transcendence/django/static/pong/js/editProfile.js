@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
   function attachEditFormSubmitHandler() {
     console.log('attachEditFormSubmitHandler');
     const editForm = document.getElementById('editForm');
-
     if (editForm) {
       editForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -84,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Function to handle errors
   function handleError(error) {
-    console.error('Fetch Error:', error);
+    console.error(error);
     document.getElementById('editModalResponseLabel').textContent = 'Error';
     document.getElementById('editModalResponseContent').textContent = 'An unexpected error occurred.';
     editModalElement.style.display = 'none';

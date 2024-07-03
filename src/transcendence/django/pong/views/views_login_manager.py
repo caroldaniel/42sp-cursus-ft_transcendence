@@ -142,6 +142,7 @@ def register(request: HttpRequest):
 	if request.method == 'POST':
 		# Process the registration form data
 		username = request.POST.get('username')
+		display_name = request.POST.get('display_name')
 		first_name = request.POST.get('first_name')
 		last_name = request.POST.get('last_name')
 		email = request.POST.get('email')
@@ -153,6 +154,9 @@ def register(request: HttpRequest):
 
 		if User.objects.filter(email=email).exists():
 			return JsonResponse({'error': _('E-mail already registered')}, status=400)
+		
+		if User.objects.filter(display_name=display_name).exists():
+			return JsonResponse({'error': _('Display name already taken')}, status=400)
 
 		# Create a new user object
 		try:
@@ -160,6 +164,7 @@ def register(request: HttpRequest):
 				username=username
 			)
 			user.first_name = first_name
+			user.display_name = display_name
 			user.last_name = last_name
 			user.email = email
 			user.set_password(password)

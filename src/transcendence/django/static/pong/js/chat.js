@@ -14,7 +14,7 @@ async function loadMessages() {
     const receiverInput = document.getElementById('receiver');
     const chatLog = document.getElementById("chatLog");
 
-    if (userSelector.value === "Users") {
+    if (userSelector.value === "---" || receiverInput.value === "") {
         chatLog.innerHTML = '';
         return;
     }
