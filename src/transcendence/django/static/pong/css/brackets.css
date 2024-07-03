@@ -23,7 +23,8 @@
 
 .player {
   width: 24ch;
-  background-color: #161719;
+  background-color: rgb(var(--bs-body-color-rgb));
+  color:  rgb(var(--bs-body-bg-rgb));
   padding: 0.625rem 2ch;
   border-radius: 5px;
   text-align: center;

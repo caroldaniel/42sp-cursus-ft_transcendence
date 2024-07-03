@@ -6,6 +6,9 @@ from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
 
+# import redirect from django.shortcuts
+from django.shortcuts import redirect
+
 
 # Project imports
 from pong.models import User

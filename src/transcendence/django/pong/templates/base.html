@@ -40,12 +40,13 @@
     
     {% block scripts %}
       <script src="{% static 'pong/js/router.js' %}"></script>
+      <script src="{% static 'pong/js/home.js' %}"></script>
+      <script src="{% static 'pong/js/profile.js' %}"></script>
+      <script src="{% static 'pong/js/stats.js' %}"></script>
       <script src="{% static 'pong/js/game.js' %}" type="module"></script>
       <script src="{% static 'pong/js/tournament.js' %}" type="module"></script>
       <script src="{% static 'pong/js/tournamentForm.js' %}" type="module"></script>
       <script src="{% static 'pong/js/winner.js' %}"></script>
-      <script src="{% static 'pong/js/profile.js' %}"></script>
-      <script src="{% static 'pong/js/home.js' %}"></script>
     {% endblock scripts %}
   </body>
 </html>

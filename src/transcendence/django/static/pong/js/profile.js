@@ -1,81 +1,90 @@
-function showErrorMessage(message) {
-  const toast = document.getElementById("toast");
-  const toastBody = document.getElementById("toast-body");
-  toastBody.innerHTML = message;
-  const toastInstance = bootstrap.Toast.getOrCreateInstance(toast);
-  toastInstance.show();
-}
-
 function setupProfile() {
   return ;
 }
 
-async function updateField(field, newValue, csrfToken) {
-  try {
-      let response;
+/**
+ * Show edit modal
+ * @param {string} field - Field to edit
+ */
+function showEditModal(field) {
+// Get modal Element
+const modal = document.getElementById('editModal');
 
-      if (field === 'avatar') {
-          const avatarFile = document.getElementById(`editInput_${field}`).files[0];
-          response = await updateAvatar(avatarFile, csrfToken);
-      } else {
-          response = await fetch(`/profile/edit/${field}/`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': csrfToken
-              },
-              body: JSON.stringify({ field, new_value: newValue })
-          });
-
-          if (!response.ok) {
-              throw new Error(`Failed to update ${field}`);
-          }
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-          console.log(`Field "${field}" updated successfully`);
-          return true;
-      } else {
-          console.error(`Failed to update ${field}: ${result.message}`);
-          return false;
-      }
-  } catch (error) {
-      console.error(`Error updating ${field}:`, error);
-      return false;
-  }
+// Check if modal exists
+if (!modal) {
+    console.error('Edit Modal not found');
+    return;
 }
 
-// Example updateAvatar function (replace with your actual implementation)
-async function updateAvatar(avatarFile, csrfToken) {
-  try {
-      const formData = new FormData();
-      formData.append('avatar', avatarFile);
+// Get modal instance for future use
+const modalInstance = new bootstrap.Modal(modal);
 
-      const response = await fetch('/profile/edit/avatar/', {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': csrfToken
-          },
-          body: formData
-      });
+// Get form elements
+const title = document.getElementById('editModalLabel');
+const editInputContainer = document.getElementById('editInputContainer');
 
-      if (!response.ok) {
-          throw new Error('Failed to update avatar');
-      }
+let newLabel = '';
 
-      const result = await response.json();
+// Add hidden input for field
+const hiddenFieldInput = `<input type="hidden" name="field" value="${field}">`;
 
-      if (result.success) {
-          console.log('Avatar updated successfully');
-          return true;
-      } else {
-          console.error('Failed to update avatar:', result.message);
-          return false;
-      }
-  } catch (error) {
-      console.error('Error updating avatar:', error);
-      return false;
-  }
+if (field === 'avatar') {
+    title.textContent = 'Change your avatar';
+    editInputContainer.innerHTML = `
+    ${hiddenFieldInput}
+    <label for="editInput" class="form-label">Upload New Avatar</label>
+    <input type="file" class="form-control" id="editInput" name="new_value" accept="image/*" required>
+    `;
 }
+else {
+    switch (field) {
+    case 'display_name':
+        title.textContent = 'Edit Display Name';
+        newLabel = 'New Display Name';
+        break;
+    case 'first_name':
+        title.textContent = 'Edit First Name';
+        newLabel = 'New First Name';
+        break;
+    case 'last_name':
+        title.textContent = 'Edit Last Name';
+        newLabel = 'New Last Name';
+        break;
+    case 'email':
+        title.textContent = 'Edit Email';
+        newLabel = 'New Email';
+        break;
+    case 'password':
+        title.textContent = 'Edit Password';
+        newLabel = 'New Password';
+        break;
+    default:
+        title.textContent = 'Edit';
+        newLabel = 'New Value';
+    }
+
+    editInputContainer.innerHTML = `
+    ${hiddenFieldInput}
+    <label for="editInput" class="form-label">${newLabel}</label>
+    <input type="text" class="form-control" id="editInput" name="new_value" required>
+    `;
+}
+
+// Show modal
+modalInstance.show();
+}
+
+/**
+ * Popover for username info
+ */
+document.addEventListener('DOMContentLoaded', function () {
+var popoverTrigger = document.getElementById('username-info');
+var popoverContent = 'You cannot edit the username.';
+
+// Create a new Popover instance
+var popover = new bootstrap.Popover(popoverTrigger, {
+    content: popoverContent,
+    trigger: 'hover',  // Adjust trigger behavior if needed
+    placement: 'top'   // Adjust placement if needed
+});
+});
