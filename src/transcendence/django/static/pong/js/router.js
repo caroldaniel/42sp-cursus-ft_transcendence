@@ -48,12 +48,9 @@ function setupSection(section) {
 }
 
 async function showSection(section) {
-  if (window.location.pathname === section) {
-    return;
-  }
   try {
     const sectionHtml = await getSectionHTML(section);
-
+    
     // Handle cases where fetching HTML fails
     if (sectionHtml === null) {
       console.error(`Failed to fetch or invalid HTML for section: ${section}`);
@@ -68,13 +65,14 @@ async function showSection(section) {
       console.error(`#app element not found`);
       return;
     }
-
+    
     // Perform additional setup based on the loaded section
     setupSection(section);
-
+    
     // Update browser history state and URL
-    window.history.pushState({}, "", section);
-
+    if (window.location.pathname !== section) {
+      window.history.pushState({}, "", section);
+    }
   } catch (error) {
     console.error(`Error while showing section ${section}:`, error);
     // Handle errors as needed, e.g., display an error message or fallback content
@@ -91,18 +89,7 @@ function deactivateSidebar() {
   sidebar.style.display = "none";
 }
 
-async function isLoggedIn() {
-  const response = await fetch("/login/check/", {
-    method: "GET",
-  });
-  if (response.status !== 200) return false;
-  return true;
-}
-
 window.addEventListener("popstate", async () => {
-  // if ((await isLoggedIn()) === false) {
-  //   window.location.href = "/login";
-  // }
   const section = window.location.pathname;
   const sectionHtml = await getSectionHTML(section);
   if (sectionHtml === null) return;

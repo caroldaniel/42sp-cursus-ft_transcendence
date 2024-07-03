@@ -8,9 +8,9 @@
     {% if user.is_authenticated %}
     <div>
       <div class="dropdown-center">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle me-3" alt="Avatar">
-          <span class="me-3">{{ user.display_name }}</span>
+        <button id="profileButton" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img id="avatarImg" src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle me-3" alt="Avatar">
+          <span id="displayNameSpan" class="me-3">{{ user.display_name }}</span>
         </button>
 
         <ul class="dropdown-menu" aria-labelledby="userDropdown">

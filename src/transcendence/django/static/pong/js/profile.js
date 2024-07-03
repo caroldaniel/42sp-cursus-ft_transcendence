@@ -1,5 +1,6 @@
 function setupProfile() {
-  return ;
+  createPopover('username-info', 'You cannot edit the username.')
+  return;
 }
 
 /**
@@ -7,84 +8,76 @@ function setupProfile() {
  * @param {string} field - Field to edit
  */
 function showEditModal(field) {
-// Get modal Element
-const modal = document.getElementById('editModal');
+  // Get modal element
+  const modal = document.getElementById('editModal');
 
-// Check if modal exists
-if (!modal) {
+  // Check if modal exists
+  if (!modal) {
     console.error('Edit Modal not found');
     return;
-}
+  }
 
-// Get modal instance for future use
-const modalInstance = new bootstrap.Modal(modal);
+  // Get modal instance for future use
+  const modalInstance = new bootstrap.Modal(modal);
 
-// Get form elements
-const title = document.getElementById('editModalLabel');
-const editInputContainer = document.getElementById('editInputContainer');
+  // Get form elements
+  const editInputContainer = document.getElementById('editInputContainer');
 
-let newLabel = '';
+  // Get the templates container
+  const templatesContainer = document.getElementById('formTemplates');
 
-// Add hidden input for field
-const hiddenFieldInput = `<input type="hidden" name="field" value="${field}">`;
+  // Define a function to get the template content
+  function getTemplate(templateId) {
+    const template = templatesContainer.querySelector(`#${templateId}`);
+    return template ? template.innerHTML : '';
+  }
 
-if (field === 'avatar') {
-    title.textContent = 'Change your avatar';
-    editInputContainer.innerHTML = `
-    ${hiddenFieldInput}
-    <label for="editInput" class="form-label">Upload New Avatar</label>
-    <input type="file" class="form-control" id="editInput" name="new_value" accept="image/*" required>
-    `;
-}
-else {
-    switch (field) {
-    case 'display_name':
-        title.textContent = 'Edit Display Name';
-        newLabel = 'New Display Name';
-        break;
-    case 'first_name':
-        title.textContent = 'Edit First Name';
-        newLabel = 'New First Name';
-        break;
-    case 'last_name':
-        title.textContent = 'Edit Last Name';
-        newLabel = 'New Last Name';
-        break;
-    case 'email':
-        title.textContent = 'Edit Email';
-        newLabel = 'New Email';
-        break;
+  // Update modal content based on the field
+  let templateId;
+  switch (field) {
+    case 'avatar':
+      templateId = 'avatarTemplate';
+      break;
     case 'password':
-        title.textContent = 'Edit Password';
-        newLabel = 'New Password';
-        break;
+      templateId = 'passwordTemplate';
+      break;
+    case 'display_name':
+      templateId = 'displayNameTemplate';
+      break;
+    case 'first_name':
+      templateId = 'firstNameTemplate';
+      break;
+    case 'last_name':
+      templateId = 'lastNameTemplate';
+      break;
+    case 'email':
+      templateId = 'emailTemplate';
+      break;
     default:
-        title.textContent = 'Edit';
-        newLabel = 'New Value';
-    }
+      templateId = '';  // No template for unknown field
+  }
 
-    editInputContainer.innerHTML = `
-    ${hiddenFieldInput}
-    <label for="editInput" class="form-label">${newLabel}</label>
-    <input type="text" class="form-control" id="editInput" name="new_value" required>
-    `;
+  // Insert the template content into the modal
+  editInputContainer.innerHTML = getTemplate(templateId);
+
+  // Show the modal
+  modalInstance.show();
 }
 
-// Show modal
-modalInstance.show();
-}
 
 /**
  * Popover for username info
  */
-document.addEventListener('DOMContentLoaded', function () {
-var popoverTrigger = document.getElementById('username-info');
-var popoverContent = 'You cannot edit the username.';
+function createPopover(id, content) {
+  var popoverTrigger = document.getElementById(id);
+  var popoverContent = content;
 
-// Create a new Popover instance
-var popover = new bootstrap.Popover(popoverTrigger, {
+  // Create a new Popover instance
+  var popover = new bootstrap.Popover(popoverTrigger, {
     content: popoverContent,
     trigger: 'hover',  // Adjust trigger behavior if needed
     placement: 'top'   // Adjust placement if needed
-});
-});
+  });
+
+  return popover;
+}

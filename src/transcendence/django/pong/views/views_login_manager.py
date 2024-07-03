@@ -206,6 +206,9 @@ def manual_login(request: HttpRequest):
 		except Exception as e:
 			return JsonResponse({'error': _('An error occurred while trying to log in. Please try again later.')}, status=500)
 
+		if user.is_intra_user:
+			return JsonResponse({'error': _('This account is registered with 42 Intra. Please use the Intra login button to log in.')}, status=401)
+
 		user = authenticate(
 			request, 
 			username=username, 

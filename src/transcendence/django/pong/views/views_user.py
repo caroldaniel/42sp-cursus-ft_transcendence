@@ -1,5 +1,6 @@
 import uuid
 # Django imports
+from django.conf import settings
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
@@ -13,10 +14,20 @@ from django.shortcuts import redirect
 # Project imports
 from pong.models import User
 
+@login_required
 def user_list(request):
     users = User.objects.all().values('id', 'display_name', 'is_online')
     return JsonResponse(list(users), safe=False)
 
+@login_required
+def get_current_user(request):
+    user = request.user
+    avatar_url = f'{settings.MEDIA_URL}{str(user.avatar)}' if user.avatar else f'{settings.MEDIA_URL}default.svg'
+
+    return JsonResponse({
+        'avatar': avatar_url,
+        'display_name': user.display_name,
+    }, safe=False)
 
 def validate_name(name: str):
 	"""
