@@ -296,3 +296,41 @@ class Message(models.Model):
 		"""
 		self.timestamp = timezone.now()
 		super().save(*args, **kwargs)
+
+# Block list model
+class BlockList(models.Model):
+	"""
+	Model to represent a block list between two users.
+	
+	Attributes:
+		blocker (ForeignKey): The user who blocked the other user.
+		blocked (ForeignKey): The user who was blocked.
+		created_at (DateTimeField): The datetime when the block was created
+	"""
+	blocker = models.ForeignKey(User, related_name='blocks_from', on_delete=models.CASCADE)
+	blocked = models.ForeignKey(User, related_name='blocks_to', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+
+	class Meta:
+		unique_together = (('blocker', 'blocked'),)
+		constraints = [
+			models.UniqueConstraint(fields=['blocker', 'blocked'], name='unique_block')
+		]
+
+	def __str__(self):
+		return f"{self.blocker} -> {self.blocked}"
+	
+	def save(self, *args, **kwargs):
+		"""
+		Overrides the save method to check for existing block.
+		
+		Raises:
+			ValidationError: If the block already exists.
+		
+		Usage:
+			This method is automatically called by Django before saving the model instance.
+			It checks if the block already exists and raises a ValidationError if it does.
+		"""
+		if BlockList.objects.filter(blocker=self.blocked, blocked=self.blocker).exists():
+			raise ValidationError('Block already exists')
+		super().save(*args, **kwargs)

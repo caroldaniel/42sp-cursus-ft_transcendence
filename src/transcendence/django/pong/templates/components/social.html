@@ -63,7 +63,7 @@
                   {% csrf_token %}
                   <input type="text" id="receiver" name="receiver" value="" hidden>
                   <input type="text" class="form-control" placeholder="{% trans 'Type a message...' %}" id="message" name="message" required>
-                  <button class="btn btn-primary float-end mt-3" onclick="sendMessage()" id="send-button">{% trans "Send" %}</button>
+                  <button class="btn btn-primary float-end mt-3" onclick="sendMessage(event)" id="send-button">{% trans "Send" %}</button>
               </div>
             </div>
           </div>

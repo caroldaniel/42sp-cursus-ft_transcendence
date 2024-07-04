@@ -30,6 +30,8 @@ urlpatterns = [
     path("tournament/winner/", views.get_winner_page, name="tournament-winner-page"),
     path("profile/", views.get_profile_page, name="profile-page"),
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
+    path("block/", views.block_user, name="block-user"),
+    path("unblock/", views.unblock_user, name="unblock-user"),
 
 	# # ! Uncomment this to populate database
     # path("populate_db/", views.populate_db, name="populate-db"),

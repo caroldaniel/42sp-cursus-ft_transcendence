@@ -7,7 +7,6 @@ document.getElementById('userSelector').addEventListener('change', function() {
     loadMessages();
 });
 
-
 // Get messages from DB by view get_messages and update chat-log div
 async function loadMessages() {
     const userSelector = document.getElementById('userSelector');
@@ -55,7 +54,9 @@ async function loadMessages() {
 setInterval(loadMessages, 1000);
 
 // Send message to DB by view send_message
-function sendMessage() {
+function sendMessage(event) {
+    event.preventDefault();
+    event.stopPropagation();
     console.log("sendMessage function");
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const messageInput = document.getElementById("message");
@@ -63,7 +64,11 @@ function sendMessage() {
     const messageContent = messageInput.value;
     const formData = new FormData();
     const receiverId = receiverInput.value;
-
+    
+    console.log("receiverId: ", receiverId);
+    if (receiverId === "" || receiverId === "---" ) {
+        return false
+    }
     formData.append('receiver', receiverId);
     formData.append('message', messageContent);
     const response = fetch('/chat/send_message/', {
