@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function populateUserList(data) {
-    console.log("data", data);
     const users = data.users;
     userTableBody.innerHTML = '';
     users.forEach(user => {
@@ -53,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function createActionsCell(user, isBlocked) {
-    console.log("isBlocked:", isBlocked)
     const cell = document.createElement('td');
     cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
     cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
@@ -88,7 +86,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function openChat(user) {
     const chatTab = document.getElementById('chat-tab');
-
     chatTab.click();
     userSelector.value = user.id;
     userSelector.dispatchEvent(new Event('change'));
@@ -156,23 +153,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Chat
-  function populateChatUserList(users) {
-    
+  function populateChatUserList(users, blockList) {
     users.forEach(user => {
       const userOption = document.createElement('option');
       userOption.value = user.id;
       userOption.textContent = user.display_name;
-      userSelector.appendChild(userOption);
+      if (!blockList.includes(user.id)) {
+        userSelector.appendChild(userOption);
+      }
     });
     userSelector.value = "---";
     userSelector.dispatchEvent(new Event('change'));
   }
 
-  function populateChat(users) {
+  function populateChat(data) {
     userSelector.innerHTML = `
       <option selected  disabled>---</option>
     `;    
-    populateChatUserList(users);
+    populateChatUserList(data.users, data.blockList);
   }
 
   function loadTabContent(tabId) {

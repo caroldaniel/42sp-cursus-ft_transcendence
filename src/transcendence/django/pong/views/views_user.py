@@ -111,8 +111,8 @@ def block_user(request):
     if request.method != "POST":
         return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-    user2 = request.POST.get('blocked')
     user1 = request.user
+    user2 = request.POST.get('blocked')
     blocked = User.objects.get(id=user2)
     blocker = User.objects.get(id=user1.id)
     
