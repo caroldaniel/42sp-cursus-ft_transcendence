@@ -25,14 +25,14 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => console.error('Error fetching data:', error));
   }
 
-  function populateUserList(users) {
-    console.log('Populating user list with data:', users);
+  function populateUserList(data) {
+    const users = data.users;
     userTableBody.innerHTML = '';
     users.forEach(user => {
       const row = document.createElement('tr');
       row.appendChild(createCell(user.display_name));
       row.appendChild(createStatusCell(user.is_online));
-      row.appendChild(createActionsCell(user));
+      row.appendChild(createActionsCell(user, data.blockList.includes(user.id)));
       userTableBody.appendChild(row);
     });
   }
@@ -51,12 +51,15 @@ document.addEventListener('DOMContentLoaded', function () {
     return cell;
   }
 
-  function createActionsCell(user) {
+  function createActionsCell(user, isBlocked) {
     const cell = document.createElement('td');
     cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
     cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
     cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
-    cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => blockUser(user)));
+    if(!isBlocked)
+      cell.appendChild(createButton('bi bi-ban', 'btn btn-success btn-sm', () => blockUser(user)));
+    else
+      cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => unblockUser(user)));
     return cell;
   }
 
@@ -83,14 +86,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function openChat(user) {
     const chatTab = document.getElementById('chat-tab');
-
     chatTab.click();
     userSelector.value = user.id;
     userSelector.dispatchEvent(new Event('change'));
   }
 
-  function blockUser(user) {
+  async function blockUser(user) {
     console.log(`Blocking ${user.display_name}...`);
+    try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        
+        formData.append('blocked', user.id);
+        const response = await fetch('/block/', {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to block user');
+        }
+
+        console.log(data.success);  // Log the success message from the server
+        fetchData('/users/list/', populateUserList);
+      } catch (error) {
+        console.error('Error fetching block user:', error.message);
+    }
+  }
+
+  async function unblockUser(user) {
+    console.log(`Unblocking ${user.display_name}...`);
+    try {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const formData = new FormData();
+        
+        formData.append('blocked', user.id);
+        const response = await fetch('/unblock/', {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Failed to unblock user');
+        }
+
+        console.log(data.success);  // Log the success message from the server
+        fetchData('/users/list/', populateUserList);
+      } catch (error) {
+        console.error('Error fetching unblock user:', error.message);
+    }
   }
 
   function populateTournament(data) {
@@ -99,21 +153,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // Chat
-  function populateChatUserList(users) {
-    
+  function populateChatUserList(users, blockList) {
     users.forEach(user => {
       const userOption = document.createElement('option');
       userOption.value = user.id;
       userOption.textContent = user.display_name;
-      userSelector.appendChild(userOption);
+      if (!blockList.includes(user.id)) {
+        userSelector.appendChild(userOption);
+      }
     });
+    userSelector.value = "---";
+    userSelector.dispatchEvent(new Event('change'));
   }
 
-  function populateChat(users) {
+  function populateChat(data) {
     userSelector.innerHTML = `
       <option selected  disabled>---</option>
     `;    
-    populateChatUserList(users);
+    populateChatUserList(data.users, data.blockList);
   }
 
   function loadTabContent(tabId) {

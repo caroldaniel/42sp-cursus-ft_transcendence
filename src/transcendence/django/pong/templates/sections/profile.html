@@ -42,7 +42,7 @@
                 <label for="username" class="form-label"><strong>{% trans "Username" %}</strong></label>
                 <p id="username">{{ user.username }}</p>
               </div>
-              <button type="button" class="btn btn-link" id="username-info" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top">
+              <button id="username-info" type="button" class="btn btn-link" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top">
                 <i class="bi bi-info-circle"></i>
               </button>
             </div>
@@ -102,96 +102,5 @@
 </div>
 
 {% include "../components/modals/editProfile.html" %}
-
-<script>
-
-  /**
-   * Show edit modal
-   * @param {string} field - Field to edit
-   */
-   function showEditModal(field) {
-    // Get modal Element
-    const modal = document.getElementById('editModal');
-
-    // Check if modal exists
-    if (!modal) {
-      console.error('Edit Modal not found');
-      return;
-    }
-
-    // Get modal instance for future use
-    const modalInstance = new bootstrap.Modal(modal);
-
-    // Get form elements
-    const title = document.getElementById('editModalLabel');
-    const editInputContainer = document.getElementById('editInputContainer');
-
-    let newLabel = '';
-
-    // Add hidden input for field
-    const hiddenFieldInput = `<input type="hidden" name="field" value="${field}">`;
-
-    if (field === 'avatar') {
-      title.textContent = '{% blocktrans %}Change your avatar{% endblocktrans %}';
-      editInputContainer.innerHTML = `
-        ${hiddenFieldInput}
-        <label for="editInput" class="form-label">{% blocktrans %}Upload New Avatar{% endblocktrans %}</label>
-        <input type="file" class="form-control" id="editInput" name="new_value" accept="image/*" required>
-      `;
-    }
-    else {
-      switch (field) {
-        case 'display_name':
-          title.textContent = '{% blocktrans %}Edit Display Name{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New Display Name{% endblocktrans %}';
-          break;
-        case 'first_name':
-          title.textContent = '{% blocktrans %}Edit First Name{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New First Name{% endblocktrans %}';
-          break;
-        case 'last_name':
-          title.textContent = '{% blocktrans %}Edit Last Name{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New Last Name{% endblocktrans %}';
-          break;
-        case 'email':
-          title.textContent = '{% blocktrans %}Edit Email{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New Email{% endblocktrans %}';
-          break;
-        case 'password':
-          title.textContent = '{% blocktrans %}Edit Password{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New Password{% endblocktrans %}';
-          break;
-        default:
-          title.textContent = '{% blocktrans %}Edit{% endblocktrans %}';
-          newLabel = '{% blocktrans %}New Value{% endblocktrans %}';
-      }
-
-      editInputContainer.innerHTML = `
-        ${hiddenFieldInput}
-        <label for="editInput" class="form-label">${newLabel}</label>
-        <input type="text" class="form-control" id="editInput" name="new_value" required>
-      `;
-    }
-
-    // Show modal
-    modalInstance.show();
-  }
-
-
-  /**
-   * Popover for username info
-   */
-  document.addEventListener('DOMContentLoaded', function () {
-    var popoverTrigger = document.getElementById('username-info');
-    var popoverContent = '{% blocktrans %}You cannot edit the username.{% endblocktrans %}';
-    
-    // Create a new Popover instance
-    var popover = new bootstrap.Popover(popoverTrigger, {
-      content: popoverContent,
-      trigger: 'hover',  // Adjust trigger behavior if needed
-      placement: 'top'   // Adjust placement if needed
-    });
-  });
-</script>
 
 {% endblock content %}

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm_password');
     const passwordMatchWarning = document.getElementById('password-match-warning');
+    const registerButton = document.getElementById('register-button');
     
     const registerModalElement = document.getElementById('registerModal');
     
@@ -26,6 +27,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const registerModalResponse = new bootstrap.Modal(registerModalResponseElement);
+
+
+    const closeButtons = document.querySelectorAll('.modal .btn-close');
+
+    function resetForm() {
+        registerForm.reset();
+        passwordMatchWarning.textContent = '';
+        registerButton.disabled = true;
+    }
+
+    closeButtons.forEach(button => {
+        button.addEventListener('click', resetForm);
+    });
+
 
     passwordInput.addEventListener('input', () => {
         if (confirmPasswordInput === '' || passwordInput.value === '') {
@@ -95,16 +110,5 @@ document.addEventListener('DOMContentLoaded', function() {
             returnToRegisterButton.style.display = 'block'; // Ensure returnToRegister button is visible
         });
     });
-
-    
-    // // Clear modal content when closed to prevent stale messages
-    // // registerModalResponse.addEventListener('hidden.bs.modal', function () {
-    // //     document.getElementById('registerModalResponseContent').textContent = '';
-    // // });
-
-    // // Close the register modal when the response modal is closed
-    // registerModalResponse.addEventListener('hidden.bs.modal', function () {
-    //     registerModal.show(); // Show registerModal again
-    // });
 
 });

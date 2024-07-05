@@ -8,16 +8,16 @@
     {% if user.is_authenticated %}
     <div>
       <div class="dropdown-center">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle me-3" alt="Avatar">
-          <span class="me-3">{{ user.display_name }}</span>
+        <button id="profileButton" class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img id="avatarImg" src="{{ MEDIA_URL }}{{ user.avatar }}" class="avatar rounded-circle me-3" alt="Avatar">
+          <span id="displayNameSpan" class="me-3">{{ user.display_name }}</span>
         </button>
 
         <ul class="dropdown-menu" aria-labelledby="userDropdown">
-          <li><a class="dropdown-item" href="/profile/">
+          <li><a class="dropdown-item" onclick="showSection('/profile/')">
               <i class="bi bi-person me-2"></i>{% trans "Profile" %}
             </a></li>
-          <li><a class="dropdown-item" href="/stats/">
+          <li><a class="dropdown-item" onclick="showSection('/stats/')">
               <i class="bi bi-graph-up me-2"></i>{% trans "Stats" %}
             </a></li>
           <li><a class="dropdown-item" href="/profile/">
@@ -36,7 +36,7 @@
 
     <!-- Brand -->
     <div class="ms-auto me-auto">
-      <a class="navbar-brand" href="/">
+      <a type="button" class="navbar-brand" onclick="showSection('/')">
         <img src="../../../static/pong/img/pong-icon.svg" width="40" height="40"
           class="d-inline-block align-text-center" alt="Logo">
         <strong style="font-family: 'Roboto', sans-serif;">PonGame</strong>

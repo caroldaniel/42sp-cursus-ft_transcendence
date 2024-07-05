@@ -1,19 +1,35 @@
 import uuid
 # Django imports
+from django.conf import settings
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
+from pong.models import BlockList
+
+# import redirect from django.shortcuts
+from django.shortcuts import redirect
 
 
 # Project imports
 from pong.models import User
 
+@login_required
 def user_list(request):
     users = User.objects.all().values('id', 'display_name', 'is_online')
-    return JsonResponse(list(users), safe=False)
+    blockList = BlockList.objects.filter(blocker=request.user.id).values_list('blocked', flat=True)
+    return JsonResponse({'users': list(users), 'blockList': list(blockList)}, safe=False)
 
+@login_required
+def get_current_user(request):
+    user = request.user
+    avatar_url = f'{settings.MEDIA_URL}{str(user.avatar)}' if user.avatar else f'{settings.MEDIA_URL}default.svg'
+
+    return JsonResponse({
+        'avatar': avatar_url,
+        'display_name': user.display_name,
+    }, safe=False)
 
 def validate_name(name: str):
 	"""
@@ -89,3 +105,44 @@ def edit_profile_field(request):
             return JsonResponse({'error': _('New value is not in a valid format.')}, status=400)
         except Exception as e:
             return JsonResponse({'error': _('An error occurred while trying to update field. Try again later.')}, status=500)
+        
+@login_required
+def block_user(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+    user1 = request.user
+    user2 = request.POST.get('blocked')
+    blocked = User.objects.get(id=user2)
+    blocker = User.objects.get(id=user1.id)
+    
+    if not blocked:
+        return JsonResponse({'error': _('User not found.')}, status=404)
+    if blocked.id == blocker.id:
+        return JsonResponse({'error': _('You cannot block yourself.')}, status=400)
+    if(BlockList.objects.filter(blocked=blocked, blocker=blocker).exists()):
+        return JsonResponse({'error': _('User already blocked.')}, status=400)
+    else:
+        block = BlockList(blocked=blocked, blocker=blocker)
+        block.save()
+
+    return JsonResponse({'success': _('User blocked successfully.')}, status=200)
+
+@login_required
+def unblock_user(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+    user2 = request.POST.get('blocked')
+    user1 = request.user
+    blocked = User.objects.get(id=user2)
+    blocker = User.objects.get(id=user1.id)
+    
+    if not blocked:
+        return JsonResponse({'error': _('User not found.')}, status=404)
+    if(BlockList.objects.filter(blocked=blocked, blocker=blocker).exists()):
+        BlockList.objects.filter(blocked=blocked, blocker=blocker).delete()
+    else:
+        return JsonResponse({'error': _('User not blocked.')}, status=400)
+
+    return JsonResponse({'success': _('User unblocked successfully.')}, status=200)

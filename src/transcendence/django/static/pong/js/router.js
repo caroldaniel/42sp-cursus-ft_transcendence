@@ -1,12 +1,29 @@
 async function getSectionHTML(section) {
-  const response = await fetch(section, {
-    method: "GET",
-    headers: {
-      "X-Custom-Header": "self",
-    },
-  });
-  if (response.status !== 200) return null;
-  return await response.text();
+  try {
+      const response = await fetch(section, {
+          method: "GET",
+          headers: {
+              "X-Custom-Header": "self",
+          },
+      });
+
+      // Check if the response is successful (status 200)
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      // Check if the response is HTML content
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("text/html")) {
+          throw new Error("Expected HTML content type");
+      }
+
+      // Return the HTML content as text
+      return await response.text();
+  } catch (error) {
+      console.error("Error fetching section:", error);
+      return null; // Handle error gracefully, return null or handle in calling function
+  }
 }
 
 function setupSection(section) {
@@ -21,21 +38,45 @@ function setupSection(section) {
     loadTournamentForm();
   } else if (section === "/tournament/winner/") {
     setWinner();
-  } else if (section === "/social/") {
-    setupSocial();
   } else if (section === "/profile/") {
     setupProfile();
+  } else if (section === "/stats/") {
+    setupStats();
   } else if (section === "/") {
     setupHome();
   }
 }
 
 async function showSection(section) {
-  const sectionHtml = await getSectionHTML(section);
-  if (sectionHtml === null) return;
-  document.getElementById("app").innerHTML = sectionHtml;
-  setupSection(section);
-  window.history.pushState({}, "", section);
+  try {
+    const sectionHtml = await getSectionHTML(section);
+    
+    // Handle cases where fetching HTML fails
+    if (sectionHtml === null) {
+      console.error(`Failed to fetch or invalid HTML for section: ${section}`);
+      return;
+    }
+
+    // Update the #app element with the fetched HTML content
+    const appElement = document.getElementById("app");
+    if (appElement) {
+      appElement.innerHTML = sectionHtml;
+    } else {
+      console.error(`#app element not found`);
+      return;
+    }
+    
+    // Perform additional setup based on the loaded section
+    setupSection(section);
+    
+    // Update browser history state and URL
+    if (window.location.pathname !== section) {
+      window.history.pushState({}, "", section);
+    }
+  } catch (error) {
+    console.error(`Error while showing section ${section}:`, error);
+    // Handle errors as needed, e.g., display an error message or fallback content
+  }
 }
 
 function activateSidebar() {
@@ -48,18 +89,7 @@ function deactivateSidebar() {
   sidebar.style.display = "none";
 }
 
-async function isLoggedIn() {
-  const response = await fetch("/login/check/", {
-    method: "GET",
-  });
-  if (response.status !== 200) return false;
-  return true;
-}
-
 window.addEventListener("popstate", async () => {
-  // if ((await isLoggedIn()) === false) {
-  //   window.location.href = "/login";
-  // }
   const section = window.location.pathname;
   const sectionHtml = await getSectionHTML(section);
   if (sectionHtml === null) return;

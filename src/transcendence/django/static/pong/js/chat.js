@@ -1,5 +1,3 @@
-console.log("sanity test script chat!!");
-
 // Load messages when select user
 document.getElementById('userSelector').addEventListener('change', function() {
     const receiverInput = document.getElementById('receiver');
@@ -7,14 +5,13 @@ document.getElementById('userSelector').addEventListener('change', function() {
     loadMessages();
 });
 
-
 // Get messages from DB by view get_messages and update chat-log div
 async function loadMessages() {
     const userSelector = document.getElementById('userSelector');
     const receiverInput = document.getElementById('receiver');
     const chatLog = document.getElementById("chatLog");
 
-    if (userSelector.value === "Users") {
+    if (userSelector.value === "---" || receiverInput.value === "") {
         chatLog.innerHTML = '';
         return;
     }
@@ -46,6 +43,7 @@ async function loadMessages() {
             `;
             chatLog.appendChild(messageDiv);
         });
+        chatLog.scrollTop = chatLog.scrollHeight;
     } catch (error) {
         console.error('Error fetching messages:', error.message);
     }
@@ -55,7 +53,9 @@ async function loadMessages() {
 setInterval(loadMessages, 1000);
 
 // Send message to DB by view send_message
-function sendMessage() {
+function sendMessage(event) {
+    event.preventDefault();
+    event.stopPropagation();
     console.log("sendMessage function");
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     const messageInput = document.getElementById("message");
@@ -63,7 +63,11 @@ function sendMessage() {
     const messageContent = messageInput.value;
     const formData = new FormData();
     const receiverId = receiverInput.value;
-
+    
+    console.log("receiverId: ", receiverId);
+    if (receiverId === "" || receiverId === "---" ) {
+        return false
+    }
     formData.append('receiver', receiverId);
     formData.append('message', messageContent);
     const response = fetch('/chat/send_message/', {

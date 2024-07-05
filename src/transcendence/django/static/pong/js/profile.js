@@ -1,81 +1,84 @@
-function showErrorMessage(message) {
-  const toast = document.getElementById("toast");
-  const toastBody = document.getElementById("toast-body");
-  toastBody.innerHTML = message;
-  const toastInstance = bootstrap.Toast.getOrCreateInstance(toast);
-  toastInstance.show();
-}
-
 function setupProfile() {
-  return ;
+  createPopover('username-info', 'You cannot edit the username.')
+  editProfile();
+  return;
 }
 
-async function updateField(field, newValue, csrfToken) {
-  try {
-      let response;
+/**
+ * Show edit modal
+ * @param {string} field - Field to edit
+ */
+function showEditModal(field) {
+  // Get modal element
+  const modal = document.getElementById('editModal');
 
-      if (field === 'avatar') {
-          const avatarFile = document.getElementById(`editInput_${field}`).files[0];
-          response = await updateAvatar(avatarFile, csrfToken);
-      } else {
-          response = await fetch(`/profile/edit/${field}/`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'X-CSRFToken': csrfToken
-              },
-              body: JSON.stringify({ field, new_value: newValue })
-          });
-
-          if (!response.ok) {
-              throw new Error(`Failed to update ${field}`);
-          }
-      }
-
-      const result = await response.json();
-
-      if (result.success) {
-          console.log(`Field "${field}" updated successfully`);
-          return true;
-      } else {
-          console.error(`Failed to update ${field}: ${result.message}`);
-          return false;
-      }
-  } catch (error) {
-      console.error(`Error updating ${field}:`, error);
-      return false;
+  // Check if modal exists
+  if (!modal) {
+    console.error('Edit Modal not found');
+    return;
   }
+
+  // Get modal instance for future use
+  const modalInstance = new bootstrap.Modal(modal);
+
+  // Get form elements
+  const editInputContainer = document.getElementById('editInputContainer');
+
+  // Get the templates container
+  const templatesContainer = document.getElementById('formTemplates');
+
+  // Define a function to get the template content
+  function getTemplate(templateId) {
+    const template = templatesContainer.querySelector(`#${templateId}`);
+    return template ? template.innerHTML : '';
+  }
+
+  // Update modal content based on the field
+  let templateId;
+  switch (field) {
+    case 'avatar':
+      templateId = 'avatarTemplate';
+      break;
+    case 'password':
+      templateId = 'passwordTemplate';
+      break;
+    case 'display_name':
+      templateId = 'displayNameTemplate';
+      break;
+    case 'first_name':
+      templateId = 'firstNameTemplate';
+      break;
+    case 'last_name':
+      templateId = 'lastNameTemplate';
+      break;
+    case 'email':
+      templateId = 'emailTemplate';
+      break;
+    default:
+      templateId = '';  // No template for unknown field
+  }
+
+  // Insert the template content into the modal
+  editInputContainer.innerHTML = getTemplate(templateId);
+
+  // Show the modal
+  modalInstance.show();
 }
 
-// Example updateAvatar function (replace with your actual implementation)
-async function updateAvatar(avatarFile, csrfToken) {
-  try {
-      const formData = new FormData();
-      formData.append('avatar', avatarFile);
 
-      const response = await fetch('/profile/edit/avatar/', {
-          method: 'POST',
-          headers: {
-              'X-CSRFToken': csrfToken
-          },
-          body: formData
-      });
+/**
+ * Popover for username info
+ */
+function createPopover(id, content) {
+  var popoverTrigger = document.getElementById(id);
+  var popoverContent = content;
 
-      if (!response.ok) {
-          throw new Error('Failed to update avatar');
-      }
+  // Create a new Popover instance
+  var popover = new bootstrap.Popover(popoverTrigger, {
+    content: popoverContent,
+    trigger: 'hover',  // Adjust trigger behavior if needed
+    placement: 'top'   // Adjust placement if needed
+  });
 
-      const result = await response.json();
-
-      if (result.success) {
-          console.log('Avatar updated successfully');
-          return true;
-      } else {
-          console.error('Failed to update avatar:', result.message);
-          return false;
-      }
-  } catch (error) {
-      console.error('Error updating avatar:', error);
-      return false;
-  }
+  return popover;
 }
