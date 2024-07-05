@@ -1,5 +1,6 @@
 function setupProfile() {
   createPopover('username-info', 'You cannot edit the username.')
+  editProfile();
   return;
 }
 

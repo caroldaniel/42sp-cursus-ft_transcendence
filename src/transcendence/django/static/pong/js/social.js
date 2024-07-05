@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', function () {
     cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
     cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
     if(!isBlocked)
-      cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => blockUser(user)));
+      cell.appendChild(createButton('bi bi-ban', 'btn btn-success btn-sm', () => blockUser(user)));
     else
-      cell.appendChild(createButton('bi bi-ban', 'btn btn-success btn-sm', () => unblockUser(user)));
+      cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => unblockUser(user)));
     return cell;
   }
 

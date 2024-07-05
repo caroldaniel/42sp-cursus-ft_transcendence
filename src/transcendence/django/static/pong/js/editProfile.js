@@ -2,7 +2,7 @@
  * Handles the edits to the user profile.
 **/
 
-document.addEventListener('DOMContentLoaded', function () {
+function editProfile() {
   // Initialize Bootstrap modals
   const editModalElement = document.getElementById('editModal');
   const editModalResponseElement = document.getElementById('editModalResponse');
@@ -19,34 +19,28 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   const editModalResponse = new bootstrap.Modal(editModalResponseElement);
 
-  // Function to attach submit event listener to the edit form
-  function attachEditFormSubmitHandler() {
-    console.log('attachEditFormSubmitHandler');
-    const editForm = document.getElementById('editForm');
-    if (editForm) {
-      editForm.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const formData = new FormData(editForm);
-        fetch(editForm.action, {
-          method: 'POST',
-          body: formData,
-          headers: {
-            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-          }
+  // Event listener for edit form submission
+  const editForm = document.getElementById('editForm');
+  if (editForm) {
+    editForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const formData = new FormData(editForm);
+      fetch(editForm.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          handleFormResponse(data);
         })
-          .then(response => response.json())
-          .then(data => {
-            handleFormResponse(data);
-          })
-          .catch(error => {
-            handleError(error);
-          });
-      });
-    }
+        .catch(error => {
+          handleError(error);
+        });
+    });
   }
-
-  // Attach the event listener when DOM content is loaded
-  attachEditFormSubmitHandler();
 
   // Event listener for edit modal response
   editModalResponseElement.addEventListener('hidden.bs.modal', () => {
@@ -56,8 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .catch(error => console.error('Error updating navbar:', error));
     showSection("/profile/");
-    // Reattach the form submit handler after modal is hidden
-    attachEditFormSubmitHandler();
   });
 
   // Function to handle form response
@@ -140,4 +132,4 @@ document.addEventListener('DOMContentLoaded', function () {
   editModalResponseElement.addEventListener('hidden.bs.modal', function () {
     document.getElementById('editModalResponseContent').textContent = '';
   });
-});
+}

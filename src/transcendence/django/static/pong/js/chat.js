@@ -1,5 +1,3 @@
-console.log("sanity test script chat!!");
-
 // Load messages when select user
 document.getElementById('userSelector').addEventListener('change', function() {
     const receiverInput = document.getElementById('receiver');
@@ -45,6 +43,7 @@ async function loadMessages() {
             `;
             chatLog.appendChild(messageDiv);
         });
+        chatLog.scrollTop = chatLog.scrollHeight;
     } catch (error) {
         console.error('Error fetching messages:', error.message);
     }
