@@ -1,17 +1,63 @@
-// Load messages when select user
-document.getElementById('userSelector').addEventListener('change', function() {
-    const receiverInput = document.getElementById('receiver');
-    receiverInput.value = this.value;
-    loadMessages();
-});
+let userSelectorValue = '';
+
+// Set new userSelectorValue
+function setNewUserDefault(newUserId) {
+    userSelectorValue = newUserId;
+}
+
+// Get users from DB by view get_users and populate userSelector
+function populateChat(data) {
+    const userSelector = document.getElementById('userSelector');
+    userSelector.innerHTML = '';
+
+    // Blank option to prompt user to select a user
+    const blankOption = document.createElement('option');
+    blankOption.value = '';
+    blankOption.selected = true;
+    userSelector.appendChild(blankOption);
+    
+    let canUseVariable = false;
+
+    data.users.forEach(user => {
+        const userOption = document.createElement('option');
+        userOption.value = user.id;
+        userOption.textContent = user.display_name;
+        if (!data.blockList.includes(user.id)) {
+            if (user.id === userSelectorValue) {
+                canUseVariable = true;
+            }
+            userSelector.appendChild(userOption);
+        }
+    });
+    if (canUseVariable) {
+        userSelector.value = userSelectorValue;
+    }
+    userSelector.dispatchEvent(new Event('change'));
+}
+
+// Function to handle input change and enable/disable send button
+function handleInputChange() {
+    const messageText = document.getElementById('messageText');
+    const sendButton = document.getElementById('messageSendButton');
+    const userSelector = document.getElementById('userSelector');
+
+    if (userSelector.value === '' || messageText.value.trim() === '') {
+        sendButton.setAttribute('disabled', 'disabled');
+    } else {
+        sendButton.removeAttribute('disabled');
+    }
+}
 
 // Get messages from DB by view get_messages and update chat-log div
 async function loadMessages() {
     const userSelector = document.getElementById('userSelector');
-    const receiverInput = document.getElementById('receiver');
     const chatLog = document.getElementById("chatLog");
+    const messageReceiver = document.getElementById("messageReceiver")
+    // Save selected user to userSelectorValue
+    userSelectorValue = userSelector.value;
+    messageReceiver.value = userSelectorValue;
 
-    if (userSelector.value === "---" || receiverInput.value === "") {
+    if (messageReceiver.value === '') {
         chatLog.innerHTML = '';
         return;
     }
@@ -19,7 +65,7 @@ async function loadMessages() {
     try {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const formData = new FormData();
-        formData.append('friend', receiverInput.value);
+        formData.append('friend', messageReceiver.value);
         const response = await fetch('/chat/get_messages/', {
             method: "POST",
             headers: {
@@ -49,34 +95,50 @@ async function loadMessages() {
     }
 }
 
-// Load messages every second
-setInterval(loadMessages, 1000);
-
 // Send message to DB by view send_message
-function sendMessage(event) {
+async function sendMessage(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log("sendMessage function");
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const messageInput = document.getElementById("message");
-    const receiverInput = document.getElementById("receiver");
+    const messageReceiver = document.getElementById("messageReceiver");
+    const messageInput = document.getElementById("messageText");
     const messageContent = messageInput.value;
     const formData = new FormData();
-    const receiverId = receiverInput.value;
     
-    console.log("receiverId: ", receiverId);
-    if (receiverId === "" || receiverId === "---" ) {
-        return false
+    if (messageReceiver.value === "") {
+        return;
     }
-    formData.append('receiver', receiverId);
-    formData.append('message', messageContent);
-    const response = fetch('/chat/send_message/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': csrfToken
-        },
-        body: formData
-    });
-    console.log("message sent, response: ", response);
-    messageInput.value = '';
+
+    formData.append('messageReceiver', messageReceiver.value);
+    formData.append('messageText', messageContent);
+
+    try {
+        const response = await fetch('/chat/send_message/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrfToken
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send message');
+        }
+
+        console.log("Message sent successfully");
+        messageInput.value = '';
+        document.getElementById('messageSendButton').setAttribute('disabled', 'disabled');
+        loadMessages();
+    } catch (error) {
+        console.error('Error sending message:', error.message);
+    }
 }
+
+// Event listeners
+document.getElementById('messageText').addEventListener('input', handleInputChange);
+document.getElementById('messageInput').addEventListener('submit', sendMessage);
+document.getElementById('userSelector').addEventListener('change', loadMessages);
+
+// Initial load and 5 second interval to update chat log
+loadMessages();
+setInterval(loadMessages, 5000); // Adjust interval as needed

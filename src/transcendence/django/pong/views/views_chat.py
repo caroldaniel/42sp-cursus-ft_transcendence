@@ -6,13 +6,13 @@ from django.db.models import Q
 def send_message(request: HttpRequest):
     if request.method == 'POST':
         sender = request.user
-        receiver_id = request.POST.get('receiver')
-        content = request.POST.get('message')
+        receiver_id = request.POST.get('messageReceiver')
+        content = request.POST.get('messageText')
 
         receiver = User.objects.get(pk=receiver_id)
         message = Message(sender=sender, receiver=receiver, content=content)
         message.save()
-        return JsonResponse({'message': 'Message saved'})
+        return JsonResponse({'success': 'Message saved'}, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 def get_messages(request: HttpRequest):

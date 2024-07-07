@@ -17,7 +17,10 @@ from pong.models import User
 
 @login_required
 def user_list(request):
+    # Get all users and their online status
+    # Get your own user out of the list
     users = User.objects.all().values('id', 'display_name', 'is_online')
+    users = users.exclude(id=request.user.id)
     blockList = BlockList.objects.filter(blocker=request.user.id).values_list('blocked', flat=True)
     return JsonResponse({'users': list(users), 'blockList': list(blockList)}, safe=False)
 

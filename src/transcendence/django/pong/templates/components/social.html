@@ -39,35 +39,29 @@
       </div>
       <!-- Chat Tab -->
       <div class="tab-pane fade" id="chat" role="tabpanel" aria-labelledby="chat-tab">
-        <div id="chatContent">
-          <div class="container mt-4">
-            <div class="row">
-              <div class="col">
-                <select id="userSelector" class="form-select mb-3" aria-label="Default select example">
-                  <!-- Chat users will be dynamically populated here -->
-                </select>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col">
-                <div id="chatLog" class="border p-3 mb-3" style="height: 400px; max-height: 400px; overflow-y: auto;">
-                  <!-- Chat log will be dynamically populated here -->
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col">
-                <form id="send-message-form">
-                  {% csrf_token %}
-                  <input type="text" id="receiver" name="receiver" value="" hidden>
-                  <input type="text" class="form-control" placeholder="{% trans 'Type a message...' %}" id="message" name="message" required>
-                  <button class="btn btn-primary float-end mt-3" onclick="sendMessage(event)" id="send-button">{% trans "Send" %}</button>
-              </div>
-            </div>
+        <div class="container-fluid mt-4" id="chatContainer">
+          <!-- Dropdown Menu -->
+          <select id="userSelector" class="form-select" aria-label="ChatUserSelector">
+            <option value="">Select a user...</option>
+            <!-- Users will be dynamically populated here -->
+          </select>
+          
+          <!-- Chat Window -->
+          <div id="chatLog" class="border rounded">
+            <!-- Messages will be dynamically populated here -->
           </div>
-          <!-- Chat content will be dynamically populated here -->
+          
+          <!-- Message Input -->
+          <form id="messageInput">
+            <input type="text" id="messageReceiver" name="messageReceiver" value="" hidden>
+            {% csrf_token %}
+            <div id="messageForm" class="input-group">
+                <input type="text" id="messageText" name="messageText" class="form-control" placeholder="{% trans 'Type your message' %}" required>
+                <div class="input-group-append">
+                    <button type="submit" id="messageSendButton" class="btn btn-primary float-end" disabled>{% trans "Send" %}</button>
+                </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

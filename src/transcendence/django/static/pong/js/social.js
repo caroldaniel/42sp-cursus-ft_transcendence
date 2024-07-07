@@ -6,9 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Tournament
   const tournamentContent = document.getElementById('tournamentContent');
   // Chat
-  const chatContent = document.getElementById('chatContent');
   const userSelector = document.getElementById('userSelector');
-
 
   const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
@@ -28,6 +26,16 @@ document.addEventListener('DOMContentLoaded', function () {
   function populateUserList(data) {
     const users = data.users;
     userTableBody.innerHTML = '';
+    // Check if there's any user registered
+    if (users.length === 0) {
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 3;
+      cell.textContent = 'No users found';
+      row.appendChild(cell);
+      userTableBody.appendChild(row);
+      return;
+    }
     users.forEach(user => {
       const row = document.createElement('tr');
       row.appendChild(createCell(user.display_name));
@@ -57,9 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
     cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
     cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
     if(!isBlocked)
-      cell.appendChild(createButton('bi bi-ban', 'btn btn-success btn-sm', () => blockUser(user)));
+      cell.appendChild(createButton('bi bi-lock', 'btn btn-danger btn-sm', () => blockUser(user)));
     else
-      cell.appendChild(createButton('bi bi-ban', 'btn btn-danger btn-sm', () => unblockUser(user)));
+      cell.appendChild(createButton('bi bi-unlock', 'btn btn-success btn-sm', () => unblockUser(user)));
     return cell;
   }
 
@@ -86,9 +94,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function openChat(user) {
     const chatTab = document.getElementById('chat-tab');
+    setNewUserDefault(user.id);
+
+    // Open chat tab
     chatTab.click();
-    userSelector.value = user.id;
-    userSelector.dispatchEvent(new Event('change'));
   }
 
   async function blockUser(user) {
@@ -150,27 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
   function populateTournament(data) {
     console.log('Populating tournament with data:', data);
     tournamentContent.innerHTML = data.content;
-  }
-
-  // Chat
-  function populateChatUserList(users, blockList) {
-    users.forEach(user => {
-      const userOption = document.createElement('option');
-      userOption.value = user.id;
-      userOption.textContent = user.display_name;
-      if (!blockList.includes(user.id)) {
-        userSelector.appendChild(userOption);
-      }
-    });
-    userSelector.value = "---";
-    userSelector.dispatchEvent(new Event('change'));
-  }
-
-  function populateChat(data) {
-    userSelector.innerHTML = `
-      <option selected  disabled>---</option>
-    `;    
-    populateChatUserList(data.users, data.blockList);
   }
 
   function loadTabContent(tabId) {
