@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       
       console.log(data.success);  // Log the success message from the server
+      fetchData('/users/list/', populateUserList);
       } catch (error) {
         console.error('Error fetching block user:', error.message);
     }

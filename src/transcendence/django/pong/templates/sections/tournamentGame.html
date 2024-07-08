@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="p-4 mt-5", style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
         <div class="d-flex justify-content-evenly mt-5">
           <div id="player-l" class="fs-3">
@@ -19,8 +19,7 @@
         </div>
         <div id="game-wrapper"
             class="position-relative"
-            style="width: 75dvw;
-                    height: 75dvh">
+            style="height: 75vh">
           <div id="game-over"
               class="flex-column align-items-center justify-content-around position-absolute z-1 w-50 h-50 bg-secondary-subtle rounded-3"
               style="top: 25%;
@@ -32,7 +31,7 @@
             </div>
             <button id="back" type="button" class="btn w-75 btn-primary fw-bold">BACK TO TOURNAMENT</button>
           </div>
-          <canvas id="game-canvas" class="d-block mx-auto mt-1 position-absolute" />
+          <canvas id="game-canvas" class="d-block mx-auto mt-1 position-absolute">
         </div>
       </div> 
     </div>
