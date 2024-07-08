@@ -31,17 +31,6 @@ def get_game_page(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
-def get_social_page(request):
-	if not isinstance(request.user, User):
-		return redirect("/logout")
-
-	context = get_relationships_context(request.user)
-	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/social.html", context)
-	return render(request, "sections/social.html", context)
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url="/login")
 def get_stats_page(request):
 	if not isinstance(request.user, User):
 		return redirect("/logout")

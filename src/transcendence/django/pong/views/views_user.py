@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext as _
 from django.contrib.auth.decorators import login_required
+from .relationship.views_relationships import get_relationships_context
 from pong.models import BlockList
 
 # import redirect from django.shortcuts
@@ -22,7 +23,12 @@ def user_list(request):
     users = User.objects.all().values('id', 'display_name', 'is_online')
     users = users.exclude(id=request.user.id)
     blockList = BlockList.objects.filter(blocker=request.user.id).values_list('blocked', flat=True)
-    return JsonResponse({'users': list(users), 'blockList': list(blockList)}, safe=False)
+    relationships = get_relationships_context(request.user)
+    return JsonResponse({
+        'users': list(users),
+        'blockList': list(blockList),
+        'relationships': relationships
+    })
 
 @login_required
 def get_current_user(request):
