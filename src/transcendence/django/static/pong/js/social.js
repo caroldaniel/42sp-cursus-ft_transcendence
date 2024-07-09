@@ -64,26 +64,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function createActionsCell(user, isBlocked, isFriend, isRequestSent, isRequestReceived) {
     const cell = document.createElement('td');
-    if(!isBlocked && !isFriend && !isRequestSent && !isRequestReceived)
+    if(!isBlocked && !isFriend && !isRequestSent && !isRequestReceived) {
       cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
+    }
     if(isRequestReceived){
       if(isBlocked)
         denyFriendRequest(user.id);
-      cell.appendChild(createButton('bi bi-person-check-fill', 'btn btn-primary btn-sm me-2', () => acceptFriendRequest(user.id)));
-      cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm me-2', () => denyFriendRequest(user.id)));
-    }
-    if(isRequestSent)
-      cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
-    if(isFriend){
+        cell.appendChild(createButton('bi bi-person-check-fill', 'btn btn-primary btn-sm me-2', () => acceptFriendRequest(user.id)));
+        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm me-2', () => denyFriendRequest(user.id)));
+      }
+      if(isRequestSent){
+        cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
+      }
+      if(isFriend){
       if(isBlocked)
         removeFriend(user.id);
       cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
-      cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
       cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
     }
-    if(!isBlocked)
+    if(!isBlocked){
+      cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
       cell.appendChild(createButton('bi bi-lock', 'btn btn-danger btn-sm', () => blockUser(user)));
-    else
+    } else
       cell.appendChild(createButton('bi bi-unlock', 'btn btn-success btn-sm', () => unblockUser(user)));
     return cell;
   }
@@ -107,7 +109,23 @@ document.addEventListener('DOMContentLoaded', function () {
     console.log(`Viewing profile of ${user.display_name}...`);
     const userProfileModal = document.getElementById('userProfileModal');
     const modal = new bootstrap.Modal(userProfileModal);
-    modal.show();
+    const modalBody = userProfileModal.querySelector('.modal-body');
+    fetch(`/stats/${user.id}/`)
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const profileUserContent = doc.getElementById('userProfileContent');
+        if (profileUserContent) {
+          const modalUserProfileContent = modalBody.querySelector('#modalUserProfileContent');
+          modalUserProfileContent.innerHTML = profileUserContent.innerHTML;
+        } else {
+          console.error('userProfileContent div not found in the response');
+        }
+  
+        modal.show();
+      })
+      .catch(error => console.error('Erro:', error));    
   }
 
   function openChat(user) {

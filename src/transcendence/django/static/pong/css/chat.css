@@ -17,3 +17,13 @@
     flex-direction: row;
     gap: 0.5rem;
 }
+
+.custom-modal-size .modal-dialog {
+    width: 800px;
+    max-width: 800px;
+  }
+  
+  .custom-modal-size .modal-content {
+    height: 100%; /* Garante que o conteúdo do modal preencha a altura */
+  }
+  
