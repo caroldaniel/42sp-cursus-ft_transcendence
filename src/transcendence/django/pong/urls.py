@@ -14,6 +14,7 @@ urlpatterns = [
     path("login/manual/", views.manual_login, name="login-manual"),
     path("logout/", views.manage_logout, name="logout"),
     path("game/", views.get_game_page, name="game-page"),
+    path("game/<uuid:user_id>/", views.get_user_game_page, name="user-game-page"),
     path("game/register/", views.register_match, name="register-match"),
     path("friend/send/", views.send_friend_request, name="send-friend-request"),
     path("friend/accept/", views.accept_friend_request, name="accept-friend-request"),

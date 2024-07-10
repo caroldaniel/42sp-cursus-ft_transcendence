@@ -31,6 +31,19 @@ def get_game_page(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
+def get_user_game_page(request, user_id):
+	try:
+		user = User.objects.get(pk=user_id)
+		opponent_display_name = user.display_name
+	except:
+		opponent_display_name = None
+
+	if request.headers.get('X-Custom-Header') != 'self':
+		return render(request, "pages/game.html", {"opponent_display_name": opponent_display_name})
+	return render(request, "sections/game.html", {"opponent_display_name": opponent_display_name})
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url="/login")
 def get_stats_page(request):
 	if not isinstance(request.user, User):
 		return redirect("/logout")

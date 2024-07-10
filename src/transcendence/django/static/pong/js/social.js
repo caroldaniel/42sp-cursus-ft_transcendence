@@ -77,10 +77,11 @@ document.addEventListener('DOMContentLoaded', function () {
         cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
       }
       if(isFriend){
-      if(isBlocked)
-        removeFriend(user.id);
-      cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
-      cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
+        if(isBlocked)
+          removeFriend(user.id);
+        cell.appendChild(createButton('bi bi-joystick', 'btn btn-primary btn-sm me-2', () => playPong(user)));
+        cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
+        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
     }
     if(!isBlocked){
       cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
@@ -98,6 +99,11 @@ document.addEventListener('DOMContentLoaded', function () {
     button.appendChild(icon);
     button.addEventListener('click', onClick);
     return button;
+  }
+
+  function playPong(user) {
+    console.log(`Playing pong with ${user.display_name}...`);
+    showSection(`/game/${user.id}/`);
   }
 
   function addFriend(user) {

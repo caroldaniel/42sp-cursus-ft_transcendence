@@ -5,7 +5,9 @@ from django.http import HttpRequest, JsonResponse
 from pong.models import MatchHistory, User
 
 def get_match_history_context(user: User):
-	matches = MatchHistory.objects.filter(user=user).order_by('-finished_at')
+	matchesMain = MatchHistory.objects.filter(user=user).order_by('-finished_at')
+	matchesOpponent = MatchHistory.objects.filter(opponent_display_name=user.display_name).order_by('-finished_at')
+	matches = matchesMain | matchesOpponent.order_by('-finished_at')
 	victories = matches.filter(user_score__gt=F('opponent_score')).count()
 	losses = matches.filter(user_score__lt=F('opponent_score')).count()
 	display_name = user.display_name
