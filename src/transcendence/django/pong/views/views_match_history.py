@@ -8,8 +8,12 @@ def get_match_history_context(user: User):
 	matchesMain = MatchHistory.objects.filter(user=user).order_by('-finished_at')
 	matchesOpponent = MatchHistory.objects.filter(opponent_display_name=user.display_name).order_by('-finished_at')
 	matches = matchesMain | matchesOpponent.order_by('-finished_at')
-	victories = matches.filter(user_score__gt=F('opponent_score')).count()
-	losses = matches.filter(user_score__lt=F('opponent_score')).count()
+	victoriesMain = matchesMain.filter(user_score__gt=F('opponent_score')).count()
+	victoriesOpponent = matchesOpponent.filter(opponent_score__gt=F('user_score')).count()
+	lossesMain = matchesMain.filter(user_score__lt=F('opponent_score')).count()
+	lossesOpponent = matchesOpponent.filter(opponent_score__lt=F('user_score')).count()
+	victories = victoriesMain + victoriesOpponent
+	losses = lossesMain + lossesOpponent
 	display_name = user.display_name
 	avatar = user.avatar
 
