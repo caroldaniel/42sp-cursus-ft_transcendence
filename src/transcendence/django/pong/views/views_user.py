@@ -1,4 +1,7 @@
 import uuid
+import random
+import string
+
 # Django imports
 from django.conf import settings
 from django.http import JsonResponse
@@ -38,6 +41,17 @@ def get_current_user(request):
     return JsonResponse({
         'avatar': avatar_url,
         'display_name': user.display_name,
+    }, safe=False)
+
+@login_required
+def get_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    avatar_url = f'{settings.MEDIA_URL}{str(user.avatar)}' if user.avatar else f'{settings.MEDIA_URL}default.svg'
+
+    return JsonResponse({
+        'avatar': avatar_url,
+        'display_name': user.display_name,
+        'game_token': user.game_token,
     }, safe=False)
 
 def validate_name(name: str):
@@ -155,3 +169,12 @@ def unblock_user(request):
         return JsonResponse({'error': _('User not blocked.')}, status=400)
 
     return JsonResponse({'success': _('User unblocked successfully.')}, status=200)
+
+@login_required
+def renew_token(request):
+    user = request.user
+    token = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+    user.game_token = token
+    user.save()
+
+    return JsonResponse({'success': _('Token renewed successfully.')}, status=200)

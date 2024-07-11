@@ -103,7 +103,113 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function playPong(user) {
     console.log(`Playing pong with ${user.display_name}...`);
-    showSection(`/game/${user.id}/`);
+    const gameTokenModal = document.getElementById('gameTokenModal');
+    const modal = new bootstrap.Modal(gameTokenModal);
+    fetch(`/users/${user.id}/`)
+      .then(response => response.json())
+      .then(data => {
+        putModalContent(modal, data, user);
+      })
+    modal.show();
+  }
+
+  function putModalContent(modal, data, user) {
+    const modalBody = gameTokenModal.querySelector('.modal-body');
+    const modalgameTokenContent = modalBody.querySelector('#modalgameTokenContent');
+    
+    // Clear modal content
+    modalgameTokenContent.innerHTML = '';
+
+    // Create div to display infos
+    const infosDiv = document.createElement('div');
+    infosDiv.className = 'text-center';
+    const infos = document.createElement('h2');
+    infos.className = "fs-3 mb-1";
+    infos.textContent = data.display_name;
+    infosDiv.appendChild(infos);
+
+    // Create div for avatar
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = "position-relative d-inline-block";
+
+    // Create elements to display the user's avatar
+    const avatar = document.createElement('img');
+    avatar.src = data.avatar;
+    avatar.className = 'avatar rounded-circle mb-3';
+    avatar.style.width = '150px';
+    avatar.style.height = '150px';
+    avatar.style.objectFit = 'cover';
+    avatar.alt = 'Avatar';
+    avatarDiv.appendChild(avatar);
+
+    // Append avatar to the infos div
+    infosDiv.appendChild(avatarDiv);
+
+    // Create input field for game token
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'text';
+    const placeholderText = `Enter with ${data.display_name} game token`;
+    tokenInput.placeholder = placeholderText;
+    tokenInput.className = 'form-control mt-3';
+
+    // Create a temporary span to measure the placeholder width
+    const tempSpan = document.createElement('span');
+    tempSpan.style.visibility = 'hidden';
+    tempSpan.style.position = 'absolute';
+    tempSpan.style.whiteSpace = 'nowrap';
+    tempSpan.style.fontSize = '16px'; // Match the input's font size
+    tempSpan.textContent = placeholderText;
+    document.body.appendChild(tempSpan);
+
+    // Set the input's width based on the span's width
+    const inputWidth = tempSpan.offsetWidth + 30; // Add some padding
+    tokenInput.style.width = `${inputWidth}px`; // Set input width
+    tokenInput.style.textAlign = 'center'; // Center the placeholder text
+    document.body.removeChild(tempSpan); // Clean up
+
+    // Create submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.className = 'btn btn-primary mt-2 me-2';
+
+    // Create submit button
+    const startGameButton = document.createElement('button');
+    startGameButton.textContent = 'Start Game';
+    startGameButton.className = 'btn btn-primary mt-2 me-2';
+    startGameButton.disabled = true; // Disable the button by default
+
+    // Create error message div
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'text-danger mt-2';
+    errorMessage.style.display = 'none'; // Hide the error message by default
+
+    // Add event listener to the submit button
+    submitButton.addEventListener('click', () => {
+        if (tokenInput.value === data.game_token) {
+            startGameButton.disabled = false; // Enable the start game button
+            errorMessage.style.display = 'none'; // Hide error message on success
+        } else {
+            errorMessage.textContent = 'Invalid game token. Please try again.';
+            errorMessage.style.display = 'block'; // Show the error message
+        }
+    });
+
+    // Add event listener to the start game button
+    startGameButton.addEventListener('click', () => {
+        console.log('Starting game...');
+        modal.hide();
+        socialOffCanvas.hide();
+        showSection(`/game/${user.id}/`);
+    });
+
+    // Append input field, button, and error message to the infos div
+    infosDiv.appendChild(tokenInput);
+    infosDiv.appendChild(errorMessage);
+    infosDiv.appendChild(submitButton);
+    infosDiv.appendChild(startGameButton);
+
+    // Append elements to the modal content
+    modalgameTokenContent.appendChild(infosDiv);
   }
 
   function addFriend(user) {

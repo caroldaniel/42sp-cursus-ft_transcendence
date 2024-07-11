@@ -7,6 +7,8 @@ urlpatterns = [
     path('set-language/', views.set_language, name='set-language'),
     path("users/list/", views.user_list, name="user-list"),
     path("users/me/", views.get_current_user, name="user-me"),
+    path("renew-game-token/", views.renew_token, name="renew-token"),
+    path("users/<uuid:user_id>/", views.get_user, name="user-get"),
     path("login/", views.get_login_page, name="login-page"),
     path("register/user/", views.register, name="register-user"),
 	path("login/oauth2/", views.intra_login, name="login-oauth2"),
@@ -32,7 +34,6 @@ urlpatterns = [
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
     path("block/", views.block_user, name="block-user"),
     path("unblock/", views.unblock_user, name="unblock-user"),
-
 	# # ! Uncomment this to populate database
     # path("populate_db/", views.populate_db, name="populate-db"),
 ]

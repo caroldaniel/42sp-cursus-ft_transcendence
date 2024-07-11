@@ -156,6 +156,7 @@ class User(AbstractBaseUser):
 	password = models.CharField(max_length=128, blank=True)
 	first_name = models.CharField(max_length=30, blank=True)
 	last_name = models.CharField(max_length=150, blank=True)
+	game_token = models.CharField(max_length=5, blank=True)
 	is_intra_user = models.BooleanField(default=False)
 
 	avatar = models.FileField(

@@ -1,5 +1,7 @@
 import os
 import requests
+import random
+import string
 
 from urllib.parse import urlencode, quote_plus
 
@@ -116,8 +118,10 @@ def intra_login_redirect(request: HttpRequest):
 		user.first_name = first_name
 		user.last_name = last_name
 		user.is_intra_user = True
+		token = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+		user.match_token = token
 		user.save()
-	
+
 	# Authenticate user
 	authorized_user = authenticate(request, username=username)
 	if authorized_user is None:
@@ -168,6 +172,8 @@ def register(request: HttpRequest):
 			user.last_name = last_name
 			user.email = email
 			user.set_password(password)
+			token = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+			user.game_token = token
 			user.save()
 		except ValidationError as e:
 			return JsonResponse({'error': e.messages}, status=400)

@@ -1,0 +1,24 @@
+{% load static i18n %}
+{% block content %}
+
+<!-- Play game Modal -->
+<div id="gameTokenModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gameTokenModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9);">
+      <div class="modal-header">
+        <h1 id="gameTokenModalLabel" class="modal-title">
+          <i class="bi bi-joystick me-2"></i>
+          {% trans "Play Pong" %}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="modalgameTokenContent" class="d-flex justify-content-center mt-3">
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

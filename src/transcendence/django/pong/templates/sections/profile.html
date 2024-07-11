@@ -94,6 +94,17 @@
               </button>
             </div>
 
+            <!-- game Token -->
+            <div class="d-flex align-items-center">
+              <div class="me-1">
+                <label for="game_token" class="form-label"><strong>{% trans "Game Token" %}</strong></label>
+                <p id="game_token" class="me-2">{{ user.game_token }}</p>
+              </div>
+              <button class="btn btn-link p-0" onclick="renewGameToken()">
+                <i class="bi bi-arrow-clockwise"></i>
+              </button>
+            </div>
+          
           </div>
         </div>
       </div>
