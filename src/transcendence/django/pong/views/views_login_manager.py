@@ -1,6 +1,6 @@
 import os
 import requests
-import random
+import secrets
 import string
 
 from urllib.parse import urlencode, quote_plus
@@ -52,13 +52,11 @@ def get_intra_user_from_code(code: str) -> dict:
 	}
 	try:
 		# Get access token
-		token_response = requests.post("https://api.intra.42.fr/oauth/token", data=data, headers=headers)
+		token_response = requests.post("https://api.intra.42.fr/oauth/token", data=data, headers=headers, timeout=30)
 		access_token = token_response.json()['access_token']
 
 		# Get user information
-		intra_user_response = requests.get("https://api.intra.42.fr/v2/me", headers={
-			"Authorization": f"Bearer {access_token}"
-		})
+		intra_user_response = requests.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"}, timeout=30)
 	except Exception as e:
 		print(f"Intra user information exchange error: {e}")
 		return None
@@ -118,8 +116,8 @@ def intra_login_redirect(request: HttpRequest):
 		user.first_name = first_name
 		user.last_name = last_name
 		user.is_intra_user = True
-		token = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
-		user.match_token = token
+		token = secrets.token_urlsafe(4)[:5]
+		user.game_token = token
 		user.save()
 
 	# Authenticate user
@@ -172,7 +170,7 @@ def register(request: HttpRequest):
 			user.last_name = last_name
 			user.email = email
 			user.set_password(password)
-			token = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+			token = secrets.token_urlsafe(4)[:5]
 			user.game_token = token
 			user.save()
 		except ValidationError as e:
