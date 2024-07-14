@@ -82,3 +82,27 @@ function createPopover(id, content) {
 
   return popover;
 }
+
+/**
+ * Renew Game Token
+ */
+async function renewGameToken() {
+  // Get the renew token form
+  try {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const response = await fetch('/renew-game-token/', {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": csrfToken
+        },
+    });
+    if (!response.ok) {
+        throw new Error('Failed to renew game token');
+    }
+    const data = await response.json();
+    showSection('/profile/');
+  }
+  catch (error) {
+    console.error('Error renewing game token:', error.message);
+  }
+}

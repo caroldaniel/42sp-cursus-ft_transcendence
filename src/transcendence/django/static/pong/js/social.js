@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
   function fetchData(url, callback) {
-    console.log('Fetching data from:', url);
     fetch(url)
       .then(response => {
         if (!response.ok) {
@@ -36,11 +35,15 @@ document.addEventListener('DOMContentLoaded', function () {
       userTableBody.appendChild(row);
       return;
     }
+    console.log('Populating user list with data:', data);
     users.forEach(user => {
       const row = document.createElement('tr');
       row.appendChild(createCell(user.display_name));
-      row.appendChild(createStatusCell(user.is_online));
-      row.appendChild(createActionsCell(user, data.blockList.includes(user.id)));
+      if(data.relationships.friendList.includes(user.id))
+        row.appendChild(createStatusCell(user.is_online));
+      else
+        row.appendChild(createCell(''));
+      row.appendChild(createActionsCell(user, data.blockList.includes(user.id), data.relationships.friendList.includes(user.id), data.relationships.sentList.includes(user.id), data.relationships.receivedList.includes(user.id)));
       userTableBody.appendChild(row);
     });
   }
@@ -59,14 +62,31 @@ document.addEventListener('DOMContentLoaded', function () {
     return cell;
   }
 
-  function createActionsCell(user, isBlocked) {
+  function createActionsCell(user, isBlocked, isFriend, isRequestSent, isRequestReceived) {
     const cell = document.createElement('td');
-    cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
-    cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
-    cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
-    if(!isBlocked)
+    if(!isBlocked && !isFriend && !isRequestSent && !isRequestReceived) {
+      cell.appendChild(createButton('bi bi-person-plus-fill', 'btn btn-primary btn-sm me-2', () => addFriend(user)));
+    }
+    if(isRequestReceived){
+      if(isBlocked)
+        denyFriendRequest(user.id);
+        cell.appendChild(createButton('bi bi-person-check-fill', 'btn btn-primary btn-sm me-2', () => acceptFriendRequest(user.id)));
+        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm me-2', () => denyFriendRequest(user.id)));
+      }
+      if(isRequestSent){
+        cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
+      }
+      if(isFriend){
+        if(isBlocked)
+          removeFriend(user.id);
+        cell.appendChild(createButton('bi bi-joystick', 'btn btn-primary btn-sm me-2', () => playPong(user)));
+        cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
+        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
+    }
+    if(!isBlocked){
+      cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
       cell.appendChild(createButton('bi bi-lock', 'btn btn-danger btn-sm', () => blockUser(user)));
-    else
+    } else
       cell.appendChild(createButton('bi bi-unlock', 'btn btn-success btn-sm', () => unblockUser(user)));
     return cell;
   }
@@ -81,15 +101,143 @@ document.addEventListener('DOMContentLoaded', function () {
     return button;
   }
 
+  function playPong(user) {
+    console.log(`Playing pong with ${user.display_name}...`);
+    const gameTokenModal = document.getElementById('gameTokenModal');
+    const modal = new bootstrap.Modal(gameTokenModal);
+    fetch(`/users/${user.id}/`)
+      .then(response => response.json())
+      .then(data => {
+        putModalContent(modal, data, user);
+      })
+    modal.show();
+  }
+
+  function putModalContent(modal, data, user) {
+    const modalBody = gameTokenModal.querySelector('.modal-body');
+    const modalgameTokenContent = modalBody.querySelector('#modalgameTokenContent');
+    
+    // Clear modal content
+    modalgameTokenContent.innerHTML = '';
+
+    // Create div to display infos
+    const infosDiv = document.createElement('div');
+    infosDiv.className = 'text-center';
+    const infos = document.createElement('h2');
+    infos.className = "fs-3 mb-1";
+    infos.textContent = data.display_name;
+    infosDiv.appendChild(infos);
+
+    // Create div for avatar
+    const avatarDiv = document.createElement('div');
+    avatarDiv.className = "position-relative d-inline-block";
+
+    // Create elements to display the user's avatar
+    const avatar = document.createElement('img');
+    avatar.src = data.avatar;
+    avatar.className = 'avatar rounded-circle mb-3';
+    avatar.style.width = '150px';
+    avatar.style.height = '150px';
+    avatar.style.objectFit = 'cover';
+    avatar.alt = 'Avatar';
+    avatarDiv.appendChild(avatar);
+
+    // Append avatar to the infos div
+    infosDiv.appendChild(avatarDiv);
+
+    // Create input field for game token
+    const tokenInput = document.createElement('input');
+    tokenInput.type = 'text';
+    const placeholderText = `Enter with ${data.display_name} game token`;
+    tokenInput.placeholder = placeholderText;
+    tokenInput.className = 'form-control mt-3';
+
+    // Create a temporary span to measure the placeholder width
+    const tempSpan = document.createElement('span');
+    tempSpan.style.visibility = 'hidden';
+    tempSpan.style.position = 'absolute';
+    tempSpan.style.whiteSpace = 'nowrap';
+    tempSpan.style.fontSize = '16px'; // Match the input's font size
+    tempSpan.textContent = placeholderText;
+    document.body.appendChild(tempSpan);
+
+    // Set the input's width based on the span's width
+    const inputWidth = tempSpan.offsetWidth + 30; // Add some padding
+    tokenInput.style.width = `${inputWidth}px`; // Set input width
+    tokenInput.style.textAlign = 'center'; // Center the placeholder text
+    document.body.removeChild(tempSpan); // Clean up
+
+    // Create submit button
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.className = 'btn btn-primary mt-2 me-2';
+
+    // Create submit button
+    const startGameButton = document.createElement('button');
+    startGameButton.textContent = 'Start Game';
+    startGameButton.className = 'btn btn-primary mt-2 me-2';
+    startGameButton.disabled = true; // Disable the button by default
+
+    // Create error message div
+    const errorMessage = document.createElement('div');
+    errorMessage.className = 'text-danger mt-2';
+    errorMessage.style.display = 'none'; // Hide the error message by default
+
+    // Add event listener to the submit button
+    submitButton.addEventListener('click', () => {
+        if (tokenInput.value === data.game_token) {
+            startGameButton.disabled = false; // Enable the start game button
+            errorMessage.style.display = 'none'; // Hide error message on success
+        } else {
+            errorMessage.textContent = 'Invalid game token. Please try again.';
+            errorMessage.style.display = 'block'; // Show the error message
+        }
+    });
+
+    // Add event listener to the start game button
+    startGameButton.addEventListener('click', () => {
+        console.log('Starting game...');
+        modal.hide();
+        socialOffCanvas.hide();
+        showSection(`/game/${user.id}/`);
+    });
+
+    // Append input field, button, and error message to the infos div
+    infosDiv.appendChild(tokenInput);
+    infosDiv.appendChild(errorMessage);
+    infosDiv.appendChild(submitButton);
+    infosDiv.appendChild(startGameButton);
+
+    // Append elements to the modal content
+    modalgameTokenContent.appendChild(infosDiv);
+  }
+
   function addFriend(user) {
     console.log(`Adding ${user.display_name} as a friend...`);
+    sendFriendRequest(user.display_name);
   }
 
   function viewProfile(user) {
     console.log(`Viewing profile of ${user.display_name}...`);
     const userProfileModal = document.getElementById('userProfileModal');
     const modal = new bootstrap.Modal(userProfileModal);
-    modal.show();
+    const modalBody = userProfileModal.querySelector('.modal-body');
+    fetch(`/stats/${user.id}/`)
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const profileUserContent = doc.getElementById('userProfileContent');
+        if (profileUserContent) {
+          const modalUserProfileContent = modalBody.querySelector('#modalUserProfileContent');
+          modalUserProfileContent.innerHTML = profileUserContent.innerHTML;
+        } else {
+          console.error('userProfileContent div not found in the response');
+        }
+  
+        modal.show();
+      })
+      .catch(error => console.error('Erro:', error));    
   }
 
   function openChat(user) {
@@ -103,26 +251,26 @@ document.addEventListener('DOMContentLoaded', function () {
   async function blockUser(user) {
     console.log(`Blocking ${user.display_name}...`);
     try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const formData = new FormData();
-        
-        formData.append('blocked', user.id);
-        const response = await fetch('/block/', {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrfToken
-            },
-            body: formData
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Failed to block user');
-        }
-
-        console.log(data.success);  // Log the success message from the server
-        fetchData('/users/list/', populateUserList);
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+      const formData = new FormData();
+      
+      formData.append('blocked', user.id);
+      const response = await fetch('/block/', {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrfToken
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to block user');
+      }
+      
+      console.log(data.success);  // Log the success message from the server
+      fetchData('/users/list/', populateUserList);
       } catch (error) {
         console.error('Error fetching block user:', error.message);
     }
@@ -188,4 +336,79 @@ document.addEventListener('DOMContentLoaded', function () {
       loadTabContent(tabId);
     });
   });
+
+  async function removeFriend(friendId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const formData = new FormData()
+
+    formData.append("friend_id", friendId)
+
+    const response = await fetch('/friend/remove/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+      body: formData,
+    })
+
+    await response.json()
+    fetchData('/users/list/', populateUserList);
+  }
+
+  async function acceptFriendRequest(friendId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const formData = new FormData()
+
+    formData.append("friend_id", friendId)
+
+    const response = await fetch('/friend/accept/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+      body: formData,
+    })
+
+    await response.json()
+    fetchData('/users/list/', populateUserList);
+  }
+
+  async function denyFriendRequest(friendId) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const formData = new FormData()
+
+    formData.append("friend_id", friendId)
+
+    const response = await fetch('/friend/deny/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+      body: formData,
+    })
+
+    await response.json()
+    fetchData('/users/list/', populateUserList);
+  }
+
+  async function sendFriendRequest(displayName) {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const formData = new FormData()
+
+    formData.append("friend_name", displayName)
+
+    const response = await fetch('/friend/send/', {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': csrfToken,
+      },
+      body: formData,
+    })
+    const data = await response.json();
+    if (!response.ok) {
+      console.log(data.message);
+      return false;
+    }
+    fetchData('/users/list/', populateUserList);
+  }
 });
