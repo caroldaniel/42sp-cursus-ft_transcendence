@@ -48,52 +48,175 @@ function handleInputChange() {
     }
 }
 
-// Get messages from DB by view get_messages and update chat-log div
-async function loadMessages() {
-    const userSelector = document.getElementById('userSelector');
-    const chatLog = document.getElementById("chatLog");
-    const messageReceiver = document.getElementById("messageReceiver")
-    // Save selected user to userSelectorValue
-    userSelectorValue = userSelector.value;
-    messageReceiver.value = userSelectorValue;
+// Function to update the unread messages badge
+async function updateUnreadMessages() {
+    // Get csrf token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    if (messageReceiver.value === '') {
-        chatLog.innerHTML = '';
-        return;
-    }
+    // Iterate through all rows in user table bodies and get each user id in the tr id (formated as 'user_{id}')
+    const userTableBody = document.querySelector('#userTable tbody');
+    const formData = new FormData();
 
+    // Get API response for unread messages
     try {
-        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-        const formData = new FormData();
-        formData.append('friend', messageReceiver.value);
-        const response = await fetch('/chat/get_messages/', {
-            method: "POST",
+        const response = await fetch('/chat/get_unread/', {
+            method: 'POST',
             headers: {
-                "X-CSRFToken": csrfToken
+                'X-CSRFToken': csrfToken
             },
             body: formData
         });
-
+        
         if (!response.ok) {
-            throw new Error('Failed to fetch messages');
+            throw new Error('Failed to get unread messages');
         }
 
         const data = await response.json();
-        chatLog.innerHTML = '';
-        data.messages.forEach(message => {
-            const messageDiv = document.createElement("div");
-            messageDiv.classList.add("message");
-            messageDiv.innerHTML = `
-                <p><strong>${message.sender}</strong>: ${message.content}</p>
-                <p class="timestamp">${new Date(message.timestamp).toLocaleString()}</p>
-            `;
-            chatLog.appendChild(messageDiv);
+
+        const unreadMessagesBadge = document.getElementById('unreadMessagesBadge');
+        unreadMessagesBadge.textContent = data.unread_messages;
+        if (data.unread_messages === 0) {
+            unreadMessagesBadge.setAttribute('hidden', '');
+        } else {
+            unreadMessagesBadge.removeAttribute('hidden');
+        }
+
+
+        const unreadChatsBadge = document.getElementById('unreadChatsBadge');
+        unreadChatsBadge.textContent = data.unread_counts.length;
+        if (data.unread_counts.length === 0) {
+            unreadChatsBadge.setAttribute('hidden', '');
+        } else {
+            unreadChatsBadge.removeAttribute('hidden');
+        }
+
+        data.unread_counts.forEach(unread_chat => {
+            const senderId = unread_chat.sender_id;
+            const unreadCount = unread_chat.unread_count;
+            const userListBadge = document.getElementById(`unreadMessagesBadge_${senderId}`);
+            if (!userListBadge)
+                return;
+            userListBadge.textContent = unread_chat.unread_count;
+            if (unreadCount === 0) {
+                userListBadge.setAttribute('hidden', '');
+            } else {
+                userListBadge.removeAttribute('hidden');
+            }
         });
-        chatLog.scrollTop = chatLog.scrollHeight;
+
     } catch (error) {
-        console.error('Error fetching messages:', error.message);
+        console.error('Error loading unread messages:', error.message);
     }
 }
+
+
+// Function to populate the chat log with messages
+function populateChatLog(messages) {
+    const chatLog = document.getElementById('chatLog');
+    chatLog.innerHTML = '';
+
+    // If no messages, display no messages div
+    if (messages.length === 0) {
+        const noMessagesDiv = document.createElement('div');
+        noMessagesDiv.classList.add('no-messages');
+        noMessagesDiv.textContent = 'No messages yet';
+        chatLog.appendChild(noMessagesDiv);
+        return;
+    }
+
+    let lastSender = null;
+    let lastMessageDiv = null;
+    messages.forEach(message => {
+        if (lastSender !== message.sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(message.sender_id == userSelectorValue ? 'received' : 'sent');
+            
+            // Add display name to messageDiv
+            const displayNameDiv = document.createElement('div');
+            displayNameDiv.classList.add('sender');
+            displayNameDiv.textContent = message.sender;
+            messageDiv.appendChild(displayNameDiv);
+
+            // Add timestamp to messageDiv
+            const timestampDiv = document.createElement('div');
+            timestampDiv.classList.add('timestamp');
+            timestampDiv.textContent = new Date(message.timestamp).toLocaleString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: 'numeric', 
+                minute: 'numeric', 
+                hour12: true 
+            });
+            messageDiv.appendChild(timestampDiv);
+
+            lastMessageDiv = messageDiv;
+            chatLog.appendChild(messageDiv);
+        }
+
+        const messageContentDiv = document.createElement('div');
+        messageContentDiv.classList.add('message-content');
+        messageContentDiv.textContent = message.content;
+        lastMessageDiv.appendChild(messageContentDiv);
+
+        lastSender = message.sender;
+    });
+}
+
+
+// Get messages from DB by view get_messages and update chat-log div
+async function loadMessages() {
+
+    const userSelector = document.getElementById('userSelector');
+    const messageReceiver = document.getElementById("messageReceiver");
+    
+    userSelectorValue = userSelector.value;
+    messageReceiver.value = userSelectorValue;
+    
+    // Get chat log div
+    const chatLog = document.getElementById("chatLog");
+    // Get csrf token
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Update unread messages and chats badges
+    updateUnreadMessages();
+    
+    // check if socialOffCanvas is being shown and if the chat-tab is the one active
+    const socialOffCanvas = document.getElementById('socialOffCanvas');
+    const chatTab = document.getElementById('chat-tab');
+    
+    if (socialOffCanvas.classList.contains('show') && chatTab.classList.contains('active')) {
+        if (messageReceiver.value === '') {
+            chatLog.innerHTML = '';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('friend', messageReceiver.value);
+
+        try {
+            const response = await fetch('/chat/get_messages/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            });
+            
+            if (!response.ok) {
+                throw new Error('Failed to load message');
+            }
+
+            const data = await response.json();
+
+            populateChatLog(data.messages);
+        } catch (error) {
+            console.error('Error loading messages:', error.message);
+        }
+    }
+}
+
 
 // Send message to DB by view send_message
 async function sendMessage(event) {
@@ -125,7 +248,6 @@ async function sendMessage(event) {
             throw new Error('Failed to send message');
         }
 
-        console.log("Message sent successfully");
         messageInput.value = '';
         document.getElementById('messageSendButton').setAttribute('disabled', 'disabled');
         loadMessages();
@@ -141,4 +263,4 @@ document.getElementById('userSelector').addEventListener('change', loadMessages)
 
 // Initial load and 5 second interval to update chat log
 loadMessages();
-setInterval(loadMessages, 5000); // Adjust interval as needed
+setInterval(loadMessages, 1000); // Adjust interval as needed

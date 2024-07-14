@@ -76,7 +76,9 @@
       {% if user.is_authenticated %}
       <button id="openSocialOffCanvas" type="button" class="btn btn-primary position-relative expand-button ms-2 me-3" data-bs-toggle="offcanvas" data-bs-target="#socialOffCanvas">
         <i class="bi bi-people-fill me-2"></i> {% trans "Social" %}
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">42</span>
+        <span id="unreadMessagesBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" hidden>
+          <!-- Dynamically include the number of unread messages -->
+        </span>
       </button>
       {% endif %}
     </div>

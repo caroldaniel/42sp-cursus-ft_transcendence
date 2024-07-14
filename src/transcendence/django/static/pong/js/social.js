@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const userTableBody = document.querySelector('#userTable tbody');
   // Tournament
   const tournamentContent = document.getElementById('tournamentContent');
-  // Chat
-  const userSelector = document.getElementById('userSelector');
 
   const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
@@ -35,9 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
       userTableBody.appendChild(row);
       return;
     }
-    console.log('Populating user list with data:', data);
     users.forEach(user => {
       const row = document.createElement('tr');
+      row.classList.add(`user_${user.id}`);
       row.appendChild(createCell(user.display_name));
       if(data.relationships.friendList.includes(user.id))
         row.appendChild(createStatusCell(user.is_online));
@@ -84,19 +82,27 @@ document.addEventListener('DOMContentLoaded', function () {
         cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
     }
     if(!isBlocked){
-      cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-2', () => openChat(user)));
+      cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-4', () => openChat(user), `unreadMessagesBadge_${user.id}`));
       cell.appendChild(createButton('bi bi-lock', 'btn btn-danger btn-sm', () => blockUser(user)));
     } else
       cell.appendChild(createButton('bi bi-unlock', 'btn btn-success btn-sm', () => unblockUser(user)));
     return cell;
   }
 
-  function createButton(iconClass, buttonClass, onClick) {
+  function createButton(iconClass, buttonClass, onClick, badgeId = null) {
     const button = document.createElement('button');
     button.className = buttonClass;
     const icon = document.createElement('i');
     icon.className = iconClass;
     button.appendChild(icon);
+    if (badgeId) {
+      button.classList.add('position-relative');
+      const badge = document.createElement('span');
+      badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+      badge.setAttribute('hidden', true);
+      badge.id = badgeId;
+      button.appendChild(badge);
+    }
     button.addEventListener('click', onClick);
     return button;
   }

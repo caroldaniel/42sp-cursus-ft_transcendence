@@ -5,13 +5,6 @@
     gap: 0.5rem;
 }
 
-#chatLog {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px;
-    height: 60vh;
-}
-
 #messageForm {
     display: flex;
     flex-direction: row;
@@ -21,9 +14,63 @@
 .custom-modal-size .modal-dialog {
     width: 800px;
     max-width: 800px;
-  }
-  
-  .custom-modal-size .modal-content {
-    height: 100%; /* Garante que o conteúdo do modal preencha a altura */
-  }
-  
+}
+
+.custom-modal-size .modal-content {
+    height: 100%;
+    /* Garante que o conteúdo do modal preencha a altura */
+}
+
+#chatLog {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 60vh;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.message {
+    color: #000;
+    border-radius: 15px;
+    max-width: 70%;
+    min-width: 50%;
+    padding: 10px;
+    margin: 5px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sent {
+    align-self: flex-end;
+    background-color: #dcf8c6; /* Light green */
+    text-align: right;
+}
+
+.received {
+    align-self: flex-start;
+    background-color: #f0f0f0; /* Light grey */
+    text-align: left;
+}
+
+.sender {
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.timestamp {
+    font-size: 0.8em;
+    color: #888888;
+}
+
+.message-content {
+    font-size: 1em;
+    word-wrap: break-word;
+}
+
+.no-messages {
+    text-align: center;
+    font-size: 0.8em;
+    color: var(--bs-secondary);
+}

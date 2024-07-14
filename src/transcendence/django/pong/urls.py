@@ -22,6 +22,7 @@ urlpatterns = [
     path("friend/accept/", views.accept_friend_request, name="accept-friend-request"),
     path("friend/deny/", views.deny_friend_request, name="deny-friend-request"),
     path("friend/remove/", views.remove_friend, name="remove-friend"),
+    path("chat/get_unread/", views.get_unread_messages, name="get-unread-messages"),
     path("chat/send_message/", views.send_message, name="send-message"),
     path("chat/get_messages/", views.get_messages, name="get-messages"),
     path("stats/", views.get_stats_page, name="stats-page"),

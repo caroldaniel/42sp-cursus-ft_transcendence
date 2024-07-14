@@ -21,8 +21,12 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button" role="tab" aria-controls="chat" aria-selected="false">
+        <button class="nav-link position-relative" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button" role="tab" aria-controls="chat" aria-selected="false">
           <i class="bi bi-chat-dots"></i>
+          <span id="unreadChatsBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" hidden>
+            <!-- Dynamically include the number of unread messages -->
+          </span>
+  
         </button>
       </li>
     </ul>
@@ -42,7 +46,6 @@
         <div class="container-fluid mt-4" id="chatContainer">
           <!-- Dropdown Menu -->
           <select id="userSelector" class="form-select" aria-label="ChatUserSelector">
-            <option value="">Select a user...</option>
             <!-- Users will be dynamically populated here -->
           </select>
           
