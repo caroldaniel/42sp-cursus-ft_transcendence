@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
             startGameButton.disabled = false; // Enable the start game button
             errorMessage.style.display = 'none'; // Hide error message on success
         } else {
-            errorMessage.textContent = 'Invalid game token. Please try again.';
+            errorMessage.textContent = '❌ Invalid game token. Please try again.';
             errorMessage.style.display = 'block'; // Show the error message
         }
     });
