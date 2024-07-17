@@ -1,3 +1,32 @@
+async function sendNotification(currentMatch, playerL, playerR) {
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  console.log('Tournament created with ID:', localStorage.getItem("tournament_id"));
+  try {
+    const response = await fetch("/tournament/warning", { 
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+      },
+      body: JSON.stringify({
+        tournament_id: localStorage.getItem("tournament_id"),
+        currentMatch: currentMatch,
+        playerL: playerL,
+        playerR: playerR,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Notification sent:', data);
+  } catch (error) {
+    alert("Error sending notification: " + error);
+  }
+}
+
 function loadTournament() {
   const quartersString = localStorage.getItem("quarters");
   const quarters = JSON.parse(quartersString);
@@ -54,6 +83,7 @@ function loadTournament() {
 
   localStorage.setItem("playerL", playerL.innerHTML);
   localStorage.setItem("playerR", playerR.innerHTML);
+  sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
 }
 
 window.loadTournament = loadTournament;

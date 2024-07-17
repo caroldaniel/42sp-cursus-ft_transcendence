@@ -10,6 +10,31 @@ async function getUserList() {
   }
 }
 
+async function createTournament(registeredPlayers) {
+  try {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const response = await fetch('/tournament/create/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({
+        players: registeredPlayers,
+      }),
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    localStorage.setItem('tournament_id', data.tournament_id);
+  } catch (error) {
+    console.error('Error creating tournament:', error);
+  }
+}
+
 function checkTokens(players, registeredPlayers, userList) {
   let state = false;
   for (let i = 0; i < players.length; i++) {
@@ -78,6 +103,7 @@ async function loadTournamentForm() {
         localStorage.setItem("gameMode", "tournament");
         localStorage.setItem("quarters", JSON.stringify(quarters));
         localStorage.setItem("currentMatch", "0");
+        createTournament(registeredPlayers);
         showSection("/tournament/");
       }
     }

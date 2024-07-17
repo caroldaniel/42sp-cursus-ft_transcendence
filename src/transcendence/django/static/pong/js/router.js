@@ -34,7 +34,7 @@ function setupSection(section) {
     startGame();
   } else if (section === "/tournament/") {
     loadTournament();
-  } else if (section === "/tournament/create/") {
+  } else if (section === "/tournament/form/") {
     loadTournamentForm();
   } else if (section === "/tournament/winner/") {
     setWinner();

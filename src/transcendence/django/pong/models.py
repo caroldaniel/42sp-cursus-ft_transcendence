@@ -331,3 +331,30 @@ class BlockList(models.Model):
 		if BlockList.objects.filter(blocker=self.blocker, blocked=self.blocked).exists():
 			raise ValidationError('Block already exists')
 		super().save(*args, **kwargs)
+
+# Tournament model
+class Tournament(models.Model):
+	"""
+	Model to represent a tournament in the application.
+	
+	Attributes:
+		id (UUIDField): The unique identifier for the tournament.
+		created_by (ForeignKey): The user who created the tournament.
+		created_at (DateTimeField): The datetime when the tournament was created.
+		ended_at (DateTimeField): The datetime when the tournament ended.
+		winner (ForeignKey): The winner of the tournament.
+		match_count (IntegerField): The number of matches in the tournament.
+		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
+		registered_users (ManyToManyField): The users registered for the tournament.
+	"""
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	created_by = models.ForeignKey(User, related_name='created_tournaments', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+	ended_at = models.DateTimeField(null=True, blank=True)
+	winner = models.ForeignKey(User, related_name='won_tournaments', on_delete=models.CASCADE, null=True, blank=True)
+	match_count = models.IntegerField(default=0)
+	actual_match = models.CharField(max_length=50, blank=True)
+	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
+
+	def __str__(self):
+		return self.id
