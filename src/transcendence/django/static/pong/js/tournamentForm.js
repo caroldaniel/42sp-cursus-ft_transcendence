@@ -30,6 +30,7 @@ async function createTournament(registeredPlayers) {
     
     const data = await response.json();
     localStorage.setItem('tournament_id', data.tournament_id);
+    localStorage.setItem('tournament_status', 'created');
   } catch (error) {
     console.error('Error creating tournament:', error);
   }
@@ -50,7 +51,7 @@ function checkTokens(players, registeredPlayers, userList) {
         if (gameTokenInput === "") continue;
         const errorMessage = document.createElement("p");
         errorMessage.className = "error";
-        errorMessage.innerHTML = "❌ Invalid game token. Please try again.";
+        errorMessage.innerHTML = "❌ Invalid game token. Please try again";
         errorMessage.style.color = "red";
         playerDiv.appendChild(errorMessage);
       } else {
@@ -103,7 +104,7 @@ async function loadTournamentForm() {
         localStorage.setItem("gameMode", "tournament");
         localStorage.setItem("quarters", JSON.stringify(quarters));
         localStorage.setItem("currentMatch", "0");
-        createTournament(registeredPlayers);
+        await createTournament(registeredPlayers);
         showSection("/tournament/");
       }
     }

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const userTableBody = document.querySelector('#userTable tbody');
   // Tournament
   const tournamentContent = document.getElementById('tournamentContent');
-
+  const tournamentTableBody = document.querySelector('#tournamentTable tbody');
   const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
   function fetchData(url, callback) {
@@ -312,7 +312,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function populateTournament(data) {
     console.log('Populating tournament with data:', data);
-    tournamentContent.innerHTML = data.content;
+    const tournaments = data.tournaments;
+    tournamentTableBody.innerHTML = '';
+
+    // Check if there's any tournament registered
+    if (data.tournaments.length === 0) {
+      const row = document.createElement('tr');
+      const cell = document.createElement('td');
+      cell.colSpan = 3;
+      cell.textContent = 'No tournaments found';
+      row.appendChild(cell);
+      tournamentTableBody.appendChild(row);
+      return;
+    }
+    
+    tournaments.forEach(tournament => {
+      const row = document.createElement('tr');
+      row.id = tournament.id;
+      row.appendChild(createCell(tournament.created_by + "'s Tournament"));
+      if (tournament.winner === null)
+        row.appendChild(createCell(tournament.actual_match));
+      else
+        row.appendChild(createCell("Winner: "+tournament.winner));
+      tournamentTableBody.appendChild(row);
+    });
   }
 
   function loadTabContent(tabId) {

@@ -336,7 +336,7 @@ class BlockList(models.Model):
 class Tournament(models.Model):
 	"""
 	Model to represent a tournament in the application.
-	
+
 	Attributes:
 		id (UUIDField): The unique identifier for the tournament.
 		created_by (ForeignKey): The user who created the tournament.
@@ -345,7 +345,7 @@ class Tournament(models.Model):
 		winner (ForeignKey): The winner of the tournament.
 		match_count (IntegerField): The number of matches in the tournament.
 		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
-		registered_users (ManyToManyField): The users registered for the tournament.
+		registered_users (ManyToManyField): The users registered for the tournament with a valid account.
 	"""
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	created_by = models.ForeignKey(User, related_name='created_tournaments', on_delete=models.CASCADE)
@@ -358,3 +358,14 @@ class Tournament(models.Model):
 
 	def __str__(self):
 		return self.id
+
+	def save(self, *args, **kwargs):
+		"""
+		Overrides the save method to update the timestamp before saving.
+		
+		Usage:
+			This method is automatically called by Django before saving the model instance.
+			It updates the timestamp to the current datetime value before saving.
+		"""
+		self.created_at = timezone.now()
+		super().save(*args, **kwargs)

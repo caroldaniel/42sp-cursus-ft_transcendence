@@ -33,6 +33,7 @@ urlpatterns = [
     path("tournament/winner/", views.get_winner_page, name="tournament-winner-page"),
     path("tournament/warning/", views.tournament_warning, name="tournament-warning"),
     path("tournament/create/", views.tournament_create, name="tournament-create"),
+    path("tournament/list/", views.tournament_list, name="tournament-list"),
     path("profile/", views.get_profile_page, name="profile-page"),
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
     path("block/", views.block_user, name="block-user"),
