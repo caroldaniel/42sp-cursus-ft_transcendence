@@ -14,10 +14,10 @@
         </button>
 
         <ul class="dropdown-menu" aria-labelledby="userDropdown">
-          <li><a class="dropdown-item" onclick="showSection('/profile/')">
+          <li><a class="dropdown-item custom-cursor" onclick="showSection('/profile/')">
               <i class="bi bi-person me-2"></i>{% trans "Profile" %}
             </a></li>
-          <li><a class="dropdown-item" onclick="showSection('/stats/')">
+          <li><a class="dropdown-item custom-cursor" onclick="showSection('/stats/')">
               <i class="bi bi-graph-up me-2"></i>{% trans "Stats" %}
             </a></li>
           <li><a class="dropdown-item" href="/profile/">
@@ -29,7 +29,7 @@
           <li><a class="dropdown-item fw-bold" href="/logout">
               <i class="bi bi-box-arrow-right me-2"></i>{% trans "Logout" %}
             </a></li>
-        </ul>
+      </ul>
       </div>
     </div>
     {% endif %}

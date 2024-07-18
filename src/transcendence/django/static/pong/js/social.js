@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // User
   const userTableBody = document.querySelector('#userTable tbody');
   // Tournament
-  const tournamentContent = document.getElementById('tournamentContent');
   const tournamentTableBody = document.querySelector('#tournamentTable tbody');
+
   const socialOffCanvas = new bootstrap.Offcanvas(socialOffCanvasElement);
 
   function fetchData(url, callback) {
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
           removeFriend(user.id);
         cell.appendChild(createButton('bi bi-joystick', 'btn btn-primary btn-sm me-2', () => playPong(user)));
         cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
-        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
+        cell.appendChild(createButton('bi bi-person-dash-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
     }
     if(!isBlocked){
       cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-4', () => openChat(user), `unreadMessagesBadge_${user.id}`));
@@ -92,6 +92,26 @@ document.addEventListener('DOMContentLoaded', function () {
   function createButton(iconClass, buttonClass, onClick, badgeId = null) {
     const button = document.createElement('button');
     button.className = buttonClass;
+    button.setAttribute('data-bs-toggle', 'popover');
+    button.setAttribute('data-bs-placement', 'bottom');
+    button.setAttribute('data-popover', 'true');
+    const buttonContentMap = {
+      'bi bi-chat-dots-fill': 'Chat',
+      'bi bi-joystick': 'Play Pong',
+      'bi bi-person-lines-fill': 'View Profile',
+      'bi bi-person-plus-fill': 'Add Friend',
+      'bi bi-person-dash-fill': 'Remove Friend',
+      'bi bi-person-check-fill': 'Accept Friend Request',
+      'bi bi-person-x-fill': 'Deny Friend Request',
+      'bi bi-person-fill-exclamation': 'Friend Request Sent',
+      'bi bi-lock': 'Block User',
+      'bi bi-unlock': 'Unblock User'
+    };
+
+    const buttonContent = buttonContentMap[iconClass];
+    if (buttonContent) {
+      button.setAttribute('data-bs-content', buttonContent);
+    }
     const icon = document.createElement('i');
     icon.className = iconClass;
     button.appendChild(icon);
@@ -104,6 +124,23 @@ document.addEventListener('DOMContentLoaded', function () {
       button.appendChild(badge);
     }
     button.addEventListener('click', onClick);
+    
+    var popover = new bootstrap.Popover(button, {
+      trigger: 'manual'
+    });
+
+    button.addEventListener('mouseenter', function() {
+      popover.show();
+    });
+
+    button.addEventListener('mouseleave', function() {
+      popover.hide();
+    });
+
+    button.addEventListener('click', function() {
+      popover.hide();
+    });
+
     return button;
   }
 
