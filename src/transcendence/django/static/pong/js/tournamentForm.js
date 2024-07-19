@@ -29,8 +29,6 @@ async function createTournament(registeredPlayers) {
     }
     
     const data = await response.json();
-    localStorage.setItem('tournament_id', data.tournament_id);
-    localStorage.setItem('tournament_status', 'created');
   } catch (error) {
     console.error('Error creating tournament:', error);
   }

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   const openSocialOffCanvas = document.getElementById('openSocialOffCanvas');
   const socialOffCanvasElement = document.getElementById('socialOffCanvas');
+  const currentUser = document.getElementById('displayNameSpan').textContent;
   // User
   const userTableBody = document.querySelector('#userTable tbody');
   // Tournament
@@ -347,6 +348,67 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  function createTournamentCardBody(tournament) {
+    // Create the main card div
+    const cardDiv = document.createElement('div');
+    cardDiv.className = 'card text-center h-100';
+    cardDiv.style.marginBottom = '10px';
+    cardDiv.style.marginTop = '10px'; 
+
+    // Create the card body div
+    const cardBody = document.createElement('div');
+    cardBody.className = 'card-body';
+    cardDiv.appendChild(cardBody);
+
+    // Create the card title h3
+    const cardTitle = document.createElement('h3');
+    cardTitle.className = 'card-title';
+    cardTitle.textContent = tournament.created_by + '\'s Tournament';
+    cardBody.appendChild(cardTitle);
+
+    // Create the card text p
+    const cardText = document.createElement('p');
+    cardText.className = 'card-text';
+
+    if (tournament.match_count >= 0 && tournament.match_count <= 3) {
+      cardText.textContent = 'Quarterfinals';
+    } else if (tournament.match_count >= 4 && tournament.match_count <= 5) {
+      cardText.textContent = 'Semifinals';
+    } else if (tournament.match_count === 6) {
+      cardText.textContent = 'Finals';
+    } else {
+      const cardText = document.createElement('h4');
+      cardText.className = 'card-text';
+      cardText.textContent = "Winner: " + tournament.winner + " 🏆 ";
+      cardBody.appendChild(cardText);
+    }
+    console.log(cardText.textContent);
+    cardBody.appendChild(cardText);
+
+    // Create the card text p
+    const cardText2 = document.createElement('p');
+    cardText2.className = 'card-text';
+    if (tournament.match_count < 6)
+      cardText2.textContent = tournament.actual_match;
+    else
+      cardText2.textContent = 'Finished';
+    cardBody.appendChild(cardText2);
+
+    // Create the button if the tournament creator is the current user
+    // if (tournament.created_by === currentUser && tournament.match_count < 6) {
+    //   const button = document.createElement('button');
+    //   button.className = 'btn btn-primary';
+    //   button.textContent = 'View Tournament';
+    //   button.addEventListener('click', () => {
+    //     socialOffCanvas.hide();
+    //     showSection('/tournament/');
+    //   });
+    //   cardBody.appendChild(button);
+    // }
+
+    return cardDiv;
+  }
+
   function populateTournament(data) {
     console.log('Populating tournament with data:', data);
     const tournaments = data.tournaments;
@@ -364,14 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     tournaments.forEach(tournament => {
-      const row = document.createElement('tr');
-      row.id = tournament.id;
-      row.appendChild(createCell(tournament.created_by + "'s Tournament"));
-      if (tournament.winner === null)
-        row.appendChild(createCell(tournament.actual_match));
-      else
-        row.appendChild(createCell("Winner: "+tournament.winner));
-      tournamentTableBody.appendChild(row);
+      tournamentTableBody.appendChild(createTournamentCardBody(tournament));
     });
   }
 

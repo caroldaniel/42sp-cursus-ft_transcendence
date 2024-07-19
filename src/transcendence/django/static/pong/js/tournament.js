@@ -9,7 +9,6 @@ async function sendNotification(currentMatch, playerL, playerR) {
         'X-CSRFToken': csrfToken
       },
       body: JSON.stringify({
-        tournament_id: localStorage.getItem("tournament_id"),
         currentMatch: currentMatch,
         playerL: playerL,
         playerR: playerR,
