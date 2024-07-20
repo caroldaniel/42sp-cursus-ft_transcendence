@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError # Required for raising valida
 from django.utils import timezone # Required for timezone.now()
 
 
+# Custom Validators
 def file_size_validator(file):
 	"""
 	Validates the size of a file.
@@ -27,6 +28,7 @@ def file_size_validator(file):
 		raise ValidationError('File size exceeds the 5 MiB limit.')
 
 
+# Custom Fields
 class AutoDateTimeField(models.DateTimeField):
 	"""
 	A custom DateTimeField that automatically sets the current datetime value before saving.
@@ -62,6 +64,7 @@ class AutoDateTimeField(models.DateTimeField):
 		return timezone.now()
 
 
+# Custom User Model
 class IntraUserManager(BaseUserManager):
 	"""
 	Custom manager for the IntraUser model.
@@ -133,6 +136,8 @@ class User(AbstractBaseUser):
 		updated_at (AutoDateTimeField): The datetime when the user was last updated.
 		email (EmailField): The user's email address.
 		password (CharField): The user's password.
+		is_intra_user (BooleanField): Indicates if the user is an 42Intra user.
+		game_token (CharField): The user's game token.
 
 	Methods:
 		save(*args, **kwargs): Overrides the save method to set the display_name before saving.
@@ -195,7 +200,7 @@ class User(AbstractBaseUser):
 	
 		return self
 
-
+# Match History
 class MatchHistory(models.Model):
 	"""
 	Model to store the match history of 1v1 games.
@@ -220,6 +225,7 @@ class MatchHistory(models.Model):
 	finished_at = models.DateTimeField(default=timezone.now)
 
 
+# Relationship Model
 class Relationship(models.Model):
 	"""
 	Model to represent the relationship between two users.
@@ -263,7 +269,7 @@ class Relationship(models.Model):
 		super().save(*args, **kwargs)
 
 
-
+# Chat message model
 class Message(models.Model):
 	"""
 	Model to represent a chat message between two users.
@@ -277,13 +283,11 @@ class Message(models.Model):
 	sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
 	receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
 	content = models.TextField()
-	sent_when_blocked = models.BooleanField(default=False)
-	timestamp = models.DateTimeField(blank=True, null=True)
-	last_read = models.DateTimeField(blank=True, null=True)
+	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return f"{self.sender} -> {self.receiver}: {self.content[:20]}"
-	
+
 	def save(self, *args, **kwargs):
 		"""
 		Overrides the save method to update the timestamp before saving.
@@ -292,11 +296,10 @@ class Message(models.Model):
 			This method is automatically called by Django before saving the model instance.
 			It updates the timestamp to the current datetime value before saving.
 		"""
-		if not self.timestamp:
-			self.timestamp = timezone.now()
+		self.timestamp = timezone.now()
 		super().save(*args, **kwargs)
 
-
+# Block list model
 class BlockList(models.Model):
 	"""
 	Model to represent a block list between two users.
@@ -313,7 +316,7 @@ class BlockList(models.Model):
 
 	def __str__(self):
 		return f"{self.blocker} -> {self.blocked}"
-	
+
 	def save(self, *args, **kwargs):
 		"""
 		Overrides the save method to check for existing block.
@@ -328,3 +331,57 @@ class BlockList(models.Model):
 		if BlockList.objects.filter(blocker=self.blocker, blocked=self.blocked).exists():
 			raise ValidationError('Block already exists')
 		super().save(*args, **kwargs)
+
+# Tournament model
+class Tournament(models.Model):
+	"""
+	Model to represent a tournament in the application.
+
+	Attributes:
+		id (UUIDField): The unique identifier for the tournament.
+		created_by (ForeignKey): The user who created the tournament.
+		created_at (DateTimeField): The datetime when the tournament was created.
+		status (CharField): The status of the tournament (open, closed, finished).
+		winner (ForeignKey): The winner of the tournament.
+		match_count (IntegerField): The number of matches in the tournament.
+		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
+		registered_users (ManyToManyField): The users registered for the tournament with a valid account.
+	"""
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	created_by = models.ForeignKey(User, related_name='created_tournaments', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+	status = models.CharField(max_length=50, default='open')
+	winner = models.ForeignKey(User, related_name='won_tournaments', on_delete=models.CASCADE, null=True, blank=True)
+	match_count = models.IntegerField(default=0)
+	actual_match = models.CharField(max_length=50, blank=True)
+	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
+
+	def __str__(self):
+		return self.id
+
+	def save(self, *args, **kwargs):
+		"""
+		Overrides the save method to update the timestamp before saving.
+		
+		Usage:
+			This method is automatically called by Django before saving the model instance.
+			It updates the timestamp to the current datetime value before saving.
+		"""
+		self.created_at = timezone.now()
+		super().save(*args, **kwargs)
+
+# Session storage model
+class Session(models.Model):
+
+	"""
+	Model to store session data for the application.
+
+	Attributes:
+		session_user (ForeignKey): The user associated with the session.
+		session_data (JsonField): The session data.
+	"""
+	user = models.ForeignKey(User, related_name='sessions', on_delete=models.CASCADE)
+	data = models.JSONField()
+
+	def __str__(self):
+		return f"Session for {self.user}"

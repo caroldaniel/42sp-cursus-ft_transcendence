@@ -21,7 +21,7 @@ function startGame() {
     "/static/pong/img/Starfield.png",
   );
 
-  const gameMode = localStorage.getItem("gameMode");
+  const gameMode = sessionStorage.getItem("gameMode");
 
   // Boilerplate
   const scene = new THREE.Scene();

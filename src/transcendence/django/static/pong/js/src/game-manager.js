@@ -38,8 +38,8 @@ export default class GameManager {
     this.lastTimeStamp = 0;
 
     if (gameMode === "tournament") {
-      const playerL = localStorage.getItem("playerL");
-      const playerR = localStorage.getItem("playerR");
+      const playerL = sessionStorage.getItem("playerL");
+      const playerR = sessionStorage.getItem("playerR");
       document.getElementById("player-l-name").innerHTML = playerL;
       document.getElementById("player-r-name").innerHTML = playerR;
     }
@@ -130,28 +130,28 @@ export default class GameManager {
   }
 
   setTournamentMatchWinner(winner) {
-    const currentMatch = Number(localStorage.getItem("currentMatch"));
+    const currentMatch = Number(sessionStorage.getItem("currentMatch"));
 
     if (currentMatch >= 0 && currentMatch <= 3) {
-      const semiFinals = JSON.parse(localStorage.getItem("semiFinals"));
+      const semiFinals = JSON.parse(sessionStorage.getItem("semiFinals"));
       if (!semiFinals) {
-        localStorage.setItem("semiFinals", JSON.stringify([winner]));
+        sessionStorage.setItem("semiFinals", JSON.stringify([winner]));
       } else {
         semiFinals.push(winner);
-        localStorage.setItem("semiFinals", JSON.stringify(semiFinals));
+        sessionStorage.setItem("semiFinals", JSON.stringify(semiFinals));
       }
     } else if (currentMatch >= 4 && currentMatch <= 5) {
-      const final = JSON.parse(localStorage.getItem("final"));
+      const final = JSON.parse(sessionStorage.getItem("final"));
       if (!final) {
-        localStorage.setItem("final", JSON.stringify([winner]));
+        sessionStorage.setItem("final", JSON.stringify([winner]));
       } else {
         final.push(winner);
-        localStorage.setItem("final", JSON.stringify(final));
+        sessionStorage.setItem("final", JSON.stringify(final));
       }
     } else if (currentMatch === 6) {
-      localStorage.setItem("winner", winner);
+      sessionStorage.setItem("winner", winner);
     }
 
-    localStorage.setItem("currentMatch", currentMatch + 1);
+    sessionStorage.setItem("currentMatch", currentMatch + 1);
   }
 }

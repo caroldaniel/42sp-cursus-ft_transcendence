@@ -28,13 +28,13 @@ async function getSectionHTML(section) {
 
 function setupSection(section) {
   if (section === "/game/" || section.match(/^\/game\/(.+)\/$/)) {
-    localStorage.setItem("gameMode", "local");
+    sessionStorage.setItem("gameMode", "local");
     startGame();
   } else if (section === "/tournament/game/") {
     startGame();
   } else if (section === "/tournament/") {
     loadTournament();
-  } else if (section === "/tournament/create/") {
+  } else if (section === "/tournament/form/") {
     loadTournamentForm();
   } else if (section === "/tournament/winner/") {
     setWinner();

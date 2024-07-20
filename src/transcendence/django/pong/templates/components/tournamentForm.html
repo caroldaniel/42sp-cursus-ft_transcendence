@@ -1,93 +1,102 @@
-<form id="tournament-form" class="d-flex flex-column gap-3 mt-3">
-  <div class="form-group">
-    <label for="player-1" class="form-label">Player 1</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-1"
-      aria-describedby="Player 1"
-      placeholder="Enter nickname"
-      maxlength="20"
-      value="{{ user.display_name }}"
-      disabled
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-2" class="form-label">Player 2</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-2"
-      aria-describedby="Player 2"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-3" class="form-label">Player 3</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-3"
-      aria-describedby="Player 3"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-4" class="form-label">Player 4</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-4"
-      aria-describedby="Player 4"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-5" class="form-label">Player 5</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-5"
-      aria-describedby="Player 5"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-6" class="form-label">Player 6</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-6"
-      aria-describedby="Player 6"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-7" class="form-label">Player 7</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-7"
-      aria-describedby="Player 7"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <div class="form-group">
-    <label for="player-8" class="form-label">Player 8</label>
-    <input
-      type="text"
-      class="form-control"
-      id="player-8"
-      aria-describedby="Player 8"
-      placeholder="Enter nickname"
-      maxlength="20"
-    />
-  </div>
-  <button type="submit" class="btn btn-lg btn-primary">Create</button>
-</form>
+<div id="formContent">
+  <form id="tournament-form" class="d-flex flex-column gap-3 mt-3">
+    <div class="form-group">
+      <label for="player-1" class="form-label">Player 1</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-1"
+        aria-describedby="Player 1"
+        placeholder="Enter nickname"
+        maxlength="20"
+        value="{{ user.display_name }}"
+        disabled
+      />
+    </div>
+    <div class="form-group" id="div-player-2">
+      <label for="player-2" class="form-label">Player 2</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-2"
+        aria-describedby="Player 2"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-2" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-3">
+      <label for="player-3" class="form-label">Player 3</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-3"
+        aria-describedby="Player 3"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-3" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-4">
+      <label for="player-4" class="form-label">Player 4</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-4"
+        aria-describedby="Player 4"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-4" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-5">
+      <label for="player-5" class="form-label">Player 5</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-5"
+        aria-describedby="Player 5"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-5" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-6">
+      <label for="player-6" class="form-label">Player 6</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-6"
+        aria-describedby="Player 6"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-6" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-7">
+      <label for="player-7" class="form-label">Player 7</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-7"
+        aria-describedby="Player 7"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-7" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <div class="form-group" id="div-player-8">
+      <label for="player-8" class="form-label">Player 8</label>
+      <input
+        type="text"
+        class="form-control"
+        id="player-8"
+        aria-describedby="Player 8"
+        placeholder="Enter nickname"
+        maxlength="20"
+      />
+      <input type="hidden" id="game-token-8" class="form-control mt-1" placeholder="Enter the token of the player" maxlength="20"/>
+    </div>
+    <button id="tournamentFormButton" type="submit" class="btn btn-lg btn-primary">Create</button>
+  </form>
+</div>

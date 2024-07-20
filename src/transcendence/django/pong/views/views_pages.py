@@ -3,7 +3,6 @@ from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 
 from pong.views.views_match_history import get_match_history_context
-from .relationship.views_relationships import get_relationships_context
 from pong.models import User
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

@@ -7,10 +7,11 @@ from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext as _
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .relationship.views_relationships import get_relationships_context
-from pong.models import BlockList
-
+from pong.models import BlockList, Session
+import json
 # import redirect from django.shortcuts
 from django.shortcuts import redirect
 
@@ -21,7 +22,7 @@ from pong.models import User
 def user_list(request):
     # Get all users and their online status
     # Get your own user out of the list
-    users = User.objects.all().values('id', 'display_name', 'is_online')
+    users = User.objects.all().values('id', 'display_name', 'is_online', 'game_token')
     users = users.exclude(id=request.user.id)
     blockList = BlockList.objects.filter(blocker=request.user.id).values_list('blocked', flat=True)
     relationships = get_relationships_context(request.user)
@@ -175,3 +176,35 @@ def renew_token(request):
     user.save()
 
     return JsonResponse({'success': _('Token renewed successfully.')}, status=200)
+
+@login_required
+def get_session(request):
+    try:
+        session = Session.objects.get(user=request.user)
+        return JsonResponse(json.loads(session.data), status=200)
+    except Session.DoesNotExist:
+        return JsonResponse({'error': 'Session not found'}, status=404)
+
+@login_required
+def set_session(request):
+    if request.method != "POST":
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+    try:
+        body_data = json.loads(request.body.decode('utf-8'))
+        
+        data = body_data
+
+        if data is None:
+            return JsonResponse({'error': 'Session data is required'}, status=400)
+        else:
+            data = json.dumps(data)
+            session, _ = Session.objects.get_or_create(user=request.user, defaults={'data': data})
+            session.data = data
+            session.save()
+
+        return JsonResponse({'success': 'Session data updated successfully.'}, status=200)
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
