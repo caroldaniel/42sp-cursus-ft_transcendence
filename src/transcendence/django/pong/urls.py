@@ -38,6 +38,8 @@ urlpatterns = [
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
     path("block/", views.block_user, name="block-user"),
     path("unblock/", views.unblock_user, name="unblock-user"),
+    path("session/get/", views.get_session, name="get-sessions"),
+    path("session/set/", views.set_session, name="set-session")
 	# # ! Uncomment this to populate database
     # path("populate_db/", views.populate_db, name="populate-db"),
 ]

@@ -28,7 +28,7 @@ async function getSectionHTML(section) {
 
 function setupSection(section) {
   if (section === "/game/" || section.match(/^\/game\/(.+)\/$/)) {
-    localStorage.setItem("gameMode", "local");
+    sessionStorage.setItem("gameMode", "local");
     startGame();
   } else if (section === "/tournament/game/") {
     startGame();

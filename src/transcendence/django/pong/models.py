@@ -369,3 +369,19 @@ class Tournament(models.Model):
 		"""
 		self.created_at = timezone.now()
 		super().save(*args, **kwargs)
+
+# Session storage model
+class Session(models.Model):
+
+	"""
+	Model to store session data for the application.
+
+	Attributes:
+		session_user (ForeignKey): The user associated with the session.
+		session_data (JsonField): The session data.
+	"""
+	user = models.ForeignKey(User, related_name='sessions', on_delete=models.CASCADE)
+	data = models.JSONField()
+
+	def __str__(self):
+		return f"Session for {self.user}"

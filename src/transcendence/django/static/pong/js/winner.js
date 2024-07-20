@@ -1,7 +1,7 @@
 function setWinner() {
   const winnerSpan = document.getElementById("winner");
-  const winnerName = localStorage.getItem("winner");
+  const winnerName = sessionStorage.getItem("winner");
   winnerSpan.innerHTML = winnerName;
-  localStorage.clear();
-  localStorage.setItem('tournament_status', 'finished');
+  sessionStorage.clear();
+  sessionStorage.setItem('tournament_status', 'finished');
 }

@@ -10,6 +10,40 @@ async function getUserList() {
   }
 }
 
+async function saveSessionStorageToServer() {
+  console.log('Saving sessionStorage to the server...');
+  // Create an object to store all sessionStorage items
+  const sessionData = {};
+
+  // Iterate over all sessionStorage items
+  for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
+      sessionData[key] = value;
+  }
+
+  // Convert the object to JSON
+  const jsonData = JSON.stringify(sessionData);
+  console.log('JSON data:', jsonData);
+  const csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+  // Send the JSON to the server using fetch
+  await fetch('/session/set/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfmiddlewaretoken,
+      },
+      body: jsonData,
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Success:', data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+}
+
 async function createTournament(registeredPlayers) {
   try {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -29,6 +63,7 @@ async function createTournament(registeredPlayers) {
     }
     
     const data = await response.json();
+    await saveSessionStorageToServer(); 
   } catch (error) {
     console.error('Error creating tournament:', error);
   }
@@ -98,10 +133,10 @@ async function loadTournamentForm() {
       // If all game tokens are valid, shuffle players and save them to local storage
       if (needCheckToken === false) {
         const quarters = shuffle(players);
-        localStorage.clear();
-        localStorage.setItem("gameMode", "tournament");
-        localStorage.setItem("quarters", JSON.stringify(quarters));
-        localStorage.setItem("currentMatch", "0");
+        sessionStorage.clear();
+        sessionStorage.setItem("gameMode", "tournament");
+        sessionStorage.setItem("quarters", JSON.stringify(quarters));
+        sessionStorage.setItem("currentMatch", "0");
         await createTournament(registeredPlayers);
         showSection("/tournament/");
       }

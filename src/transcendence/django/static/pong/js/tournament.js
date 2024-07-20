@@ -1,3 +1,37 @@
+async function saveSessionStorageToServer() {
+  console.log('Saving sessionStorage to the server...');
+  // Create an object to store all sessionStorage items
+  const sessionData = {};
+
+  // Iterate over all sessionStorage items
+  for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
+      sessionData[key] = value;
+  }
+
+  // Convert the object to JSON
+  const jsonData = JSON.stringify(sessionData);
+  console.log('JSON data:', jsonData);
+  const csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+  // Send the JSON to the server using fetch
+  await fetch('/session/set/', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfmiddlewaretoken,
+      },
+      body: jsonData,
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log('Success:', data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+}
+
 async function sendNotification(currentMatch, playerL, playerR) {
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -26,19 +60,19 @@ async function sendNotification(currentMatch, playerL, playerR) {
   }
 }
 
-function loadTournament() {
-  const quartersString = localStorage.getItem("quarters");
+async function loadTournament() {
+  const quartersString = sessionStorage.getItem("quarters");
   const quarters = JSON.parse(quartersString);
 
-  const semiFinalsString = localStorage.getItem("semiFinals");
+  const semiFinalsString = sessionStorage.getItem("semiFinals");
   const semiFinals = JSON.parse(semiFinalsString);
 
-  const finalString = localStorage.getItem("final");
+  const finalString = sessionStorage.getItem("final");
   const final = JSON.parse(finalString);
 
-  const winner = localStorage.getItem("winner");
+  const winner = sessionStorage.getItem("winner");
 
-  const currentMatchString = localStorage.getItem("currentMatch");
+  const currentMatchString = sessionStorage.getItem("currentMatch");
   const currentMatch = Number(JSON.parse(currentMatchString));
 
   if (winner) {
@@ -84,8 +118,9 @@ function loadTournament() {
     sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
   }
 
-  localStorage.setItem("playerL", playerL.innerHTML);
-  localStorage.setItem("playerR", playerR.innerHTML);
+  sessionStorage.setItem("playerL", playerL.innerHTML);
+  sessionStorage.setItem("playerR", playerR.innerHTML);
+  await saveSessionStorageToServer();
 }
 
 window.loadTournament = loadTournament;

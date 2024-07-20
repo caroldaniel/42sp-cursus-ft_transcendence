@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', function () {
   const themeToggleBtn = document.getElementById('theme-toggle');
   const themeIcon = document.getElementById('theme-icon');
 
-  // Load theme preference from localStorage
-  const currentTheme = localStorage.getItem('theme') || 'light';
+  // Load theme preference from sessionStorage
+  const currentTheme = sessionStorage.getItem('theme') || 'light';
   root.setAttribute('data-bs-theme', currentTheme);
 
   themeToggleBtn.addEventListener('click', () => {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update the icon
     themeIcon.className = newTheme === 'light' ? 'bi bi-moon' : 'bi bi-sun';
   
-    // Save the user's preference to localStorage
-    localStorage.setItem('theme', newTheme);
+    // Save the user's preference to sessionStorage
+    sessionStorage.setItem('theme', newTheme);
   })
 });

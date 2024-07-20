@@ -395,16 +395,16 @@ document.addEventListener('DOMContentLoaded', function () {
     cardBody.appendChild(cardText2);
 
     // Create the button if the tournament creator is the current user
-    // if (tournament.created_by === currentUser && tournament.match_count < 6) {
-    //   const button = document.createElement('button');
-    //   button.className = 'btn btn-primary';
-    //   button.textContent = 'View Tournament';
-    //   button.addEventListener('click', () => {
-    //     socialOffCanvas.hide();
-    //     showSection('/tournament/');
-    //   });
-    //   cardBody.appendChild(button);
-    // }
+    if (tournament.created_by === currentUser && tournament.match_count < 6) {
+      const button = document.createElement('button');
+      button.className = 'btn btn-primary';
+      button.textContent = 'View Tournament';
+      button.addEventListener('click', () => {
+        socialOffCanvas.hide();
+        showSection('/tournament/');
+      });
+      cardBody.appendChild(button);
+    }
 
     return cardDiv;
   }
