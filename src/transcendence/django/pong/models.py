@@ -283,8 +283,10 @@ class Message(models.Model):
 	sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
 	receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_messages')
 	content = models.TextField()
-	timestamp = models.DateTimeField(auto_now_add=True)
-
+	sent_when_blocked = models.BooleanField(default=False)
+	timestamp = models.DateTimeField(blank=True, null=True)
+	last_read = models.DateTimeField(blank=True, null=True)
+	
 	def __str__(self):
 		return f"{self.sender} -> {self.receiver}: {self.content[:20]}"
 
@@ -296,7 +298,8 @@ class Message(models.Model):
 			This method is automatically called by Django before saving the model instance.
 			It updates the timestamp to the current datetime value before saving.
 		"""
-		self.timestamp = timezone.now()
+		if not self.timestamp:
+			self.timestamp = timezone.now()
 		super().save(*args, **kwargs)
 
 # Block list model

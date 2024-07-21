@@ -180,7 +180,7 @@ async function loadMessages() {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
     // Update unread messages and chats badges
-    //updateUnreadMessages();
+    updateUnreadMessages();
     
     // check if socialOffCanvas is being shown and if the chat-tab is the one active
     const socialOffCanvas = document.getElementById('socialOffCanvas');
