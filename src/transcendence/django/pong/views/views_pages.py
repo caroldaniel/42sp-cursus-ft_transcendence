@@ -101,3 +101,7 @@ def get_profile_page(request):
 	if request.headers.get('X-Custom-Header') != 'self':
 		return render(request, "pages/profile.html")
 	return render(request, "sections/profile.html")
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def load_templates(request):
+    return render(request, 'components/modals/editProfileTemplates.html')

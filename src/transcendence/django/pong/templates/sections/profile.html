@@ -10,18 +10,19 @@
           <!-- Title -->
           <h2 class="fs-1 mb-1">
             <i class="bi bi-person me-2"></i>
-            {% trans "Profile" %}
+            {% trans "Your Profile" %}
           </h2>
 
           <hr>
 
-          <!-- Display Name -->
-          <div class="d-flex justify-content-center align-items-center mb-3">
-            <h4 class="fw-bold">{{ user.display_name }}</h2>
-            <button class="btn btn-link ms-2" onclick="showEditModal('display_name')">
-              <i class="bi bi-pencil"></i>
+          <!-- Username -->
+          <div class="d-flex flex-column justify-content-center align-items-center mb-3">
+            <span class="fw-bold fs-4 mb-0 me-2" style="color: var(--bs-gray);">{{ user.username }}</span>
+            <button id="username-info" type="button" class="btn btn-link p-0 ms-2" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" title="{% trans 'Username is not editable' %}">
+              <i class="bi bi-info-circle"></i>
             </button>
           </div>
+          
 
           <!-- Avatar -->
           <div class="position-relative d-inline-block">
@@ -35,77 +36,89 @@
 
         <div class="row mt-4">
           <div class="col-md-6">
-
-            <!-- Username -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="username" class="form-label"><strong>{% trans "Username" %}</strong></label>
-                <p id="username">{{ user.username }}</p>
+        
+            <!-- Display Name -->
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "Display Name" %}</strong></p>
+              <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                <p class="mb-0 text-truncate flex-grow-1" id="display_name" >{{ user.display_name }}</p>
+                <a class="btn btn-link p-0 ms-2" onclick="showEditModal('display_name')">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </div>
-              <button id="username-info" type="button" class="btn btn-link" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top">
-                <i class="bi bi-info-circle"></i>
-              </button>
             </div>
-
+        
             <!-- First Name -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="first_name" class="form-label"><strong>{% trans "First Name" %}</strong></label>
-                <p id="first_name" class="me-2">{{ user.first_name }}</p>
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "First Name" %}</strong></p>
+              <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                <p class="mb-0 text-truncate flex-grow-1" id="first_name">{{ user.first_name }}</p>
+                <a class="btn btn-link p-0 ms-2" onclick="showEditModal('first_name')">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </div>
-              <button class="btn btn-link ms-2" onclick="showEditModal('first_name')">
-                <i class="bi bi-pencil"></i>
-              </button>
             </div>
-            
+        
             <!-- Last Name -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="last_name" class="form-label"><strong>{% trans "Last Name" %}</strong></label>
-                <p id="last_name" class="me-2">{{ user.last_name }}</p>
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "Last Name" %}</strong></p>
+              <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                <p class="mb-0 text-truncate flex-grow-1" id="last_name">{{ user.last_name }}</p>
+                <a class="btn btn-link p-0 ms-2" onclick="showEditModal('last_name')">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </div>
-              <button class="btn btn-link" onclick="showEditModal('last_name')">
-                <i class="bi bi-pencil"></i>
-              </button>
             </div>
-
+        
           </div>
+        
           <div class="col-md-6">
-
+        
             <!-- Email -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="email" class="form-label"><strong>{% trans "Email" %}</strong></label>
-                <p id="email" class="me-2">{{ user.email }}</p>
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "Email" %}</strong></p>
+              <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                <p  class="mb-0 text-truncate flex-grow-1" id="email">{{ user.email }}</p>
+                <a class="btn btn-link p-0 ms-2" onclick="showEditModal('email')">
+                  <i class="bi bi-pencil"></i>
+                </a>
               </div>
-              <button class="btn btn-link p-0" onclick="showEditModal('email')">
-                <i class="bi bi-pencil"></i>
-              </button>
             </div>
-
+        
             <!-- Password -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="password" class="form-label"><strong>{% trans "Password" %}</strong></label>
-                <p id="password" class="me-2">••••••••</p>
-              </div>
-              <button class="btn btn-link p-0" onclick="showEditModal('password')">
-                <i class="bi bi-pencil"></i>
-              </button>
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "Password" %}</strong></p>
+              {% if user.is_intra_user %}
+                <div class="card d-flex flex-row p-2" style="max-width: 100%; background-color: var(--bg-secondary);">
+                  <p  class="mb-0 text-truncate flex-grow-1 text-muted" id="password">••••••••</p>
+                  <button id="password-info" type="button" class="btn btn-link p-0 ms-2" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="top" title="{% trans 'Password is not editable' %}">
+                    <i class="bi bi-info-circle"></i>
+                  </button>
+                </div>
+              {% else %}
+                <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                  <p  class="mb-0 text-truncate flex-grow-1" id="password">••••••••</p>
+                  <a class="btn btn-link p-0 ms-2" onclick="showEditModal('password')">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                </div>
+              {% endif %}
             </div>
-
-            <!-- game Token -->
-            <div class="d-flex align-items-center">
-              <div class="me-1">
-                <label for="game_token" class="form-label"><strong>{% trans "Game Token" %}</strong></label>
-                <p id="game_token" class="me-2">{{ user.game_token }}</p>
+        
+            <!-- Game Token -->
+            <div class="d-flex flex-column mb-2">
+              <p class="form-label"><strong>{% trans "Game Token" %}</strong></p>
+              <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                <p  class="mb-0 text-truncate flex-grow-1" id="game_token">{{ user.game_token }}</p>
+                <a class="btn btn-link p-0 ms-2" onclick="renewGameToken()">
+                  <i class="bi bi-arrow-clockwise"></i>
+                </a>
               </div>
-              <button class="btn btn-link p-0" onclick="renewGameToken()">
-                <i class="bi bi-arrow-clockwise"></i>
-              </button>
             </div>
-          
+        
           </div>
+        </div>
+        
         </div>
       </div>
     </div>

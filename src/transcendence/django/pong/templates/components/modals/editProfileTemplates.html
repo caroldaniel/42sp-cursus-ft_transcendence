@@ -1,0 +1,59 @@
+{% load static i18n %}
+{% block content %}
+
+<!-- HTML Templates -->
+<div id="formTemplates" style="display: none;">
+    <!-- Avatar Form Template -->
+    <div id="avatarTemplate">
+      <input type="hidden" name="field" value="avatar">
+      <label for="editInputAvatar" class="form-label">{% trans "Upload New Avatar" %}</label>
+      <input type="file" class="form-control" id="editInputAvatar" name="new_value" accept="image/*">
+    </div>
+    
+    <!-- Password Form Template -->
+    <div id="passwordTemplate">
+      <input type="hidden" name="field" value="password">
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="editInputOldPassword" name="old_value" placeholder="" required>
+        <label for="editInputOldPassword" class="form-label">{% trans "Current Password" %}</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="editInputNewPassword" name="new_value" placeholder="" required>
+        <label for="editInputNewPassword" class="form-label">{% trans "New Password" %}</label>
+      </div>
+      <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="editInputConfirmNewPassword" name="confirm_value" placeholder="" required>
+        <label for="editInputConfirmNewPassword" class="form-label">{% trans "Confirm New Password" %}</label>
+      </div>
+      <div class="mb-3">
+        <div id="passwordEditMatchWarning" style="color: green;"></div>
+      </div>
+    </div>
+  
+    <!-- Other Fields Template -->
+    <div id="displayNameTemplate" class="align-items-center">
+      <input type="hidden" name="field" value="display_name">
+      
+      <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="editInputDisplayName" name="new_value" placeholder="" required>
+        <label for="editInputDisplayName" class="form-label">{% trans "Type here a new Display Name" %}</label>
+      </div>
+    </div>
+    <div id="firstNameTemplate">
+      <input type="hidden" name="field" value="first_name">
+      <label for="editInputFirstName" class="form-label fw-semibold p-1">{% trans "Choose a new First Name" %}</label>
+      <input type="text" class="form-control" id="editInputFirstName" name="new_value" placeholder="{{ user.first_name }}" required>
+    </div>
+    <div id="lastNameTemplate">
+      <input type="hidden" name="field" value="last_name">
+      <label for="editInputLastName" class="form-label fw-semibold p-1">{% trans "Choose a new Last Name" %}</label>
+      <input type="text" class="form-control" id="editInputLastName" name="new_value" placeholder="{{ user.last_name }}" required>
+    </div>
+    <div id="emailTemplate">
+      <input type="hidden" name="field" value="email">
+      <label for="editInputEmail" class="form-label fw-semibold p-1">{% trans "Choose a new E-mail" %}</label>
+      <input type="email" class="form-control" id="editInputEmail" name="new_value" placeholder="{{ user.email }}"required>
+    </div>
+  </div>
+
+{% endblock content %}

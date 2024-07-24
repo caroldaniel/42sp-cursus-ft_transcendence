@@ -1,14 +1,37 @@
 function setupProfile() {
-  createPopover('username-info', 'You cannot edit the username.')
+  createPopover('username-info', 'Your username is your unique identifier. It cannot be changed.')
+  createPopover('password-info', 'You are logged in with 42 Intranet. You cannot change your password.')
   editProfile();
   return;
+}
+
+// Function to load templates from an external HTML file
+/**
+ * Loads templates from the specified URL.
+ * @param {string} url - The URL of the templates to load.
+ * @returns {Promise<HTMLDivElement>} - A promise that resolves to a div element containing the loaded templates.
+ */
+async function loadTemplates(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const text = await response.text();
+  const templateContainer = document.createElement('div');
+  templateContainer.innerHTML = text;
+  return templateContainer;
 }
 
 /**
  * Show edit modal
  * @param {string} field - Field to edit
  */
-function showEditModal(field) {
+async function showEditModal(field) {
+  // Load templates if not already loaded
+  if (!window.templates) {
+    window.templates = await loadTemplates('/profile/edit/templates/');
+  }
+
   // Get modal element
   const modal = document.getElementById('editModal');
 
@@ -29,9 +52,12 @@ function showEditModal(field) {
 
   // Define a function to get the template content
   function getTemplate(templateId) {
-    const template = templatesContainer.querySelector(`#${templateId}`);
+    const template = window.templates.querySelector(`#${templateId}`);
     return template ? template.innerHTML : '';
   }
+
+  // Clear the existing content in the editInputContainer
+  editInputContainer.innerHTML = '';
 
   // Update modal content based on the field
   let templateId;
@@ -61,8 +87,42 @@ function showEditModal(field) {
   // Insert the template content into the modal
   editInputContainer.innerHTML = getTemplate(templateId);
 
+  // Add event listeners for password fields if the field is 'password'
+  if (field === 'password') {
+    const newPasswordField = document.getElementById('editInputNewPassword');
+    const confirmNewPasswordField = document.getElementById('editInputConfirmNewPassword');
+
+    if (newPasswordField && confirmNewPasswordField) {
+      newPasswordField.addEventListener('input', checkPasswordMatch);
+      confirmNewPasswordField.addEventListener('input', checkPasswordMatch);
+    }
+  }
+
   // Show the modal
   modalInstance.show();
+}
+
+/**
+ * Check if the new password and confirm new password fields match
+ */
+function checkPasswordMatch() {
+  const newPassword = document.getElementById('editInputNewPassword').value;
+  const confirmNewPassword = document.getElementById('editInputConfirmNewPassword').value;
+  const passwordWarning = document.getElementById('passwordEditMatchWarning');
+  const submitButton = document.getElementById('editInputButton');
+
+  if (newPassword === '' || confirmNewPassword === '') {
+    passwordWarning.textContent = '';
+    submitButton.disabled = true;
+  } else if (newPassword === confirmNewPassword) {
+    passwordWarning.textContent = 'Passwords match';
+    passwordWarning.style.color = 'green';
+    submitButton.disabled = false;
+  } else {
+    passwordWarning.textContent = 'Passwords do not match';
+    passwordWarning.style.color = 'red';
+    submitButton.disabled = true;
+  }
 }
 
 
@@ -71,6 +131,10 @@ function showEditModal(field) {
  */
 function createPopover(id, content) {
   var popoverTrigger = document.getElementById(id);
+  if (!popoverTrigger) {
+    return;
+  }
+
   var popoverContent = content;
 
   // Create a new Popover instance
@@ -82,6 +146,7 @@ function createPopover(id, content) {
 
   return popover;
 }
+
 
 /**
  * Renew Game Token
@@ -106,3 +171,18 @@ async function renewGameToken() {
     console.error('Error renewing game token:', error.message);
   }
 }
+
+/**
+ * Event Listeners when DOM is loaded
+ */
+
+// Add event listeners to the password fields when the DOM content is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+  const newPasswordField = document.getElementById('editInputNewPassword');
+  const confirmNewPasswordField = document.getElementById('editInputConfirmNewPassword');
+
+  if (newPasswordField && confirmNewPasswordField) {
+    newPasswordField.addEventListener('input', checkPasswordMatch);
+    confirmNewPasswordField.addEventListener('input', checkPasswordMatch);
+  }
+});

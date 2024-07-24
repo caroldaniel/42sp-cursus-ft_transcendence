@@ -19,7 +19,7 @@
               <!-- Input field will be added dynamically here -->
             </div>
             <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary">{% trans "Save changes" %}</button>
+              <button id="editInputButton" type="submit" class="btn btn-primary" disabled>{% trans "Save changes" %}</button>
             </div>
           </form>
         </div>
@@ -43,48 +43,6 @@
   </div>
 </div>
 
-
-<!-- HTML Templates -->
-<div id="formTemplates" style="display: none;">
-  <!-- Avatar Form Template -->
-  <div id="avatarTemplate">
-    <input type="hidden" name="field" value="avatar">
-    <label for="editInputAvatar" class="form-label">Upload New Avatar</label>
-    <input type="file" class="form-control" id="editInputAvatar" name="new_value" accept="image/*" required>
-  </div>
-  
-  <!-- Password Form Template -->
-  <div id="passwordTemplate">
-    <input type="hidden" name="field" value="password">
-    <label for="editInput" class="form-label">Current Password</label>
-    <input type="password" class="form-control" id="editInput" name="old_value" required>
-    <label for="newPasswordInput" class="form-label">New Password</label>
-    <input type="password" class="form-control" id="newPasswordInput" name="new_value" required>
-    <label for="confirmPasswordInput" class="form-label">Confirm New Password</label>
-    <input type="password" class="form-control" id="confirmPasswordInput" name="confirm_value" required>
-  </div>
-
-  <!-- Other Fields Template -->
-  <div id="displayNameTemplate" class="align-items-center">
-    <input type="hidden" name="field" value="display_name">
-    <label for="editInputDisplayName" class="form-label fw-semibold p-1">{% trans "Choose a new Display Name" %}</label>
-    <input type="text" class="form-control" id="editInputDisplayName" name="new_value" placeholder="{{ user.display_name }}" required>
-  </div>
-  <div id="firstNameTemplate">
-    <input type="hidden" name="field" value="first_name">
-    <label for="editInputFirstName" class="form-label fw-semibold p-1">{% trans "Choose a new First Name" %}</label>
-    <input type="text" class="form-control" id="editInputFirstName" name="new_value" placeholder="{{ user.first_name }}" required>
-  </div>
-  <div id="lastNameTemplate">
-    <input type="hidden" name="field" value="last_name">
-    <label for="editInputLastName" class="form-label fw-semibold p-1">{% trans "Choose a new Last Name" %}</label>
-    <input type="text" class="form-control" id="editInputLastName" name="new_value" placeholder="{{ user.last_name }}" required>
-  </div>
-  <div id="emailTemplate">
-    <input type="hidden" name="field" value="email">
-    <label for="editInputEmail" class="form-label fw-semibold p-1">{% trans "Choose a new E-mail" %}</label>
-    <input type="email" class="form-control" id="editInputEmail" name="new_value" placeholder="{{ user.email }}"required>
-  </div>
-</div>
+<script src="{% static 'pong/js/editProfile.js' %}"></script>
 
 {% endblock content %}

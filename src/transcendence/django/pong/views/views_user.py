@@ -6,17 +6,24 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
+from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import update_session_auth_hash, login, authenticate
 from django.contrib.auth.decorators import login_required
 from .relationship.views_relationships import get_relationships_context
 from pong.models import BlockList, Session
 import json
-# import redirect from django.shortcuts
-from django.shortcuts import redirect
 
 # Project imports
 from pong.models import User
+
+# Define predefined avatars (You can move this list to settings or a separate config file if needed)
+PREDEFINED_AVATARS = [
+    f'{settings.MEDIA_URL}default_01.jpeg',
+    f'{settings.MEDIA_URL}default_02.jpeg',
+    f'{settings.MEDIA_URL}default_03.jpeg',
+    # Add more predefined avatars as needed
+]
 
 @login_required
 def user_list(request):
@@ -84,22 +91,42 @@ def edit_profile_field(request):
 
     # Handle different fields
     if field == 'avatar':
+        predefined_avatar_url = request.POST.get('avatar_option')
         avatar_file = request.FILES.get('new_value')
+
         try:
-            if not avatar_file:
-                raise ValidationError("'file' is empty")
+            if predefined_avatar_url:
+                # Validate predefined avatar
+                if predefined_avatar_url not in PREDEFINED_AVATARS:
+                    raise ValidationError("Invalid predefined avatar")
 
-            FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])(avatar_file)
+                # Fetch the predefined avatar
+                predefined_avatar_path = settings.STATIC_ROOT + '/' + predefined_avatar_url
+                with open(predefined_avatar_path, 'rb') as f:
+                    avatar_content = f.read()
 
-            # Save the file with a name based on a id
-            random_id = uuid.uuid4()
-            new_name = f'{random_id}.{avatar_file.name.split(".")[-1]}'
-            user.avatar.save(new_name, avatar_file)
+                # Save the avatar
+                random_id = uuid.uuid4()
+                new_name = f'{random_id}.{predefined_avatar_url.split(".")[-1]}'
+                user.avatar.save(new_name, ContentFile(avatar_content))
 
-            return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
-  
+                return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
+
+            elif avatar_file:
+                # Validate uploaded avatar
+                FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])(avatar_file)
+
+                # Save the file with a name based on a UUID
+                random_id = uuid.uuid4()
+                new_name = f'{random_id}.{avatar_file.name.split(".")[-1]}'
+                user.avatar.save(new_name, avatar_file)
+
+                return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
+            else:
+                raise ValidationError("No avatar provided")
+
         except ValidationError as ve:
-            return JsonResponse({'error': _('Avatar format not valid.')}, status=400)
+            return JsonResponse({'error': str(ve)}, status=400)
         except Exception as e:
             return JsonResponse({'error': _('An error occurred while trying to upload the avatar. Try again later.')}, status=500)
     else:
@@ -117,7 +144,33 @@ def edit_profile_field(request):
             elif field == 'email':
                 user.email = new_value
             elif field == 'password':
-                user.set_password(new_value)
+                old_password = request.POST.get('old_value')
+                new_password = request.POST.get('new_value')
+                user = request.user
+
+                if not user.check_password(old_password):
+                    return JsonResponse({'error': 'Current password is incorrect.'}, status=400)
+
+                if old_password == new_password:
+                    return JsonResponse({'error': 'New password cannot be the same as the old password.'}, status=400)
+
+                try:
+                    # Update the user's password
+                    user.set_password(new_password)
+                    user.save()
+
+                    # Re-authenticate the user and update the session
+                    update_session_auth_hash(request, user)
+                    
+                    return JsonResponse({'success': 'Password updated successfully.'}, status=200)
+
+                except ValidationError as ve:
+                    return JsonResponse({'error': str(ve)}, status=400)
+                except Exception as e:
+                    return JsonResponse({'error': 'An error occurred while trying to update password. Try again later.'}, status=500)
+        
+
+            # Save the user data
             user.save()
 
             return JsonResponse({'success': _('Field updated successfully.')}, status=200)

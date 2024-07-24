@@ -14,37 +14,39 @@
 					<form id="registerForm" method="POST" action="{% url 'register-user' %}">
 						{% csrf_token %}
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="username" name="username" minlength="3" maxlength="20" required>
+							<input type="text" class="form-control" id="username" name="username" minlength="3" maxlength="20" placeholder="" required>
 							<label for="username" class="form-label">{% trans "Username" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="display_name" name="display_name" minlength="3" maxlength="20" required>
+							<input type="text" class="form-control" id="display_name" name="display_name" minlength="3" maxlength="20" placeholder="" required>
 							<label for="display_name" class="form-label">{% trans "Display Name" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="first_name" name="first_name" required>
+							<input type="text" class="form-control" id="first_name" name="first_name" placeholder="" required>
 							<label for="first_name" class="form-label">{% trans "First Name" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="text" class="form-control" id="last_name" name="last_name" required>
+							<input type="text" class="form-control" id="last_name" name="last_name" placeholder="" required>
 							<label for="last_name" class="form-label">{% trans "Last Name" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="email" class="form-control" id="email" name="email" required>
+							<input type="email" class="form-control" id="email" name="email" placeholder="" required>
 							<label for="email" class="form-label">{% trans "E-mail" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="password" name="password" required>
+							<input type="password" class="form-control" id="password" name="password" placeholder="" required>
 							<label for="password" class="form-label">{% trans "Password" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+							<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="" required>
 							<label for="confirm_password" class="form-label">{% trans "Confirm Password" %}</label>
-							<div id="password-match-warning" style="color: green;"></div>
+						</div>
+						<div class="mb-3">
+							<div id="passwordMatchWarning" style="color: green;"></div>
 						</div>
 						
 						<div class="modal-footer">
-							<button id="register-button" type="submit" class="btn btn-primary" disabled>{% trans "Sign up" %}</button>
+							<button id="registerButton" type="submit" class="btn btn-primary" disabled>{% trans "Sign up" %}</button>
 						</div>
 					</form>
 				</div>

@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const returnToRegisterButton = document.getElementById('returnToRegister');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm_password');
-    const passwordMatchWarning = document.getElementById('password-match-warning');
-    const registerButton = document.getElementById('register-button');
+    const passwordMatchWarning = document.getElementById('passwordMatchWarning');
+    const registerButton = document.getElementById('registerButton');
     
     const registerModalElement = document.getElementById('registerModal');
     
@@ -45,30 +45,30 @@ document.addEventListener('DOMContentLoaded', function() {
     passwordInput.addEventListener('input', () => {
         if (confirmPasswordInput === '' || passwordInput.value === '') {
             passwordMatchWarning.textContent = '';
-            document.getElementById('register-button').disabled = true;
+            registerButton.disabled = true;
         } else if (passwordInput.value === confirmPasswordInput.value) {
             passwordMatchWarning.textContent = 'Passwords match';
             passwordMatchWarning.style.color = 'green';
-            document.getElementById('register-button').disabled = false;
+            registerButton.disabled = false;
         } else {
             passwordMatchWarning.textContent = 'Passwords do not match';
             passwordMatchWarning.style.color = 'red';
-            document.getElementById('register-button').disabled = true;
+            registerButton.disabled = true;
         }
     });
 
     confirmPasswordInput.addEventListener('input', () => {
         if (confirmPasswordInput === '' || passwordInput.value === '') {
             passwordMatchWarning.textContent = '';
-            document.getElementById('register-button').disabled = true;
+            registerButton.disabled = true;
         } else if (passwordInput.value === confirmPasswordInput.value) {
             passwordMatchWarning.textContent = 'Passwords match';
             passwordMatchWarning.style.color = 'green';
-            document.getElementById('register-button').disabled = false;
+            registerButton.disabled = false;
         } else {
             passwordMatchWarning.textContent = 'Passwords do not match';
             passwordMatchWarning.style.color = 'red';
-            document.getElementById('register-button').disabled = true;
+            registerButton.disabled = true;
         }
     });
 

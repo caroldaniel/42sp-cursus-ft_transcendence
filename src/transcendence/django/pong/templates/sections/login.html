@@ -7,19 +7,17 @@
 			<div class="p-4 mt-5" , style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
 				<h1 class="d-flex justify-content-center">{% trans "Log in" %}</h1>
 				<div class="d-flex justify-content-center">
-					<p>{% trans "New to PaddlePro?" %} <a href="#" data-bs-toggle="modal"
-							data-bs-target="#registerModal">{% trans "Sign up for free" %}</a></p>
+					<p>{% trans "New to PaddlePro?" %} <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal">{% trans "Sign up for free" %}</a></p>
 				</div>
 				<div class="d-flex justify-content-center mt-3">
 					<form id="loginForm" method="POST" action="{% url 'login-manual' %}">
 						{% csrf_token %}
 						<div class="form-floating mb-3">
-							<input type="username" class="form-control" id="floatingInput" id="username" name="username"
-								required>
+							<input type="username" class="form-control" id="floatingInput" id="username" name="username" placeholder="" required>
 							<label for="floatingInput">{% trans "Username" %}</label>
 						</div>
 						<div class="form-floating mb-3">
-							<input type="password" class="form-control" id="floatingPassword" name="password" required>
+							<input type="password" class="form-control" id="floatingPassword" name="password" placeholder="" required>
 							<label for="floatingPassword">{% trans "Password" %}</label>
 						</div>
 						<div class="d-flex flex-column">

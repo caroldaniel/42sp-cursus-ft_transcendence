@@ -36,6 +36,7 @@ urlpatterns = [
     path("tournament/list/", views.tournament_list, name="tournament-list"),
     path("profile/", views.get_profile_page, name="profile-page"),
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
+    path("profile/edit/templates/", views.load_templates, name="profile-edit-templates"),
     path("block/", views.block_user, name="block-user"),
     path("unblock/", views.unblock_user, name="unblock-user"),
     path("session/get/", views.get_session, name="get-sessions"),

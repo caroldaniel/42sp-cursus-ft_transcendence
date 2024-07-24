@@ -132,4 +132,5 @@ function editProfile() {
   editModalResponseElement.addEventListener('hidden.bs.modal', function () {
     document.getElementById('editModalResponseContent').textContent = '';
   });
+
 }
