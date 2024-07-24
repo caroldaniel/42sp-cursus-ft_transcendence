@@ -98,6 +98,38 @@ async function showEditModal(field) {
     }
   }
 
+  if (field === 'display_name') {
+    const displayNameField = document.getElementById('editInputDisplayName');
+
+    if (displayNameField) {
+      displayNameField.addEventListener('input', () => checkFieldRequirements(displayNameField));
+    }
+  }
+
+  if (field === 'first_name') {
+    const firstNameField = document.getElementById('editInputFirstName');
+
+    if (firstNameField) {
+      firstNameField.addEventListener('input', () => checkFieldRequirements(firstNameField));
+    }
+  }
+
+  if (field === 'last_name') {
+    const lastNameField = document.getElementById('editInputLastName');
+
+    if (lastNameField) {
+      lastNameField.addEventListener('input', () => checkFieldRequirements(lastNameField));
+    }
+  }
+
+  if (field === 'email') {
+    const emailField = document.getElementById('editInputEmail');
+
+    if (emailField) {
+      emailField.addEventListener('input', () => checkFieldRequirements(emailField));
+    }
+  }
+
   // Show the modal
   modalInstance.show();
 }
@@ -125,6 +157,20 @@ function checkPasswordMatch() {
   }
 }
 
+/**
+ * Check if fields have minimum or maximum requirements
+ */
+function checkFieldRequirements(field_element) {
+  const submitButton = document.getElementById('editInputButton');
+
+  if (field_element) {
+    if (field_element.value.length < 3 || field_element.value.length > 50) {
+      submitButton.disabled = true;
+    } else {
+      submitButton.disabled = false;
+    }
+  }
+}
 
 /**
  * Popover for username info
@@ -180,9 +226,29 @@ async function renewGameToken() {
 document.addEventListener('DOMContentLoaded', () => {
   const newPasswordField = document.getElementById('editInputNewPassword');
   const confirmNewPasswordField = document.getElementById('editInputConfirmNewPassword');
+  const displayNameField = document.getElementById('editInputDisplayName');
+  const firstNameField = document.getElementById('editInputFirstName');
+  const lastNameField = document.getElementById('editInputLastName');
+  const emailField = document.getElementById('editInputEmail');
 
   if (newPasswordField && confirmNewPasswordField) {
     newPasswordField.addEventListener('input', checkPasswordMatch);
     confirmNewPasswordField.addEventListener('input', checkPasswordMatch);
+  }
+
+  if (displayNameField) {
+    displayNameField.addEventListener('input', () => checkFieldRequirements(displayNameField));
+  }
+
+  if (firstNameField) {
+    firstNameField.addEventListener('input', () => checkFieldRequirements(firstNameField));
+  }
+
+  if (lastNameField) {
+    lastNameField.addEventListener('input', () => checkFieldRequirements(lastNameField));
+  }
+
+  if (emailField) {
+    emailField.addEventListener('input', () => checkFieldRequirements(emailField));
   }
 });
