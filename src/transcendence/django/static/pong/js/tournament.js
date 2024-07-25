@@ -1,4 +1,4 @@
-async function saveSessionStorageToServer() {
+export async function saveSessionStorageToServer() {
   console.log('Saving sessionStorage to the server...');
   // Create an object to store all sessionStorage items
   const sessionData = {};
@@ -12,8 +12,8 @@ async function saveSessionStorageToServer() {
 
   // Convert the object to JSON
   const jsonData = JSON.stringify(sessionData);
-  console.log('JSON data:', jsonData);
   const csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
   // Send the JSON to the server using fetch
   await fetch('/session/set/', {
       method: 'POST',
@@ -25,7 +25,7 @@ async function saveSessionStorageToServer() {
   })
   .then(response => response.json())
   .then(data => {
-      console.log('Success:', data);
+      return;
   })
   .catch((error) => {
       console.error('Error:', error);
@@ -52,9 +52,6 @@ async function sendNotification(currentMatch, playerL, playerR) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-
-    const data = await response.json();
-    console.log('Notification sent:', data);
   } catch (error) {
     alert("Error sending notification: " + error);
   }

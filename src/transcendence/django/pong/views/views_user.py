@@ -236,7 +236,7 @@ def get_session(request):
         session = Session.objects.get(user=request.user)
         return JsonResponse(json.loads(session.data), status=200)
     except Session.DoesNotExist:
-        return JsonResponse({'error': 'Session not found'}, status=404)
+        return JsonResponse({'success': 'Session not found'}, status=204)
 
 @login_required
 def set_session(request):

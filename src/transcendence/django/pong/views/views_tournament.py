@@ -42,7 +42,8 @@ def tournament_warning(request):
 
         tournament = Tournament.objects.get(created_by=request.user)
         if playerL == playerR:
-            tournament.winner = User.objects.get(display_name=playerL)
+            tournament.winner = playerL
+            tournament.status = 'finished'
         tournament.match_count = currentMatch
         tournament.actual_match = f"{playerL} vs {playerR}"
         tournament.save()
@@ -62,7 +63,7 @@ def tournament_list(request):
         'created_by': tournament.created_by.display_name, 
         'created_at': tournament.created_at,
         'status': tournament.status,
-        'winner': tournament.winner.display_name if tournament.winner else None,
+        'winner': tournament.winner,
         'match_count': tournament.match_count, 
         'actual_match': tournament.actual_match,
         } for tournament in tournaments]})

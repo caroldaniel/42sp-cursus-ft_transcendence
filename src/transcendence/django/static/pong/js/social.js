@@ -377,13 +377,11 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (tournament.match_count === 6) {
       cardText.textContent = 'Finals';
     } else {
-      const cardText = document.createElement('h4');
+      const cardText = document.createElement('h6');
       cardText.className = 'card-text';
       cardText.textContent = "Winner: " + tournament.winner + " 🏆 ";
       cardBody.appendChild(cardText);
     }
-    console.log(cardText.textContent);
-    cardBody.appendChild(cardText);
 
     // Create the card text p
     const cardText2 = document.createElement('p');

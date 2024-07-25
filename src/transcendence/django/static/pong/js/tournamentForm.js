@@ -10,40 +10,6 @@ async function getUserList() {
   }
 }
 
-async function saveSessionStorageToServer() {
-  console.log('Saving sessionStorage to the server...');
-  // Create an object to store all sessionStorage items
-  const sessionData = {};
-
-  // Iterate over all sessionStorage items
-  for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      const value = sessionStorage.getItem(key);
-      sessionData[key] = value;
-  }
-
-  // Convert the object to JSON
-  const jsonData = JSON.stringify(sessionData);
-  console.log('JSON data:', jsonData);
-  const csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-  // Send the JSON to the server using fetch
-  await fetch('/session/set/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfmiddlewaretoken,
-      },
-      body: jsonData,
-  })
-  .then(response => response.json())
-  .then(data => {
-      console.log('Success:', data);
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-  });
-}
-
 async function createTournament(registeredPlayers) {
   try {
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
@@ -61,9 +27,6 @@ async function createTournament(registeredPlayers) {
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    
-    const data = await response.json();
-    await saveSessionStorageToServer(); 
   } catch (error) {
     console.error('Error creating tournament:', error);
   }
