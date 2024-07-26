@@ -1,54 +1,42 @@
-.bracket {
+.bracket .round {
+  margin-bottom: 20px;
+}
+.bracket .matchup {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
-  gap: 2rem;
-  margin-top: 4rem;
+  justify-content: space-between;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f9fa;
+  margin-bottom: 10px;
 }
-
-.round {
-  display: flex;
-  gap: 3rem;
+.bracket .vs {
+  font-weight: bold;
+  margin: 0 2rem;
 }
-
-.matchup {
-  display: flex;
-  gap: 0.5rem;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 1rem;
+.bracket .stage {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
-
 .player {
   width: 24ch;
-  background-color: rgb(var(--bs-body-color-rgb));
-  color:  rgb(var(--bs-body-bg-rgb));
+  background-color: rgba(var(--bs-body-color-rgb), 0.7);
+  color: rgba(var(--bs-body-bg-rgb), 0.8);
   padding: 0.625rem 2ch;
   border-radius: 5px;
   text-align: center;
+  box-shadow: 0 2px 4px rgba(196, 195, 195, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold;
 }
-
-.bottom-border {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-  padding-bottom: 1rem;
+.player:hover {
+  background-color: rgba(var(--bs-primary-rgb), 0.85);
+  color: rgba(var(--bs-white-rgb), 0.95);
 }
-
 .bg-overlay {
   background: rgba(0, 0, 0, 0.5);
   z-index: 0;
   backdrop-filter: blur(8px);
-}
-.position-relative {
-  position: relative;
-}
-.z-index-1 {
-  z-index: 1;
-}
-.container {
-  position: relative;
-  overflow: hidden;
-  padding: 30px;
-  border-radius: 8px;
 }
