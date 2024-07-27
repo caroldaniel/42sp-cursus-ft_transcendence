@@ -5,13 +5,25 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const errorModalElement = document.getElementById('errorModal');
-    
+    const errorMessageElement = document.getElementById('errorMessage');
+
     if (!errorModalElement) {
         console.error('Error: #errorModal not found');
         return;
     }
 
     const errorModal = new bootstrap.Modal(errorModalElement);
+
+    function showErrorModal(message) {
+        errorMessageElement.textContent = message;
+        errorModal.show();
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('error')) {
+        const error = urlParams.get('error');
+        showErrorModal(error);
+    }
 
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -30,15 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 window.location.href = data.redirect;
             } else {
-                console.log('Error:', data.error);
-                document.getElementById('errorMessage').textContent = data.error;
-                errorModal.show();
+                showErrorModal(data.error);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('errorMessage').textContent = 'An unexpected error occurred. Please try again.';
-            errorModal.show();
+            showErrorModal('An unexpected error occurred. Please try again.');
         });
     });
 });

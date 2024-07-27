@@ -1,7 +1,7 @@
 import os
 import requests
 import secrets
-import string
+import logging
 
 from urllib.parse import urlencode, quote_plus
 
@@ -15,6 +15,9 @@ from django.core.exceptions import ValidationError
 
 # Project imports
 from pong.models import User
+
+# Logger
+logger = logging.getLogger(__name__)
 
 
 # Generate the Intra OAuth2 URL
@@ -53,14 +56,16 @@ def get_intra_user_from_code(code: str) -> dict:
 	try:
 		# Get access token
 		token_response = requests.post("https://api.intra.42.fr/oauth/token", data=data, headers=headers, timeout=30)
-		access_token = token_response.json()['access_token']
-
+		token_response.raise_for_status()
+		access_token = token_response.json().get('access_token')
+		
 		# Get user information
 		intra_user_response = requests.get("https://api.intra.42.fr/v2/me", headers={"Authorization": f"Bearer {access_token}"}, timeout=30)
-	except Exception as e:
-		print(f"Intra user information exchange error: {e}")
+		intra_user_response.raise_for_status()
+		return intra_user_response.json()
+	except requests.exceptions.RequestException as e:
+		logger.error(f"Intra user information exchange error: {e}")
 		return None
-	return intra_user_response.json()
 
 
 # On clicking "Login/Sign In", redirects to Intra OAuth2
@@ -94,16 +99,18 @@ def intra_login_redirect(request: HttpRequest):
 	"""
 	intra_code = request.GET.get('code')
 	if intra_code is None:
-		return JsonResponse({'error': _('Failure to retrieve code from request')}, status=400)	
+		return redirect(f"/login/?error={_('Failure to retrieve code from request')}")	
 	intra_user = get_intra_user_from_code(intra_code)
 	if intra_user is None:
-		return JsonResponse({'error': _('Failure to retrieve user information')}, status=401)
+		return redirect(f"/login/?error={_('Failure to retrieve user information')}")
 
-	# Get user's data from Intra API
-	username = intra_user['login']
-	email = intra_user['email']
-	first_name = intra_user['first_name']
-	last_name = intra_user['last_name']
+	try:
+		username = intra_user['login']
+		email = intra_user['email']
+		first_name = intra_user['first_name']
+		last_name = intra_user['last_name']
+	except KeyError as e:
+		return redirect(f"/login/?error={_('Invalid user data received from 42 API')}")
 
 	# Check if user is already in the database
 	try:
@@ -123,7 +130,7 @@ def intra_login_redirect(request: HttpRequest):
 	# Authenticate user
 	authorized_user = authenticate(request, username=username)
 	if authorized_user is None:
-		return JsonResponse({'error': _('Failure to authenticate')}, status=401)
+		return redirect(f"/login/?error={_('Failure to authenticate')}")
 	
 	login(request=request, user=authorized_user)
 	return redirect('/')
