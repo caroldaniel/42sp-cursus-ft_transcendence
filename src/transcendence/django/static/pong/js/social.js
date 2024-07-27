@@ -377,23 +377,22 @@ document.addEventListener('DOMContentLoaded', function () {
     } else if (tournament.match_count === 6) {
       cardText.textContent = 'Finals';
     } else {
-      const cardText = document.createElement('h6');
       cardText.className = 'card-text';
       cardText.textContent = "Winner: " + tournament.winner + " 🏆 ";
-      cardBody.appendChild(cardText);
     }
+    cardBody.appendChild(cardText);
 
-    // Create the card text p
     const cardText2 = document.createElement('p');
     cardText2.className = 'card-text';
-    if (tournament.match_count < 6)
+
+    if (tournament.match_count <= 6)
       cardText2.textContent = tournament.actual_match;
     else
       cardText2.textContent = 'Finished';
     cardBody.appendChild(cardText2);
 
     // Create the button if the tournament creator is the current user
-    if (tournament.created_by === currentUser && tournament.match_count < 6) {
+    if (tournament.created_by === currentUser && tournament.match_count <= 6) {
       const button = document.createElement('button');
       button.className = 'btn btn-primary';
       button.textContent = 'View Tournament';

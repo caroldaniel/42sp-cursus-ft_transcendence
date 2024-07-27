@@ -68,6 +68,7 @@ async function loadTournament() {
   const final = JSON.parse(finalString);
 
   const winner = sessionStorage.getItem("winner");
+  const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
 
   const currentMatchString = sessionStorage.getItem("currentMatch");
   const currentMatch = Number(JSON.parse(currentMatchString));
@@ -77,9 +78,15 @@ async function loadTournament() {
     showSection("/tournament/winner/");
   }
 
-  const quarterDivs = document.querySelectorAll(".quarter > .player");
-  for (let i = 0; i < quarterDivs.length; i++) {
-    quarterDivs[i].innerHTML = quarters[i];
+  if (numPlayers === 8){
+    const quarterDivs = document.querySelectorAll(".quarter > .player");
+    for (let i = 0; i < quarterDivs.length; i++) {
+      quarterDivs[i].innerHTML = quarters[i];
+    }
+  }
+  else if (numPlayers === 4) {
+    const quarterFinalsDiv = document.getElementById("quarterFinals");
+    quarterFinalsDiv.style.display = "none";
   }
 
   const semiFinalDivs = document.querySelectorAll(".semi > .player");

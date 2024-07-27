@@ -1,3 +1,19 @@
+function showForm(numPlayers) {
+  const form = document.getElementById("formContent");
+  sessionStorage.setItem("numPlayers", numPlayers);
+
+  for (let i = 2; i <= 8; i++) {
+    const playerDiv = document.getElementById(`div-player-${i}`);
+    if (i <= numPlayers) {
+      playerDiv.style.display = "block";
+    } else {
+      playerDiv.style.display = "none";
+    }
+  }
+
+  form.style.display = "block";
+}
+
 async function getUserList() {
   try {
     const response = await fetch('/users/list/');
@@ -21,6 +37,7 @@ async function createTournament(registeredPlayers) {
       },
       body: JSON.stringify({
         players: registeredPlayers,
+        match_count: sessionStorage.getItem("currentMatch"),
       }),
     });
     
@@ -96,10 +113,18 @@ async function loadTournamentForm() {
       // If all game tokens are valid, shuffle players and save them to local storage
       if (needCheckToken === false) {
         const quarters = shuffle(players);
+        const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
         sessionStorage.clear();
+        sessionStorage.setItem("numPlayers", numPlayers);
         sessionStorage.setItem("gameMode", "tournament");
-        sessionStorage.setItem("quarters", JSON.stringify(quarters));
-        sessionStorage.setItem("currentMatch", "0");
+        if (numPlayers === 4){
+            sessionStorage.setItem("currentMatch", "4");
+            sessionStorage.setItem("semiFinals", JSON.stringify(quarters));  
+        }
+        if (numPlayers === 8){
+            sessionStorage.setItem("currentMatch", "0");
+            sessionStorage.setItem("quarters", JSON.stringify(quarters));
+        }
         await createTournament(registeredPlayers);
         showSection("/tournament/");
       }
@@ -121,7 +146,8 @@ function clearMessages() {
 // Get players from the form and check if they have the same name or are empty
 function getPlayers() {
   const players = [];
-  for (let i = 1; i <= 8; i++) {
+  const numPlayers = sessionStorage.getItem("numPlayers");
+  for (let i = 1; i <= numPlayers; i++) {
     const playerName = document.getElementById(`player-${i}`);
     const userPlayerName = document.getElementById(`player-${i - 1}`);
 

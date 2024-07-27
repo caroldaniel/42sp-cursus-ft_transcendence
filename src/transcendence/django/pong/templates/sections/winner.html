@@ -1,7 +1,18 @@
 {% load static %}
 {% block content %}
-  <h1 class="text-center mt-5 fs-2">The winner is:</h1>
-  <h1 class="text-center mt-5 fs-1">
-    <span>🏆</span><span id="winner" class="px-3 fw-bold">Player</span><span>🏆</span>
-  </h1>
+  <div class="container text-center mt-5 position-relative">
+    <div class="bg-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+
+    <div class="position-relative z-index-1">
+      <h1 class="text-primary mb-4">🎉 The winner is:</h1>
+      <div class="d-flex justify-content-center align-items-center">
+        <div class="display-3 text-warning fw-bold">
+          <span>🏆</span><span id="winner" class="px-3">Player</span><span>🏆</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <button class="btn btn-primary btn-lg" onclick="showSection('/')">Back to Home</button>
+      </div>
+    </div>
+  </div>
 {% endblock content %}

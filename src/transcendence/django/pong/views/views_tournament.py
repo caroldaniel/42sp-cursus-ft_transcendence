@@ -17,11 +17,12 @@ def tournament_create(request):
         
         data = json.loads(request.body)
         players = data.get('players', [])
+        match_count = data.get('match_count')
 
         players_users = [User.objects.get(display_name=player) for player in players if User.objects.filter(display_name=player).exists()]
         players_users.append(user)
 
-        tournament = Tournament.objects.create(created_by=user)
+        tournament = Tournament.objects.create(created_by=user, match_count=match_count)
         tournament.registered_users.set(players_users)
         tournament.save()
 
