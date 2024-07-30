@@ -1,3 +1,5 @@
+let currentRoute = null;
+
 async function getSectionHTML(section) {
   try {
       const response = await fetch(section, {
@@ -27,9 +29,16 @@ async function getSectionHTML(section) {
 }
 
 function setupSection(section) {
-  if (section === "/game/" || section.match(/^\/game\/(.+)\/$/)) {
-    sessionStorage.setItem("gameMode", "local");
+  if (currentRoute && currentRoute.startsWith("/game/") && !section.startsWith("/game/")) {
+    // User is leaving the game route
+    updateMatchResultToWO();
+  }
+  currentRoute = section;
+
+  if (section.startsWith("/game/")) {
     startGame();
+  } else if (section === "/match/setup/") {
+    loadGameSetup();
   } else if (section === "/tournament/game/") {
     startGame();
   } else if (section === "/tournament/") {
@@ -44,6 +53,8 @@ function setupSection(section) {
     setupStats();
   } else if (section === "/") {
     setupHome();
+  } else {
+    return;
   }
 }
 
@@ -79,14 +90,31 @@ async function showSection(section) {
   }
 }
 
-function activateSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.style.display = "flex";
+// Function to send AJAX request to update match result to 'wo'
+function updateMatchResultToWO() {
+  const matchId = getMatchIdFromRoute(currentRoute); 
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+  console.log(matchId)
+  fetch(`/match/update_wo/${matchId}/`, {
+      method: "POST",
+      headers: {
+          "X-CSRFToken": csrfToken
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+      console.log("Match result updated to 'wo':", data);
+  })
+  .catch(error => {
+      console.error("Error updating match result to 'wo':", error);
+  });
 }
 
-function deactivateSidebar() {
-  const sidebar = document.getElementById("sidebar");
-  sidebar.style.display = "none";
+// Function to extract match_id from the route
+function getMatchIdFromRoute(route) {
+  const match = route.match(/\/game\/([0-9a-fA-F-]+)\//);
+  return match ? match[1] : null;
 }
 
 window.addEventListener("popstate", async () => {

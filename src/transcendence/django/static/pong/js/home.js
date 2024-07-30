@@ -34,7 +34,6 @@ async function logout() {
 }
 
 function setupHome() {
-    console.log('Setting up the home page...');
     // Retrieve all items only once per session
     if (document.getElementById('displayNameSpan')) {
         redistributeSessionStorageItems();
@@ -45,6 +44,10 @@ function setupHome() {
 document.addEventListener('DOMContentLoaded', function () {
     const copyButton = document.getElementById('copyButton');
     const gameTokenElement = document.getElementById('gameToken');
+
+    if (!copyButton || !gameTokenElement) {
+        return;
+    }
 
     // Initialize the tooltip
     const tooltip = new bootstrap.Tooltip(copyButton, {

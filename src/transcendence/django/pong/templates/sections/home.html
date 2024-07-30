@@ -1,5 +1,6 @@
 {% load static i18n %}
-{% block buttons %}
+
+{% block content %}
 
 <div class="container">
   <div class="row justify-content-center">
@@ -23,7 +24,7 @@
                 <p class="card-text">
                   {% trans "You can play 1:1 against someone using the same computer. It's a great way to challenge friends or family in a quick match." %}
                 </p>
-                <button type="button" class="btn btn-primary" onclick="showSection('/game/')">
+                <button type="button" class="btn btn-primary" onclick="showSection('/match/setup/')">
                   <i class="bi bi-display me-2"></i>
                   {% trans "Play Now" %}
                 </button>
@@ -75,4 +76,4 @@
   </div>
 </div>
 
-{% endblock buttons %}
+{% endblock content %}

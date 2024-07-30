@@ -1,30 +1,39 @@
-{% load static %}
+{% load static i18n %}
 {% csrf_token %}
+
 {% block scripts %}
-  <script src="https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js"
-          type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.117.1/build/three.module.js" type="module"></script>
   <script src="{% static 'pong/js/game.js' %}" type="module"></script>
 {% endblock scripts %}
-{% block game %}
+
+{% block content %}
+
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-12">
       <div class="p-4 mt-5", style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
-        <div class="d-flex justify-content-evenly mt-5">
-          <div id="player-l" class="fs-3">
-            <span id="player-l-name" class="fw-bold">{{ user.display_name }}</span>
+        
+        <!-- Game title and score -->
+        <div class="d-flex justify-content-around mt-2 p-3 bg-light rounded shadow">
+          <div id="player-l" class="fs-4 text-primary">
+            <span id="player-l-name" class="fw-bold">{{ player1 }}</span>
             :
-            <span id="player-l-score"></span>
+            <span id="player-l-score">0</span>
           </div>
-          <div id="player-r" class="fs-3">
-            <span id="player-r-name" class="fw-bold">{{ opponent_display_name|default:"Guest" }}</span>
+          <div id="player-r" class="fs-4 text-danger">
+            <span id="player-r-name" class="fw-bold">{{ player2 }}</span>
             :
-            <span id="player-r-score"></span>
+            <span id="player-r-score">0</span>
           </div>
         </div>
+
+        <!-- Game Canvas -->
         <div id="game-wrapper"
             class="position-relative d-flex justify-content-center align-items-center"
             style="height: 75vh;">
+
+          <canvas id="game-canvas" class="d-block mx-auto position-absolute"></canvas>
+
           <div id="game-over"
               class="flex-column align-items-center justify-content-around position-absolute z-1 w-50 h-50 bg-secondary-subtle rounded-3"
               style="top: 25%;
@@ -32,17 +41,18 @@
                       display: none;">
             <div class="text-center fs-3">
               <span id="popup-winner-name">intra_nickname</span>
-              <span>won!</span>
+              <span>{% trans "won!" %}</span>
             </div>
-            <button id="play-again" type="button" class="btn w-75 btn-primary fw-bold">PLAY AGAIN</button>
+            <button id="play-again" type="button" class="btn w-75 btn-primary fw-bold">{% trans "Play Again" %}</button>
             <a type="button"
               class="btn w-75 btn-secondary fw-bold"
-              onclick="showSection('/')">CLOSE</a>
+              onclick="showSection('/')">{% trans "Close" %}</a>
           </div>
-          <canvas id="game-canvas" class="d-block mx-auto position-absolute"></canvas>
         </div>
+
       </div>
     </div>
   </div>
 </div>
-{% endblock game %}
+
+{% endblock content %}

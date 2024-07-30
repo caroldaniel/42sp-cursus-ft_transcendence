@@ -15,9 +15,14 @@ urlpatterns = [
 	path("login/oauth2/redirect/", views.intra_login_redirect, name="login-oauth2-redirect"),
     path("login/manual/", views.manual_login, name="login-manual"),
     path("logout/", views.manage_logout, name="logout"),
-    path("game/", views.get_game_page, name="game-page"),
+    path("match/setup/", views.get_game_setup_page, name="game-setup-page"),
+    path("match/create/", views.create_match, name="create-match"),
+    path("match/update/", views.update_match_result, name="update-match"),
+    path('match/update_wo/<uuid:match_id>/', views.update_result_wo, name='update_result_wo'),
+    path("game/<uuid:match_id>/", views.get_game_page, name="game-page"),
     path("game/<uuid:user_id>/", views.get_user_game_page, name="user-game-page"),
     path("game/register/", views.register_match, name="register-match"),
+    path("game_token/validate", views.validate_game_token, name="validate-game-token"),
     path("friend/send/", views.send_friend_request, name="send-friend-request"),
     path("friend/accept/", views.accept_friend_request, name="accept-friend-request"),
     path("friend/deny/", views.deny_friend_request, name="deny-friend-request"),
@@ -41,6 +46,4 @@ urlpatterns = [
     path("unblock/", views.unblock_user, name="unblock-user"),
     path("session/get/", views.get_session, name="get-sessions"),
     path("session/set/", views.set_session, name="set-session")
-	# # ! Uncomment this to populate database
-    # path("populate_db/", views.populate_db, name="populate-db"),
 ]

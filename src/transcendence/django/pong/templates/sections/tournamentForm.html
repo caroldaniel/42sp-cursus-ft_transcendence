@@ -4,31 +4,35 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <div class="p-4 mt-5", style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+      <div class="p-4 mt-5" , style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+
         <h1 class="text-center mt-3">Create Tournament</h1>
+
         <div class="row">
           <div class="col-sm-6">
             <div class="card text-center" style="height: 100%;">
               <div class="card-body">
-          <h5 class="card-title">4 Players</h5>
-          <p class="card-text">{% trans "3 Matchs: Semifinals followed by a final." %}</p>
-          <a class="btn btn-primary" onclick="showForm(4)"> 
-            <i class="bi bi-trophy"></i></a>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="card text-center" style="height: 100%;">
-        <div class="card-body">
-          <h5 class="card-title">8 Players</h5>
-          <p class="card-text">{% trans "7 Matchs: Quarterfinals, semifinals, followed by a final." %}</p>
-          <a class="btn btn-primary" onclick="showForm(8)">
-            <i class="bi bi-trophy"></i></a>
+                <h5 class="card-title">4 Players</h5>
+                <p class="card-text">{% trans "3 Matchs: Semifinals followed by a final." %}</p>
+                <a class="btn btn-primary" onclick="showForm(4)">
+                  <i class="bi bi-trophy"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="card text-center" style="height: 100%;">
+              <div class="card-body">
+                <h5 class="card-title">8 Players</h5>
+                <p class="card-text">{% trans "7 Matchs: Quarterfinals, semifinals, followed by a final." %}</p>
+                <a class="btn btn-primary" onclick="showForm(8)">
+                  <i class="bi bi-trophy"></i></a>
               </div>
             </div>
           </div>
         </div>
+
         {% include "../components/tournamentForm.html" %}
+        
       </div>
     </div>
   </div>
