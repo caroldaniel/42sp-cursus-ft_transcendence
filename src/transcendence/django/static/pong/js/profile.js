@@ -87,7 +87,14 @@ async function showEditModal(field) {
   // Insert the template content into the modal
   editInputContainer.innerHTML = getTemplate(templateId);
 
-  // Add event listeners for password fields if the field is 'password'
+  if (field === 'avatar') {
+    const newAvatarField = document.getElementById('editInputAvatar');
+
+    if (newAvatarField) {
+      newAvatarField.addEventListener('change', checkAvatarSubmition);
+    }
+  }
+
   if (field === 'password') {
     const newPasswordField = document.getElementById('editInputNewPassword');
     const confirmNewPasswordField = document.getElementById('editInputConfirmNewPassword');
@@ -153,6 +160,20 @@ function checkPasswordMatch() {
   } else {
     passwordWarning.textContent = 'Passwords do not match';
     passwordWarning.style.color = 'red';
+    submitButton.disabled = true;
+  }
+}
+
+/**
+ * Check if input of type file has had any value to it
+ */
+function checkAvatarSubmition() {
+  const avatarInput = document.getElementById('editInputAvatar');
+  const submitButton = document.getElementById('editInputButton');
+
+  if (avatarInput.files.length > 0) {
+    submitButton.disabled = false;
+  } else {
     submitButton.disabled = true;
   }
 }
@@ -224,12 +245,17 @@ async function renewGameToken() {
 
 // Add event listeners to the password fields when the DOM content is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
+  const newAvatarField = document.getElementById('editInputAvatar');
   const newPasswordField = document.getElementById('editInputNewPassword');
   const confirmNewPasswordField = document.getElementById('editInputConfirmNewPassword');
   const displayNameField = document.getElementById('editInputDisplayName');
   const firstNameField = document.getElementById('editInputFirstName');
   const lastNameField = document.getElementById('editInputLastName');
   const emailField = document.getElementById('editInputEmail');
+
+  if (newAvatarField) {
+    newAvatarField.addEventListener('change', () => checkAvatarSubmition);
+  }
 
   if (newPasswordField && confirmNewPasswordField) {
     newPasswordField.addEventListener('input', checkPasswordMatch);

@@ -200,6 +200,112 @@ class User(AbstractBaseUser):
 	
 		return self
 
+
+class Guest(models.Model):
+	"""
+	Represents a guest player in the Pong game.
+
+	Attributes:
+		id (UUIDField): The unique identifier for the guest player.
+		display_name (CharField): The name displayed for the guest player.
+
+	Methods:
+		__str__(): Returns a string representation of the guest player.
+
+	"""
+
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	display_name = models.CharField(max_length=100)
+
+	def __str__(self):
+		return f"{self.id}"
+	
+
+# Tournament model
+class Tournament(models.Model):
+	"""
+	Model to represent a tournament in the application.
+
+	Attributes:
+		id (UUIDField): The unique identifier for the tournament.
+		created_by (ForeignKey): The user who created the tournament.
+		created_at (DateTimeField): The datetime when the tournament was created.
+		status (CharField): The status of the tournament (open, closed, finished).
+		winner (CharField): The winner of the tournament.
+		match_count (IntegerField): The number of matches in the tournament.
+		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
+		registered_users (ManyToManyField): The users registered for the tournament with a valid account.
+	"""
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	created_by = models.ForeignKey(User, related_name='created_tournaments', on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True)
+	status = models.CharField(max_length=50, default='open')
+	winner = models.CharField(max_length=50, blank=True)
+	match_count = models.IntegerField(default=0)
+	actual_match = models.CharField(max_length=50, blank=True)
+	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
+
+	def __str__(self):
+		return self.id
+
+	def save(self, *args, **kwargs):
+		"""
+		Overrides the save method to update the timestamp before saving.
+		
+		Usage:
+			This method is automatically called by Django before saving the model instance.
+			It updates the timestamp to the current datetime value before saving.
+		"""
+		self.created_at = timezone.now()
+		super().save(*args, **kwargs)
+
+
+class Match(models.Model):
+	MATCH_TYPE_CHOICES = [
+		('local', 'Local'),
+		('tournament', 'Tournament'),
+	]
+	MATCH_DIFFICULTY_CHOICES = [
+		('slow', 'Slow'),
+		('normal', 'Normal'),
+		('fast', 'Fast'),
+	]
+	MATCH_STATUS_CHOICES = [
+		('pending', 'Pending'),
+		('finished', 'Finished'),
+		('wo', 'Walkover'),
+	]
+
+	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	tournament = models.ForeignKey(Tournament, null=True, blank=True, related_name='matches', on_delete=models.SET_NULL)
+	player1_user = models.ForeignKey(User, null=True, blank=True, related_name='matches_as_player1', on_delete=models.SET_NULL)
+	player1_guest = models.ForeignKey(Guest, null=True, blank=True, related_name='matches_as_player1', on_delete=models.SET_NULL)
+	player2_user = models.ForeignKey(User, null=True, blank=True, related_name='matches_as_player2', on_delete=models.SET_NULL)
+	player2_guest = models.ForeignKey(Guest, null=True, blank=True, related_name='matches_as_player2', on_delete=models.SET_NULL)
+	score_player1 = models.IntegerField()
+	score_player2 = models.IntegerField()
+	timestamp = models.DateTimeField(auto_now_add=True)
+	status = models.CharField(max_length=20, choices=MATCH_STATUS_CHOICES, default='pending')
+	difficulty = models.CharField(max_length=10, choices=MATCH_DIFFICULTY_CHOICES, default='normal')
+	walkover = models.BooleanField(default=False)
+
+	def __str__(self):
+		return f"Match {self.id} - {self.get_player1_display()} vs {self.get_player2_display()}"
+
+	def get_player1_display(self):
+		if self.player1_user:
+			return self.player1_user.display_name
+		elif self.player1_guest:
+			return self.player1_guest.display_name
+		return 'Unknown'
+
+	def get_player2_display(self):
+		if self.player2_user:
+			return self.player2_user.display_name
+		elif self.player2_guest:
+			return self.player2_guest.display_name
+		return 'Unknown'
+
 # Match History
 class MatchHistory(models.Model):
 	"""
@@ -333,44 +439,6 @@ class BlockList(models.Model):
 		"""
 		if BlockList.objects.filter(blocker=self.blocker, blocked=self.blocked).exists():
 			raise ValidationError('Block already exists')
-		super().save(*args, **kwargs)
-
-# Tournament model
-class Tournament(models.Model):
-	"""
-	Model to represent a tournament in the application.
-
-	Attributes:
-		id (UUIDField): The unique identifier for the tournament.
-		created_by (ForeignKey): The user who created the tournament.
-		created_at (DateTimeField): The datetime when the tournament was created.
-		status (CharField): The status of the tournament (open, closed, finished).
-		winner (CharField): The winner of the tournament.
-		match_count (IntegerField): The number of matches in the tournament.
-		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
-		registered_users (ManyToManyField): The users registered for the tournament with a valid account.
-	"""
-	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	created_by = models.ForeignKey(User, related_name='created_tournaments', on_delete=models.CASCADE)
-	created_at = models.DateTimeField(auto_now_add=True)
-	status = models.CharField(max_length=50, default='open')
-	winner = models.CharField(max_length=50, blank=True)
-	match_count = models.IntegerField(default=0)
-	actual_match = models.CharField(max_length=50, blank=True)
-	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
-
-	def __str__(self):
-		return self.id
-
-	def save(self, *args, **kwargs):
-		"""
-		Overrides the save method to update the timestamp before saving.
-		
-		Usage:
-			This method is automatically called by Django before saving the model instance.
-			It updates the timestamp to the current datetime value before saving.
-		"""
-		self.created_at = timezone.now()
 		super().save(*args, **kwargs)
 
 # Session storage model

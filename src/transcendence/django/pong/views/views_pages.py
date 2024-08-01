@@ -1,16 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
+from django.conf import settings
 
 from pong.views.views_match_history import get_match_history_context
-from pong.models import User
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url="/login")
-def get_home_page(request):
-	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/home.html")
-	return render(request, "sections/home.html")
+from pong.models import User, Match
 
 
 def get_login_page(request):
@@ -20,13 +14,37 @@ def get_login_page(request):
 		return render(request, "pages/login.html")
 	else:
 		return render(request, "sections/login.html")
+	
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
-def get_game_page(request):
+def get_home_page(request):
 	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/game.html")
-	return render(request, "sections/game.html")
+		return render(request, "pages/home.html")
+	return render(request, "sections/home.html")
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url="/login")
+def get_game_setup_page(request):
+	users = User.objects.all()
+	context = {'users': users}
+	if request.headers.get('X-Custom-Header') != 'self':
+		return render(request, "pages/gameSetup.html", context)
+	return render(request, "sections/gameSetup.html", context)
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url="/login")
+def get_game_page(request, match_id):
+	match = Match.objects.get(pk=match_id)
+	player1 = match.get_player1_display()
+	player2 = match.get_player2_display()
+	context = {'match': match, 'player1': player1, 'player2': player2}
+	if request.headers.get('X-Custom-Header') != 'self':
+		return render(request, "pages/game.html", context)
+	return render(request, "sections/game.html", context)
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
@@ -105,3 +123,19 @@ def get_profile_page(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def load_templates(request):
     return render(request, 'components/modals/editProfileTemplates.html')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url="/login")
+def get_user_profile_page(request, user_id):
+	user = User.objects.get(pk=user_id)
+	avatar_url = f'{settings.MEDIA_URL}{str(user.avatar)}' if user.avatar else f'{settings.MEDIA_URL}default.svg'
+
+	context = {
+		'username': user.username,
+		'display_name': user.display_name,
+		'email': user.email,
+		'first_name': user.first_name,
+		'last_name': user.last_name,
+		'user_avatar': avatar_url		
+	}
+	return render(request, "components/modals/userProfile.html", context)

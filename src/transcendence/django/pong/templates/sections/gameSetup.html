@@ -1,0 +1,88 @@
+{% load static i18n %}
+{% csrf_token %}
+
+{% block content %}
+<div id="game-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="p-4 mt-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+                    <div class="text-center">
+                        <!-- Title -->
+                        <h2 class="fs-1 mb-1">
+                            <i class="bi bi-joystick me-2"></i>
+                            {% trans "Local Game Setup" %}
+                        </h2>
+                        <hr>
+                        <div id="game-setup" class="container mt-5">
+                            <form id="game-setup-form" method="POST" action="{% url 'create-match' %}">
+                                {% csrf_token %}
+                                <div class="mb-3 d-flex flex-column align-items-center">
+                                    <p class="form-label me-3 fs-5"><strong>{% trans "Difficulty" %}</strong></p>
+                                    <div id="difficulty-options" class="btn-group" role="group" aria-label="Difficulty levels">
+                                        <input type="radio" class="btn-check" name="difficulty" id="difficulty-slow" value="slow" required>
+                                        <label class="btn btn-outline-secondary" for="difficulty-slow">{% trans "Slow" %}</label>
+
+                                        <input type="radio" class="btn-check" name="difficulty" id="difficulty-normal" value="normal" required checked>
+                                        <label class="btn btn-outline-secondary" for="difficulty-normal">{% trans "Normal" %}</label>
+
+                                        <input type="radio" class="btn-check" name="difficulty" id="difficulty-fast" value="fast" required>
+                                        <label class="btn btn-outline-secondary" for="difficulty-fast">{% trans "Fast" %}</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <p for="player1" class="form-label fs-5"><strong>{% trans "Player 1" %}</strong></label>
+                                            <div class="form-check form-switch mb-2 d-flex align-items-center">
+                                                <input class="form-check-input me-2" type="checkbox" id="player1-guest-switch">
+                                                <label class="form-check-label" for="player1-guest-switch">{% trans "Play as Guest" %}</label>
+                                            </div>
+                                            <select id="player1" class="form-select" required disabled>
+                                                <option value="{{ user.id }}">{{ user.display_name }}</option>
+                                            </select>
+                                            <input type="text" id="player1-guest" class="form-control mt-2" placeholder="Guest" style="display: none;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="player2" class="form-label fs-5"><strong>{% trans "Player 2" %}</strong></label>
+                                            <div class="form-check form-switch mb-2 d-flex align-items-center">
+                                                <input class="form-check-input me-2" type="checkbox" id="player2-guest-switch">
+                                                <label class="form-check-label" for="player2-guest-switch">{% trans "Play as Guest" %}</label>
+                                            </div>
+                                            <select id="player2" class="form-select" required>
+                                                <option value="" disabled selected>{% trans "Select Player 2" %}</option>
+                                                {% for player in users %}
+                                                    {% if player.id != user.id %}
+                                                        <option value="{{ player.id }}">{{ player.display_name }}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </select>
+                                            <div id="token-container" style="display: none; margin-top: 10px;">
+                                                <input type="text" id="game-token" class="form-control" placeholder="Player 2 Game Token">
+                                                <button type="button" id="validate-token" class="btn btn-secondary mt-2" disabled>{% trans "Validate" %}</button>
+                                            </div>
+                                            <div id="token-warning" class="text-danger mt-2" style="display: none;">{% trans "Invalid game token!" %}</div>
+                                            <input type="text" id="player2-guest" class="form-control mt-2" placeholder="Guest" style="display: none;">
+                                            <div id="validation-success" class="position-absolute end-0 top-50 translate-middle-y" style="display: none;">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" name="player1_user" id="player1-user" value="{{ user.id }}">
+                                <input type="hidden" name="player1_guest" id="player1-guest-input" value="">
+                                <input type="hidden" name="player2_user" id="player2-user" value="">
+                                <input type="hidden" name="player2_guest" id="player2-guest-input" value="">
+                                <button type="submit" id="start-game" class="btn btn-primary" disabled>{% trans "Start Game" %}</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
