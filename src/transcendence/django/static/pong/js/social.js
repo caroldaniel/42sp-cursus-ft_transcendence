@@ -239,12 +239,39 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Add event listener to the start game button
-    startGameButton.addEventListener('click', () => {
+    startGameButton.addEventListener('click', async () => {
         console.log('Starting game...');
         modal.hide();
         socialOffCanvas.hide();
-        showSection(`/game/${user.id}/`);
-    });
+        const formData = new FormData();
+        //get id of the current user
+        const response = await fetch(`/users/me/`)
+        const data = await response.json();
+        formData.append('player1_user', data.id);
+        formData.append('player2_user', user.id);
+        formData.append('player1_guest', '');
+        formData.append('player2_guest', '');
+        formData.append('difficulty', '1');
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        try {
+          const response = await fetch("/match/create/", {
+              method: "POST",
+              headers: {
+                  "X-CSRFToken": csrfToken
+              },
+              body: formData
+          });
+
+          const data = await response.json();
+          if (response.ok && data.match_id) {
+              showSection(`/game/${data.match_id}/`);
+          } else {
+              console.error("Failed to create match or retrieve match ID");
+          }
+      } catch (error) {
+          console.error("Error creating match:", error);
+      }
+  });
 
     // Append input field, button, and error message to the infos div
     infosDiv.appendChild(tokenInput);
@@ -284,14 +311,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const doc = parser.parseFromString(data, 'text/html');
         const profileUserContent = doc.getElementById('userStatsContent');
         if (profileUserContent) {
+          console.log('userProfileContent div found in the response:', profileUserContent);
           const modalUserStatsContent = modalBody.querySelector('#modalUserStatsContent');
           modalUserStatsContent.innerHTML = '';
-          // create class="text-center" div
           const infosDiv = document.createElement('div');
           infosDiv.className = 'text-center';
           modalUserStatsContent.appendChild(infosDiv);
           // put the content of the userStatsContent div in the modalUserProfileContent div
           infosDiv.appendChild(profileUserContent);
+          modalUserStatsContent.appendChild(infosDiv);
         } else {
           console.error('userProfileContent div not found in the response');
         }

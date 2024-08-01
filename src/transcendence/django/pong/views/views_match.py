@@ -3,7 +3,29 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.translation import gettext as _
 from pong.models import Match, User, Guest
 import json
+from django.db.models import F
 
+def get_match_context(user: User):
+    matchesMain = Match.objects.filter(player1_user=user).order_by('-timestamp')
+    matchesOpponent = Match.objects.filter(player2_user=user).order_by('-timestamp')
+    matches = matchesMain | matchesOpponent.order_by('-timestamp')
+    matches = matches.exclude(status='wo')
+    victoriesMain = matchesMain.filter(score_player1__gt=F('score_player2')).count()
+    victoriesOpponent = matchesOpponent.filter(score_player2__gt=F('score_player1')).count()
+    lossesMain = matchesMain.filter(score_player1__lt=F('score_player2')).count()
+    lossesOpponent = matchesOpponent.filter(score_player2__lt=F('score_player1')).count()
+    victories = victoriesMain + victoriesOpponent
+    losses = lossesMain + lossesOpponent
+    display_name = user.display_name
+    avatar = user.avatar
+
+    return {
+        'display_name': display_name,
+        'avatar': avatar,
+        'matches': matches,
+        'victories': victories,
+        'losses': losses,
+    }
 
 @csrf_exempt
 def validate_game_token(request):
