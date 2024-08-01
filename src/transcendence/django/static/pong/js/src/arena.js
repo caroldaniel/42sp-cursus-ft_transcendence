@@ -19,10 +19,10 @@ export default class Arena extends THREE.Mesh {
     super(
       new THREE.BoxGeometry(width, height, depth),
       new THREE.MeshStandardMaterial({
-        color: "#0000aa",
+        color: "#0d1930",
         metalness: 0.2,
         roughness: 0.7,
-        emissive: new THREE.Color(0x98),
+        emissive: new THREE.Color(0x0d1930),
         flatShading: true,
       })
     );

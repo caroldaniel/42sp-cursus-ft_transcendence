@@ -6,7 +6,6 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
-from django.core.files.base import ContentFile
 from django.utils.translation import gettext as _
 from django.contrib.auth import update_session_auth_hash, login, authenticate
 from django.contrib.auth.decorators import login_required

@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
+from django.conf import settings
 
 from pong.views.views_match_history import get_match_history_context
 from pong.models import User, Match
@@ -122,3 +123,19 @@ def get_profile_page(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def load_templates(request):
     return render(request, 'components/modals/editProfileTemplates.html')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url="/login")
+def get_user_profile_page(request, user_id):
+	user = User.objects.get(pk=user_id)
+	avatar_url = f'{settings.MEDIA_URL}{str(user.avatar)}' if user.avatar else f'{settings.MEDIA_URL}default.svg'
+
+	context = {
+		'username': user.username,
+		'display_name': user.display_name,
+		'email': user.email,
+		'first_name': user.first_name,
+		'last_name': user.last_name,
+		'user_avatar': avatar_url		
+	}
+	return render(request, "components/modals/userProfile.html", context)

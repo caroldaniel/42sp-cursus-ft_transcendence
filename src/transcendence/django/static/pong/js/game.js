@@ -29,7 +29,7 @@ function gameSetup(matchId) {
   const arenaDepth = 30;
   
   const backgroundImage = new THREE.TextureLoader().load(
-    "/static/pong/img/Starfield.png",
+    "/static/pong/img/arena-background.png",
   );
   
   const gameMode = sessionStorage.getItem("gameMode");
@@ -87,7 +87,7 @@ function gameSetup(matchId) {
     walls: {
       thickness: 2,
       height: 0,
-      color: "#0000dd",
+      color: "#0d1930",
     },
   });
   scene.add(arena);
@@ -108,7 +108,7 @@ function gameSetup(matchId) {
   // Player 1
   const paddleHeight = 0.5;
   const paddleL = new Paddle({
-    color: 0xff007f,
+    color: 0x0000ff,
     height: paddleHeight,
     position: {
       x: -20,
@@ -122,7 +122,7 @@ function gameSetup(matchId) {
   
   // Player 2
   const paddleR = new Paddle({
-    color: 0x0fff50,
+    color: 0xff0000,
     height: paddleHeight,
     position: {
       x: 20,

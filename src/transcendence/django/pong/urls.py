@@ -7,6 +7,7 @@ urlpatterns = [
     path('set-language/', views.set_language, name='set-language'),
     path("users/list/", views.user_list, name="user-list"),
     path("users/me/", views.get_current_user, name="user-me"),
+    path("users/profile/<uuid:user_id>/", views.get_user_profile_page, name="user-profile"),
     path("renew-game-token/", views.renew_token, name="renew-token"),
     path("users/<uuid:user_id>/", views.get_user, name="user-get"),
     path("login/", views.get_login_page, name="login-page"),

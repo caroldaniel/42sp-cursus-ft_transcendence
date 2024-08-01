@@ -69,20 +69,20 @@ document.addEventListener('DOMContentLoaded', function () {
     if(isRequestReceived){
       if(isBlocked)
         denyFriendRequest(user.id);
-        cell.appendChild(createButton('bi bi-person-check-fill', 'btn btn-primary btn-sm me-2', () => acceptFriendRequest(user.id)));
-        cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm me-2', () => denyFriendRequest(user.id)));
-      }
-      if(isRequestSent){
-        cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
-      }
-      if(isFriend){
-        if(isBlocked)
-          removeFriend(user.id);
-        cell.appendChild(createButton('bi bi-joystick', 'btn btn-primary btn-sm me-2', () => playPong(user)));
-        cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
-        cell.appendChild(createButton('bi bi-person-dash-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
+      cell.appendChild(createButton('bi bi-person-check-fill', 'btn btn-primary btn-sm me-2', () => acceptFriendRequest(user.id)));
+      cell.appendChild(createButton('bi bi-person-x-fill', 'btn btn-primary btn-sm me-2', () => denyFriendRequest(user.id)));
+    }
+    if(isRequestSent){
+      cell.appendChild(createButton('bi bi-person-fill-exclamation', 'btn btn-primary btn-sm me-2'));
+    }
+    if(isFriend){
+      if(isBlocked)
+        removeFriend(user.id);
+      cell.appendChild(createButton('bi bi-person-lines-fill', 'btn btn-primary btn-sm me-2', () => viewProfile(user)));
+      cell.appendChild(createButton('bi bi-person-dash-fill', 'btn btn-primary btn-sm btn-sm me-2', () => removeFriend(user.id)));
     }
     if(!isBlocked){
+      cell.appendChild(createButton('bi bi-joystick', 'btn btn-primary btn-sm me-2', () => playPong(user)));
       cell.appendChild(createButton('bi bi-chat-dots-fill', 'btn btn-primary btn-sm me-4', () => openChat(user), `unreadMessagesBadge_${user.id}`));
       cell.appendChild(createButton('bi bi-lock', 'btn btn-danger btn-sm', () => blockUser(user)));
     } else
@@ -266,22 +266,40 @@ document.addEventListener('DOMContentLoaded', function () {
     const userProfileModal = document.getElementById('userProfileModal');
     const modal = new bootstrap.Modal(userProfileModal);
     const modalBody = userProfileModal.querySelector('.modal-body');
+    fetch(`/users/profile/${user.id}/`)
+      .then(response => response.text())
+      .then(data => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(data, 'text/html');
+        const modalUserProfileContent = doc.getElementById('modalUserProfileContent');
+        if (modalUserProfileContent) {
+          modalBody.querySelector('#modalUserProfileContent').innerHTML = modalUserProfileContent.innerHTML;
+        }
+      })
+
     fetch(`/stats/${user.id}/`)
       .then(response => response.text())
       .then(data => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(data, 'text/html');
-        const profileUserContent = doc.getElementById('userProfileContent');
+        const profileUserContent = doc.getElementById('userStatsContent');
         if (profileUserContent) {
-          const modalUserProfileContent = modalBody.querySelector('#modalUserProfileContent');
-          modalUserProfileContent.innerHTML = profileUserContent.innerHTML;
+          const modalUserStatsContent = modalBody.querySelector('#modalUserStatsContent');
+          modalUserStatsContent.innerHTML = '';
+          // create class="text-center" div
+          const infosDiv = document.createElement('div');
+          infosDiv.className = 'text-center';
+          modalUserStatsContent.appendChild(infosDiv);
+          // put the content of the userStatsContent div in the modalUserProfileContent div
+          infosDiv.appendChild(profileUserContent);
         } else {
           console.error('userProfileContent div not found in the response');
         }
-  
-        modal.show();
       })
       .catch(error => console.error('Erro:', error));    
+
+
+      modal.show();
   }
 
   function openChat(user) {
