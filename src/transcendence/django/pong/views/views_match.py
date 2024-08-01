@@ -1,7 +1,6 @@
-# views.py
-from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import gettext as _
 from pong.models import Match, User, Guest
 import json
 
@@ -71,28 +70,45 @@ def update_result_wo(request, match_id):
     if request.method == 'POST':
         try:
             match = Match.objects.get(pk=match_id)
-            match.status = 'wo'
-            match.walkover = True
-            match.save()
-            return JsonResponse({'success': 'Match result updated to WO'}, status=200)
+            if match.status == 'pending':
+                match.status = 'wo'
+                match.walkover = True
+                match.save()
+            return JsonResponse({'success': 'Match result updated'}, status=200)
         except Match.DoesNotExist:
             return JsonResponse({'error': 'Match not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 def update_match_result(request, match_id):
-    match = get_object_or_404(Match, id=match_id)
     if request.method == 'POST':
-        match.score_player1 = request.POST.get('score_player1')
-        match.score_player2 = request.POST.get('score_player2')
-        match.status = 'completed'
-        match.save()
-        return JsonResponse({'success': 'Match updated'}, status=200)
+        try:
+            match = Match.objects.get(pk=match_id)
+            match.status = 'finished'
+            match.score_player1 = request.POST.get('score_player1')
+            match.score_player2 = request.POST.get('score_player2')
+            match.save()
+            return JsonResponse({'success': 'Match result updated'}, status=200)
+        except:
+            return JsonResponse({'error': 'Match not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
-def set_match_walkover(request, match_id):
-    match = get_object_or_404(Match, id=match_id)
-    match.status = 'wo'
-    match.walkover = True
-    match.save()
-    return JsonResponse({'status': 'success'})
+
+def get_match_status(request, match_id):
+    # return status of the match and the winner's display name
+    if request.method == 'GET':
+        try:
+            match = Match.objects.get(pk=match_id)
+            if match.status == 'finished':
+                if match.score_player1 > match.score_player2:
+                    winner = match.player1_user.display_name if match.player1_user else match.player1_guest.display_name
+                else:
+                    winner = match.player2_user.display_name if match.player2_user else match.player2_guest.display_name
+                return JsonResponse({'status': _('{} has won').format(winner)}, status=200)
+            if match.status == 'wo':
+                return JsonResponse({'status': _('Game has been forfeited')}, status=200)
+            else:
+                return JsonResponse({'status': None}, status=200)
+        except Match.DoesNotExist:
+            return JsonResponse({'error': 'Match not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

@@ -23,22 +23,25 @@ function editProfile() {
   const editForm = document.getElementById('editForm');
   if (editForm) {
     editForm.addEventListener('submit', function (event) {
-      event.preventDefault();
+      const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const formData = new FormData(editForm);
-      fetch(editForm.action, {
+
+      event.preventDefault();
+    
+      fetch('/profile/edit/', {
         method: 'POST',
-        body: formData,
         headers: {
-          'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-        }
+          'X-CSRFToken': csrfToken
+        },
+        body: formData
       })
-        .then(response => response.json())
-        .then(data => {
-          handleFormResponse(data);
-        })
-        .catch(error => {
-          handleError(error);
-        });
+      .then(response => response.json())
+      .then(data => {
+        handleFormResponse(data);
+      })
+      .catch(error => {
+        handleError(error);
+      });
     });
   }
 
@@ -75,7 +78,6 @@ function editProfile() {
 
   // Function to handle errors
   function handleError(error) {
-    console.error(error);
     document.getElementById('editModalResponseLabel').textContent = 'Error';
     document.getElementById('editModalResponseContent').textContent = 'An unexpected error occurred.';
     editModalElement.style.display = 'none';

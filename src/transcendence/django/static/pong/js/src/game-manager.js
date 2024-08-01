@@ -1,4 +1,5 @@
 async function registerMatch(
+  matchId,
   playerLName,
   playerLScore,
   playerRName,
@@ -20,16 +21,32 @@ async function registerMatch(
     body: formData,
   });
 
-  await response.json();
+  await response.json(); 
+
+  const updateFormData = new FormData();
+
+  updateFormData.append("score_player1", playerLScore);
+  updateFormData.append("score_player2", playerRScore);
+
+  const updateResponse = await fetch(`/match/update/${matchId}/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": csrfToken,
+    },
+    body: updateFormData,
+  });
+
+  await updateResponse.json();
 }
 
 export default class GameManager {
-  constructor({ maxScore, gameMode }) {
+  constructor({ matchId, maxScore, gameMode }) {
+    this.matchId = matchId;
     this.playerLScore = 0;
     this.playerRScore = 0;
     this.maxScore = maxScore;
 
-    this.targetFrameRate = 1000 / 60; // 60 fps
+    this.targetFrameRate = 1000 / 60;
 
     this.deltaTime = 0;
 
@@ -79,6 +96,7 @@ export default class GameManager {
         this.setTournamentMatchWinner(this.playerLName);
       } else {
         registerMatch(
+          this.matchId,
           this.playerLName,
           this.playerLScore,
           this.playerRName,
@@ -99,6 +117,7 @@ export default class GameManager {
         this.setTournamentMatchWinner(this.playerRName);
       } else {
         registerMatch(
+          this.matchId,
           this.playerLName,
           this.playerLScore,
           this.playerRName,

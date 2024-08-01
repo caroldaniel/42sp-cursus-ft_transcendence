@@ -20,6 +20,10 @@
             :
             <span id="player-l-score">0</span>
           </div>
+          <div id="elapsed-time" class="fs-4 text-secondary">
+            <span id="elapsed-time-label">{% trans "Time Elapsed" %}: </span>
+            <span id="elapsed-time-value">00:00</span>
+          </div>
           <div id="player-r" class="fs-4 text-danger">
             <span id="player-r-name" class="fw-bold">{{ player2 }}</span>
             :
@@ -47,6 +51,24 @@
             <a type="button"
               class="btn w-75 btn-secondary fw-bold"
               onclick="showSection('/')">{% trans "Close" %}</a>
+          </div>
+        </div>
+
+        <!-- Game Status Modal -->
+        <div class="modal fade" id="game-result-modal" tabindex="-1" aria-labelledby="gameResultModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="gameResultModalLabel">Game Result</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <!-- Message will be inserted here -->
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
           </div>
         </div>
 

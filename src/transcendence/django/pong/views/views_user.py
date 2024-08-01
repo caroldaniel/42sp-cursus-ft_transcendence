@@ -17,14 +17,6 @@ import json
 # Project imports
 from pong.models import User
 
-# Define predefined avatars (You can move this list to settings or a separate config file if needed)
-PREDEFINED_AVATARS = [
-    f'{settings.MEDIA_URL}default_01.jpeg',
-    f'{settings.MEDIA_URL}default_02.jpeg',
-    f'{settings.MEDIA_URL}default_03.jpeg',
-    # Add more predefined avatars as needed
-]
-
 @login_required
 def user_list(request):
     # Get all users and their online status
@@ -91,44 +83,33 @@ def edit_profile_field(request):
 
     # Handle different fields
     if field == 'avatar':
-        predefined_avatar_url = request.POST.get('avatar_option')
         avatar_file = request.FILES.get('new_value')
 
+        if not avatar_file:
+            return JsonResponse({'error': _('No file was uploaded.')}, status=400)
+
         try:
-            if predefined_avatar_url:
-                # Validate predefined avatar
-                if predefined_avatar_url not in PREDEFINED_AVATARS:
-                    raise ValidationError("Invalid predefined avatar")
+            # Validate if file size is too large
+            if avatar_file.size > settings.MAX_UPLOAD_SIZE:
+                return JsonResponse({'error': _('The uploaded file is too large. Maximum allowed size is 5MB.')}, status=400)
 
-                # Fetch the predefined avatar
-                predefined_avatar_path = settings.STATIC_ROOT + '/' + predefined_avatar_url
-                with open(predefined_avatar_path, 'rb') as f:
-                    avatar_content = f.read()
+            # Validate uploaded avatar file extension
+            validator = FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])
+            try:
+                validator(avatar_file)
+            except ValidationError:
+                return JsonResponse({'error': _('Invalid file type. Only SVG, PNG, JPG, and JPEG files are allowed.')}, status=400)
 
-                # Save the avatar
-                random_id = uuid.uuid4()
-                new_name = f'{random_id}.{predefined_avatar_url.split(".")[-1]}'
-                user.avatar.save(new_name, ContentFile(avatar_content))
+            # Save the file with a name based on a UUID
+            random_id = uuid.uuid4()
+            new_name = f'{random_id}.{avatar_file.name.split(".")[-1]}'
+            user.avatar.save(new_name, avatar_file)
 
-                return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
+            return JsonResponse({'success': _('Your avatar has been updated successfully.')}, status=200)
 
-            elif avatar_file:
-                # Validate uploaded avatar
-                FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])(avatar_file)
-
-                # Save the file with a name based on a UUID
-                random_id = uuid.uuid4()
-                new_name = f'{random_id}.{avatar_file.name.split(".")[-1]}'
-                user.avatar.save(new_name, avatar_file)
-
-                return JsonResponse({'success': _('Avatar updated successfully.')}, status=200)
-            else:
-                raise ValidationError("No avatar provided")
-
-        except ValidationError as ve:
-            return JsonResponse({'error': str(ve)}, status=400)
-        except Exception as e:
-            return JsonResponse({'error': _('An error occurred while trying to upload the avatar. Try again later.')}, status=500)
+        except Exception:
+            return JsonResponse({'error': _('An unexpected error occurred while updating the avatar. Please try again later.')}, status=500)
+        
     else:
         new_value = request.POST.get('new_value')
         # Handle other fields (username, first_name, last_name, email, password)
@@ -167,7 +148,7 @@ def edit_profile_field(request):
                 except ValidationError as ve:
                     return JsonResponse({'error': str(ve)}, status=400)
                 except Exception as e:
-                    return JsonResponse({'error': 'An error occurred while trying to update password. Try again later.'}, status=500)
+                    return JsonResponse({'error': _('An error occurred while trying to update password. Try again later.')}, status=500)
         
 
             # Save the user data

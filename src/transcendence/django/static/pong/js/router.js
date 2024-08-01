@@ -2,41 +2,43 @@ let currentRoute = null;
 
 async function getSectionHTML(section) {
   try {
-      const response = await fetch(section, {
-          method: "GET",
-          headers: {
-              "X-Custom-Header": "self",
-          },
-      });
+    const response = await fetch(section, {
+      method: "GET",
+      headers: {
+        "X-Custom-Header": "self",
+      },
+    });
 
-      // Check if the response is successful (status 200)
-      if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    // Check if the response is successful (status 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-      // Check if the response is HTML content
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("text/html")) {
-          throw new Error("Expected HTML content type");
-      }
+    // Check if the response is HTML content
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.includes("text/html")) {
+      throw new Error("Expected HTML content type");
+    }
 
-      // Return the HTML content as text
-      return await response.text();
+    // Return the HTML content as text
+    return await response.text();
   } catch (error) {
-      console.error("Error fetching section:", error);
-      return null; // Handle error gracefully, return null or handle in calling function
+    console.error("Error fetching section:", error);
+    return null; // Handle error gracefully, return null or handle in calling function
   }
 }
 
 function setupSection(section) {
   if (currentRoute && currentRoute.startsWith("/game/") && !section.startsWith("/game/")) {
     // User is leaving the game route
+    stopGame();
     updateMatchResultToWO();
   }
   currentRoute = section;
 
   if (section.startsWith("/game/")) {
-    startGame();
+    const matchId = getMatchIdFromRoute(section);
+    startGame(matchId);
   } else if (section === "/match/setup/") {
     loadGameSetup();
   } else if (section === "/tournament/game/") {
@@ -61,7 +63,7 @@ function setupSection(section) {
 async function showSection(section) {
   try {
     const sectionHtml = await getSectionHTML(section);
-    
+
     // Handle cases where fetching HTML fails
     if (sectionHtml === null) {
       console.error(`Failed to fetch or invalid HTML for section: ${section}`);
@@ -76,10 +78,10 @@ async function showSection(section) {
       console.error(`#app element not found`);
       return;
     }
-    
+
     // Perform additional setup based on the loaded section
     setupSection(section);
-    
+
     // Update browser history state and URL
     if (window.location.pathname !== section) {
       window.history.pushState({}, "", section);
@@ -92,23 +94,22 @@ async function showSection(section) {
 
 // Function to send AJAX request to update match result to 'wo'
 function updateMatchResultToWO() {
-  const matchId = getMatchIdFromRoute(currentRoute); 
+  const matchId = getMatchIdFromRoute(currentRoute);
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-  console.log(matchId)
+  
   fetch(`/match/update_wo/${matchId}/`, {
-      method: "POST",
-      headers: {
-          "X-CSRFToken": csrfToken
-      }
+    method: "POST",
+    headers: {
+      "X-CSRFToken": csrfToken
+    }
   })
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       console.log("Match result updated to 'wo':", data);
-  })
-  .catch(error => {
+    })
+    .catch(error => {
       console.error("Error updating match result to 'wo':", error);
-  });
+    });
 }
 
 // Function to extract match_id from the route
@@ -117,15 +118,28 @@ function getMatchIdFromRoute(route) {
   return match ? match[1] : null;
 }
 
+// Function to initialize the current tab
+window.addEventListener("load", () => {
+  const section = window.location.pathname;
+  setupSection(section);
+});
+
+// Handle tab close event
+window.addEventListener("beforeUnload", () => {
+  if (currentRoute.startsWith("/game/")) {
+    const matchId = getMatchIdFromRoute(currentRoute);
+    if (matchId) {
+      stopGame();
+      updateMatchResultToWO(matchId);
+    }
+  }
+});
+
+// Handle back and forward navigation
 window.addEventListener("popstate", async () => {
   const section = window.location.pathname;
   const sectionHtml = await getSectionHTML(section);
   if (sectionHtml === null) return;
   document.getElementById("app").innerHTML = sectionHtml;
-  setupSection(section);
-});
-
-window.addEventListener("load", () => {
-  const section = window.location.pathname;
   setupSection(section);
 });
