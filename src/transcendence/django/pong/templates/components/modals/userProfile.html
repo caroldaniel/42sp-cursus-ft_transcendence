@@ -1,9 +1,9 @@
 {% load static i18n %}
 {% block content %}
 <!-- User Profile Modal -->
-<div id="userProfileModal" class="modal fade custom-modal-size" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
+<div id="userProfileModal" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="userProfileModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width: 90vw;">
-    <div class="modal-content" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9);">
+    <div class="modal-content" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
       <div class="modal-header">
         <h1 id="userProfileModalLabel" class="modal-title">
           <i class="bi bi-person-lines-fill me-2"></i>
@@ -14,8 +14,8 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row justify-content-center">
-            <div id="modalUserProfileContent" class="col-12">
-              <div class="p-4 mt-3" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+            <div class="col-12 p-4 mt-3" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+              <div id="modalUserProfileContent">
                 <div class="text-center mb-3">
                   <div class="d-flex flex-column justify-content-center align-items-center">
                     <span class="fw-bold fs-4 mb-0 me-2" style="color: var(--bs-gray);">{{ username }} 
@@ -26,14 +26,14 @@
                   </div>
                 </div>
                 <div class="text-center">
-                  <img src="{{ user_avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
+                  <img src="{{ user_avatar }}" class="avatar rounded-circle mb-3" alt="{% trans 'Avatar' %}" style="width: 150px; height: 150px; object-fit: cover;">
                 </div>
                 <div class="row mt-4">
                   <div class="col-12 col-md-6">
                     <!-- Display Name -->
                     <div class="d-flex flex-column mb-2">
-                      <p class="form-label"><strong>{% trans "Display Name" %}</strong></p>
-                      <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                      <label class="form-label fw-bold">{% trans "Display Name" %}</label>
+                      <div class="card d-flex flex-row p-2">
                         <p class="mb-0 text-truncate flex-grow-1" id="display_name">{{ display_name }}</p>
                       </div>
                     </div>
@@ -41,8 +41,8 @@
                   <div class="col-12 col-md-6">
                     <!-- Email -->
                     <div class="d-flex flex-column mb-2">
-                      <p class="form-label"><strong>{% trans "Email" %}</strong></p>
-                      <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                      <label class="form-label fw-bold">{% trans "Email" %}</label>
+                      <div class="card d-flex flex-row p-2">
                         <p class="mb-0 text-truncate flex-grow-1" id="email">{{ email }}</p>
                       </div>
                     </div>
@@ -52,8 +52,8 @@
                   <div class="col-12 col-md-6">
                     <!-- First Name -->
                     <div class="d-flex flex-column mb-2">
-                      <p class="form-label"><strong>{% trans "First Name" %}</strong></p>
-                      <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                      <label class="form-label fw-bold">{% trans "First Name" %}</label>
+                      <div class="card d-flex flex-row p-2">
                         <p class="mb-0 text-truncate flex-grow-1" id="first_name">{{ first_name }}</p>
                       </div>
                     </div>
@@ -61,16 +61,18 @@
                   <div class="col-12 col-md-6">
                     <!-- Last Name -->
                     <div class="d-flex flex-column mb-2">
-                      <p class="form-label"><strong>{% trans "Last Name" %}</strong></p>
-                      <div class="card d-flex flex-row p-2" style="max-width: 100%;">
+                      <label class="form-label fw-bold">{% trans "Last Name" %}</label>
+                      <div class="card d-flex flex-row p-2">
                         <p class="mb-0 text-truncate flex-grow-1" id="last_name">{{ last_name }}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div id="modalUserStatsContent" class="col-12 d-flex justify-content-center mt-3">
+                <!-- Additional Stats or Content -->
+              </div>
             </div>
-            <div id="modalUserStatsContent" class="col-12 d-flex justify-content-center mt-3"></div>
           </div>
         </div>
       </div>

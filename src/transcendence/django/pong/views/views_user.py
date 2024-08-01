@@ -38,6 +38,7 @@ def get_current_user(request):
     return JsonResponse({
         'avatar': avatar_url,
         'display_name': user.display_name,
+        'id': user.id,
     }, safe=False)
 
 @login_required

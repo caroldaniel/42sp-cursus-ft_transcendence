@@ -2,8 +2,8 @@
 {% block content %}
 <div class="container">
   <div class="row justify-content-center">
-    <div class="col-md-12">
-      <div class="p-4 mt-5 mb-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+    <div class="col-md-8">
+      <div class="p-4 mt-5 mb-5 shadow" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
         <div class="text-center">
           <h2 class="fs-1 mb-1">
             <i class="bi bi-graph-up me-2"></i>
@@ -13,11 +13,11 @@
           <hr>
           <!-- Display Name -->
           <div class="d-flex justify-content-center align-items-center mb-3">
-            <h4 class="fw-bold">{{ display_name }}</h2>
+            <h4 class="fw-bold">{{ display_name }}</h4>
           </div>
           <!-- Avatar -->
-          <div class="position-relative d-inline-block">
-            <img src="{{ MEDIA_URL }}{{ avatar }}" class="avatar rounded-circle mb-3" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
+          <div class="position-relative d-inline-block mb-3">
+            <img src="{{ MEDIA_URL }}{{ avatar }}" class="avatar rounded-circle shadow" alt="Avatar" style="width: 150px; height: 150px; object-fit: cover;">
           </div>
 
           <div id="userStatsContent">            
@@ -25,34 +25,47 @@
               <p><strong>{% trans "Victories:" %}</strong> {{ victories }}</p>
               <p><strong>{% trans "Losses:" %}</strong> {{ losses }}</p>
             </div>
-            <h3 class="text-center mt-3">{% trans "Match History" %}</h3>
-            <table class="table table-striped table-hover">
-              <thead>
-                <tr class="table">
-                  <th scope="col" class="px-3">{% trans "Date" %}</th>
-                  <th scope="col" class="px-3">{% trans "Display Name" %}</th>
-                  <th scope="col" class="px-3">{% trans "Opponent Name" %}</th>
-                  <th scope="col" class="px-3">{% trans "User Score" %}</th>
-                  <th scope="col" class="px-3">{% trans "Opponent Score" %}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for match in matches %}
+            <h3 class="text-center mt-4">{% trans "Match History" %}</h3>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-bordered mt-3">
+                <thead class="table-dark">
                   <tr>
-                    <td class="px-3">{{ match.finished_at }}</td>
-                    <td class="px-3">{{ match.user_display_name }}</td>
-                    <td class="px-3">{{ match.opponent_display_name }}</td>
-                    <td class="px-3">{{ match.user_score }}</td>
-                    <td class="px-3">{{ match.opponent_score }}</td>
+                    <th scope="col" class="px-3">{% trans "Date" %}</th>
+                    <th scope="col" class="px-3">{% trans "Player 1" %}</th>
+                    <th scope="col" class="px-3">{% trans "Player 2" %}</th>
+                    <th scope="col" class="px-3">{% trans "Player 1 Score" %}</th>
+                    <th scope="col" class="px-3">{% trans "Player 2 Score" %}</th>
                   </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {% for match in matches %}
+                    <tr class="align-middle">
+                      <td class="px-3">{{ match.timestamp|date:"Y-m-d" }}</td>
+                      <td class="px-3">
+                        {% if match.player1_user.display_name %}
+                          {{ match.player1_user.display_name }}
+                        {% else %}
+                          {{ match.player1_guest.display_name }}
+                        {% endif %}
+                      </td>
+                      <td class="px-3">
+                        {% if match.player2_user.display_name %}
+                          {{ match.player2_user.display_name }}
+                        {% else %}
+                          {{ match.player2_guest.display_name }}
+                        {% endif %}
+                      </td>
+                      <td class="px-3">{{ match.score_player1 }}</td>
+                      <td class="px-3">{{ match.score_player2 }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div> <!-- End of table-responsive -->
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 {% endblock content %}

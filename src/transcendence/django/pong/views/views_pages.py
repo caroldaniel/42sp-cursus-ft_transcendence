@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.conf import settings
-
+from pong.views.views_match import get_match_context
 from pong.views.views_match_history import get_match_history_context
 from pong.models import User, Match
 
@@ -64,7 +64,7 @@ def get_user_game_page(request, user_id):
 def get_stats_page(request):
 	if not isinstance(request.user, User):
 		return redirect("/logout")
-	context = get_match_history_context(request.user)
+	context = get_match_context(request.user)
 	if request.headers.get('X-Custom-Header') != 'self':
 		return render(request, "pages/stats.html", context)
 	return render(request, "sections/stats.html", context)
@@ -80,7 +80,7 @@ def get_user_stats_page(request, user_id):
 	except:
 		user = request.user
 
-	context = get_match_history_context(user)
+	context = get_match_context(user)
 	if request.headers.get('X-Custom-Header') != 'self':
 		return render(request, "pages/stats.html", context)
 	return render(request, "sections/stats.html", context)
