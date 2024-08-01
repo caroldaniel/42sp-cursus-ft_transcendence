@@ -4,7 +4,7 @@ from django.views.decorators.cache import cache_control
 from django.conf import settings
 
 from pong.views.views_match_history import get_match_history_context
-from pong.models import User, Match
+from pong.models import User, Match, Tournament, TournamentMatch
 
 
 def get_login_page(request):
@@ -87,17 +87,29 @@ def get_user_stats_page(request, user_id):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
-def get_tournament_page(request):
+def get_tournament_page(request, tournament_id):
+	# get tournament object
+	tournament = Tournament.objects.get(pk=tournament_id)
+	# get all tournament match ids, in an array, ordered by position
+	tournament_matches = TournamentMatch.objects.filter(tournament=tournament).order_by('position')
+	# get all tournament matches
+	matches = [Match.objects.get(pk=tm.match_id) for tm in tournament_matches]
+	context = {
+		'tournament': tournament,
+		'matches': matches
+	}
 	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/tournament.html")
-	return render(request, "sections/tournament.html")
+		return render(request, "pages/tournament.html", context)
+	return render(request, "sections/tournament.html", context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
 def get_tournament_form_page(request):
+	users = User.objects.all()
+	context = {'users': users}
 	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/tournamentForm.html")
-	return render(request, "sections/tournamentForm.html")
+		return render(request, "pages/tournamentForm.html", context)
+	return render(request, "sections/tournamentForm.html", context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")

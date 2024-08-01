@@ -404,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function () {
     cardText2.className = 'card-text';
 
     if (tournament.match_count <= 6)
-      cardText2.textContent = tournament.actual_match;
+      cardText2.textContent = tournament.current_match;
     else
       cardText2.textContent = 'Finished';
     cardBody.appendChild(cardText2);

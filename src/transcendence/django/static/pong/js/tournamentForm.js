@@ -1,198 +1,233 @@
-function showForm(numPlayers) {
-  const form = document.getElementById("formContent");
-  sessionStorage.setItem("numPlayers", numPlayers);
+async function loadTournamentSetup() {
+  const tournamentSetupForm = document.getElementById('tournament-setup-form');
+  const playerCountInputs = document.querySelectorAll('input[name="playerCount"]');
+  const playerFieldsContainer = document.getElementById('player-fields-container');
+  const playerFieldTemplate = document.getElementById('player-field-template');
+  const tournamentFormDiv = document.getElementById('tournament-setup');
+  const createTournamentButton = document.getElementById('create-tournament');
 
-  for (let i = 2; i <= 8; i++) {
-    const playerDiv = document.getElementById(`div-player-${i}`);
-    if (i <= numPlayers) {
-      playerDiv.style.display = "block";
-    } else {
-      playerDiv.style.display = "none";
+  playerCountInputs.forEach(input => {
+    input.addEventListener('change', () => {
+      tournamentFormDiv.style.display = 'block';
+      updatePlayerFields(parseInt(input.value));
+    });
+  });
+
+  function updatePlayerFields(count) {
+    playerFieldsContainer.innerHTML = ''; // Clear existing fields
+    for (let i = 1; i <= count; i++) {
+        // Create player field HTML
+        const fieldHTML = playerFieldTemplate.innerHTML
+            .replace(/Player/g, `Player ${i}`)
+            .replace(/player2/g, `player${i}`)
+            .replace(/tournament-validate-token/g, `tournament-validate-token-${i}`)
+            .replace(/tournament-token-warning/g, `tournament-token-warning-${i}`)
+            .replace(/tournament-player-guest/g, `tournament-player-guest-${i}`)
+            .replace(/tournament-validation-success/g, `tournament-validation-success-${i}`);
+        
+        // Insert player field HTML into the container
+        playerFieldsContainer.insertAdjacentHTML('beforeend', fieldHTML);
+
+        // Ensure the last element is selected correctly
+        const lastPlayerField = playerFieldsContainer.lastElementChild;
+
+        if (lastPlayerField) {
+            const hiddenInputsHTML = `
+                <input type="hidden" name="player${i}_user" id="tournament-player${i}-user" class="player-user-input" value="">
+                <input type="hidden" name="player${i}_guest" id="tournament-player${i}-guest" class="player-guest-input" value="">
+            `;
+            lastPlayerField.insertAdjacentHTML('beforeend', hiddenInputsHTML);
+        }
     }
-  }
-
-  form.style.display = "block";
+  
+    updateFieldDependencies();
+    updateCreateTournamentButton();
+  
+    // Optionally remove the template element if necessary
+    if (playerFieldTemplate) {
+        playerFieldTemplate.remove();
+    }
 }
 
-async function getUserList() {
-  try {
-    const response = await fetch('/users/list/');
-    const data = await response.json();
-    const userList = data.users;
-    return userList;
-  } catch (error) {
-    console.error('Error fetching user list:', error);
-    return [];
+  function updateFieldDependencies() {
+    const playerGuestSwitches = document.querySelectorAll('.player-guest-switch');
+    playerGuestSwitches.forEach(switchElement => {
+      const parent = switchElement.closest('.mb-3');
+      const playerSelect = parent.querySelector('.player-select');
+      const playerGuest = parent.querySelector('.player-guest');
+      const playerUserHidden = parent.querySelector('.player-user-input');
+      const playerGuestHidden = parent.querySelector('.player-guest-input');
+      const tokenInput = parent.querySelector('.game-token');
+      const validateButton = parent.querySelector('.validate-token');
+      const validationSuccess = parent.querySelector('.validation-success');
+      const tokenWarning = parent.querySelector('.token-warning');
+      const tokenContainer = parent.querySelector('.token-container');
+
+      playerGuest.addEventListener('input', () => {
+        playerGuestHidden.value = playerGuest.value;
+        updateCreateTournamentButton();
+      });
+
+      switchElement.addEventListener('change', () => {
+        if (switchElement.checked) {
+          playerSelect.style.display = 'none';
+          playerSelect.removeAttribute('required');
+          playerGuest.style.display = 'block';
+          playerGuest.value = 'Guest';
+          playerUserHidden.value = '';
+          playerGuestHidden.value = 'Guest';
+          tokenContainer.style.display = 'none';
+          validationSuccess.style.display = 'none';
+          tokenWarning.style.display = 'none';
+        } else {
+          playerSelect.style.display = 'block';
+          playerSelect.setAttribute('required', 'required');
+          playerGuest.style.display = 'none';
+          playerUserHidden.value = playerSelect.value;
+          playerGuestHidden.value = '';
+          tokenContainer.style.display = 'block';
+          if (playerSelect.value) {
+            validationSuccess.style.display = validateButton.disabled ? 'block' : 'none';
+          }
+        }
+        updateCreateTournamentButton();
+      });
+
+      tokenInput.addEventListener("input", function () {
+        validateButton.disabled = tokenInput.value.length !== 5;
+        tokenWarning.style.display = 'none'; // Hide warning on input
+      });
+
+      validateButton.addEventListener("click", function () {
+        const playerId = playerSelect.value;
+        const token = tokenInput.value;
+        const formData = JSON.stringify({ player_id: playerId, game_token: token });
+    
+        fetch("/game_token/validate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                validationSuccess.style.display = "block";
+                tokenInput.disabled = true;
+                validateButton.disabled = true;
+                playerSelect.disabled = true;
+                tokenWarning.style.display = "none";
+            } else {
+                tokenWarning.style.display = "block";
+            }
+            updateCreateTournamentButton();
+        })
+        .catch(error => {
+            console.error("Error validating token:", error);
+            tokenWarning.style.display = "block";
+            updateCreateTournamentButton();
+        });
+      });
+    });
+
+    const playerFields = document.querySelectorAll('.player-select');
+    playerFields.forEach(field => {
+      field.addEventListener('change', () => {
+        const parent = field.closest('.mb-3');
+        const playerUserHidden = parent.querySelector('.player-user-input');
+        const tokenContainer = parent.querySelector('.token-container');
+        const guestInput = parent.querySelector('.player-guest');
+        const validationSuccess = parent.querySelector('.validation-success');
+
+
+        playerUserHidden.value = field.value; // Update hidden input with selected player ID
+
+        if (field.value) {
+          tokenContainer.style.display = 'block';
+          guestInput.style.display = 'none';
+          validationSuccess.style.display = 'none';
+        } else {
+          tokenContainer.style.display = 'none';
+          guestInput.style.display = 'block';
+          validationSuccess.style.display = 'none';
+        }
+        updateCreateTournamentButton();
+      });
+    });
+
+    updateCreateTournamentButton();
   }
+
+  function updateCreateTournamentButton() {
+    const validateButtons = document.querySelectorAll('.validate-token');
+    const playerGuestSwitches = document.querySelectorAll('.player-guest-switch');
+    const playerFields = document.querySelectorAll('.player-select');
+    let allValidated = true;
+
+    validateButtons.forEach((button, index) => {
+        const parent = button.closest('.mb-3');
+        const switchElement = playerGuestSwitches[index];
+        const playerSelect = parent.querySelector('.player-select');
+        const validationSuccess = parent.querySelector('.validation-success');
+
+        if (!switchElement.checked) {
+            if (!playerSelect.value) {
+                allValidated = false;
+            } else {
+                if (!validationSuccess) {
+                    allValidated = false;
+                }
+            }
+        }
+    });
+
+    // If there are any player fields without a valid token or without a selected player, disable the button
+    const allPlayerFieldsValid = Array.from(playerFields).every(field => {
+        const parent = field.closest('.mb-3');
+        const switchElement = parent.querySelector('.player-guest-switch');
+        const validationSuccess = parent.querySelector('.validation-success');
+        
+        if (switchElement.checked) {
+            return true; // Skip guest players
+        }
+        
+        return validationSuccess.style.display === 'block';
+    });
+
+    createTournamentButton.disabled = !allValidated || !allPlayerFieldsValid;
 }
 
-async function createTournament(registeredPlayers) {
-  try {
+  tournamentSetupForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(tournamentSetupForm);
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-    const response = await fetch('/tournament/create/', {
+
+    console.log('Form fields being sent to the server:');
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+
+
+    fetch('/tournament/create/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
+        'X-CSRFToken': csrfToken
       },
-      body: JSON.stringify({
-        players: registeredPlayers,
-        match_count: sessionStorage.getItem("currentMatch"),
-      }),
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-  } catch (error) {
-    console.error('Error creating tournament:', error);
-  }
-}
-
-function checkTokens(players, registeredPlayers, userList) {
-  let state = false;
-  for (let i = 0; i < players.length; i++) {
-    if (registeredPlayers.includes(players[i])) {
-      const playerIndex = i + 1;
-      const playerInput = document.getElementById(`player-${playerIndex}`).value;
-      const gameTokenInput = document.getElementById(`game-token-${playerIndex}`).value;
-      const user = userList.find(user => user.display_name === playerInput);
-      const playerDiv = document.getElementById(`div-player-${playerIndex}`);
-
-      if (user && user.game_token !== gameTokenInput) {
-        state = true;
-        if (gameTokenInput === "") continue;
-        const errorMessage = document.createElement("p");
-        errorMessage.className = "error";
-        errorMessage.innerHTML = "❌ Invalid game token. Please try again";
-        errorMessage.style.color = "red";
-        playerDiv.appendChild(errorMessage);
-      } else {
-        const successMessage = document.createElement("p");
-        successMessage.className = "success";
-        successMessage.innerHTML = "✔️ Game token verified";
-        successMessage.style.color = "green";
-        playerDiv.appendChild(successMessage);
-      }
-    }
-  }
-  return state;
-}
-
-async function loadTournamentForm() {
-  const tournamentForm = document.getElementById("tournament-form");
-
-  const shuffle = (array) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  };
-
-  tournamentForm.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    // Clear previous messages
-    clearMessages();
-
-    // Check if players have the same name or are empty
-    const players = getPlayers();
-    if (players) {
-      const userList = await getUserList();
-      const registeredPlayers = getRegisteredPlayers(players, userList);
-
-      // Check if players are registered
-      if (registeredPlayers.length > 0) {
-        handleRegisteredPlayers(registeredPlayers, players);
-      }
-
-      // Check if players have valid game tokens and show messages accordingly
-      const needCheckToken = checkTokens(players, registeredPlayers, userList);
-
-      // If all game tokens are valid, shuffle players and save them to local storage
-      if (needCheckToken === false) {
-        const quarters = shuffle(players);
-        const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
-        sessionStorage.clear();
-        sessionStorage.setItem("numPlayers", numPlayers);
-        sessionStorage.setItem("gameMode", "tournament");
-        if (numPlayers === 4){
-            sessionStorage.setItem("currentMatch", "4");
-            sessionStorage.setItem("semiFinals", JSON.stringify(quarters));  
+      body: formData
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.tournament_id) {
+          // showSection(`/tournament/${data.tournament_id}/`);
+          console.log('Tournament created:', data);
         }
-        if (numPlayers === 8){
-            sessionStorage.setItem("currentMatch", "0");
-            sessionStorage.setItem("quarters", JSON.stringify(quarters));
-        }
-        await createTournament(registeredPlayers);
-        showSection("/tournament/");
-      }
-    }
-  });
-}
+      })
+      .catch(error => {
+        console.error('Error creating tournament:', error);
+      });
+  });  
+};
 
-function clearMessages() {
-  const errorMessages = document.querySelectorAll(".error");
-  errorMessages.forEach((errorMessage) => {
-    errorMessage.remove();
-  });
-  const successMessages = document.querySelectorAll(".success");
-  successMessages.forEach((successMessage) => {
-    successMessage.remove();
-  });
-}
-
-// Get players from the form and check if they have the same name or are empty
-function getPlayers() {
-  const players = [];
-  const numPlayers = sessionStorage.getItem("numPlayers");
-  for (let i = 1; i <= numPlayers; i++) {
-    const playerName = document.getElementById(`player-${i}`);
-    const userPlayerName = document.getElementById(`player-${i - 1}`);
-
-    if (userPlayerName && userPlayerName.value === playerName.value || players.includes(playerName.value)) {
-      const errorMessage = document.createElement("p");
-      errorMessage.className = "error";
-      errorMessage.innerHTML = "* Players must have different names";
-      errorMessage.style.color = "red";
-      playerName.parentNode.appendChild(errorMessage);
-      return null;
-    }
-
-    if (playerName.value === "") {
-      players.push(`Player ${i}`);
-      playerName.value = `Player ${i}`;
-    } else {
-      players.push(playerName.value);
-    }
-
-    playerName.disabled = true;
-  }
-  return players;
-}
-
-function getRegisteredPlayers(players, userList) {
-  return players.filter(player => userList.find(user => user.display_name === player));
-}
-
-function handleRegisteredPlayers(registeredPlayers, players) {
-  registeredPlayers.forEach((player, index) => {
-    const playerIndex = players.indexOf(player) + 1;
-    const gameTokenInput = document.getElementById(`game-token-${playerIndex}`);
-
-    // Show game token input and set it as required to registered players
-    if (gameTokenInput) {
-      gameTokenInput.type = "text";
-      gameTokenInput.required = true;
-    }
-    // Disable inputs for registered players and set their names
-    if (playerIndex !== index + 1) {
-      const playerInput = document.getElementById(`player-${playerIndex}`);
-      playerInput.value = player;
-      playerInput.disabled = true;
-    }
-  });
-}
-
-window.loadTournamentForm = loadTournamentForm;
+window.loadTournamentSetup = loadTournamentSetup;

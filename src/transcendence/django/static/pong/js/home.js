@@ -34,14 +34,6 @@ async function logout() {
 }
 
 function setupHome() {
-    // Retrieve all items only once per session
-    if (document.getElementById('displayNameSpan')) {
-        redistributeSessionStorageItems();
-    }
-    return;
-}
-
-document.addEventListener('DOMContentLoaded', function () {
     const copyButton = document.getElementById('copyButton');
     const gameTokenElement = document.getElementById('gameToken');
 
@@ -86,4 +78,10 @@ document.addEventListener('DOMContentLoaded', function () {
         copyButton.innerHTML = '<i class="bi bi-clipboard"></i>';
       }, 2000);
     });
-  });
+
+    // Retrieve all items only once per session
+    if (document.getElementById('displayNameSpan')) {
+        redistributeSessionStorageItems();
+    }
+    return;
+}

@@ -1,41 +1,82 @@
 {% load static i18n %}
 {% block content %}
-
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-6">
-      <div class="p-4 mt-5" , style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
-
-        <h1 class="text-center mt-3">Create Tournament</h1>
-
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="card text-center" style="height: 100%;">
-              <div class="card-body">
-                <h5 class="card-title">4 Players</h5>
-                <p class="card-text">{% trans "3 Matchs: Semifinals followed by a final." %}</p>
-                <a class="btn btn-primary" onclick="showForm(4)">
-                  <i class="bi bi-trophy"></i></a>
-              </div>
-            </div>
+      <div class="p-4 mt-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+        <div class="text-center">
+          <h2 class="fs-1 mb-1">
+            <i class="bi bi-trophy me-2"></i>
+            {% trans "Tournament Setup" %}
+          </h2>
+          <hr>
+          <div class="btn-group btn-group-toggle d-flex flex-row mb-4" data-toggle="buttons">
+            <input type="radio" class="btn-check" name="playerCount" id="players4" value="4" autocomplete="off">
+            <label class="btn btn-secondary flex-fill m-2 rounded" for="players4">
+              <h5>{% trans "4 Players" %}</h5>
+              <p>{% trans "3 Matches: Semifinals followed by a final." %}</p>
+              <i class="bi bi-trophy"></i>
+            </label>
+            <input type="radio" class="btn-check" name="playerCount" id="players8" value="8" autocomplete="off">
+            <label class="btn btn-secondary flex-fill m-2 rounded" for="players8">
+              <h5>{% trans "8 Players" %}</h5>
+              <p>{% trans "7 Matches: Quarterfinals, semifinals, followed by a final." %}</p>
+              <i class="bi bi-trophy"></i>
+            </label>
           </div>
-          <div class="col-sm-6">
-            <div class="card text-center" style="height: 100%;">
-              <div class="card-body">
-                <h5 class="card-title">8 Players</h5>
-                <p class="card-text">{% trans "7 Matchs: Quarterfinals, semifinals, followed by a final." %}</p>
-                <a class="btn btn-primary" onclick="showForm(8)">
-                  <i class="bi bi-trophy"></i></a>
+
+          <div id="tournament-setup" class="container mt-5" style="display: none;">
+            <form id="tournament-setup-form">
+              {% csrf_token %}
+              <div class="mb-3 d-flex flex-column align-items-center">
+                <p class="form-label me-3 fs-5"><strong>{% trans "Difficulty" %}</strong></p>
+                <div id="difficulty-options" class="btn-group" role="group" aria-label="Difficulty levels">
+                  <input type="radio" class="btn-check" name="difficulty" id="tournament-difficulty-slow" value="slow" required>
+                  <label class="btn btn-outline-secondary" for="tournament-difficulty-slow">{% trans "Slow" %}</label>
+
+                  <input type="radio" class="btn-check" name="difficulty" id="tournament-difficulty-normal" value="normal" required checked>
+                  <label class="btn btn-outline-secondary" for="tournament-difficulty-normal">{% trans "Normal" %}</label>
+
+                  <input type="radio" class="btn-check" name="difficulty" id="tournament-difficulty-fast" value="fast" required>
+                  <label class="btn btn-outline-secondary" for="tournament-difficulty-fast">{% trans "Fast" %}</label>
+                </div>
               </div>
-            </div>
+
+              <div id="player-fields-container" class="row"></div>
+
+              <!-- Player Field Template -->
+							<div id="player-field-template" style="display: none;">
+								<div class="mb-3">
+									<p class="form-label fs-5"><strong>{% trans "Player" %}</strong></p>
+									<div class="form-check form-switch mb-2 d-flex align-items-center">
+										<input class="form-check-input me-2 player-guest-switch" type="checkbox">
+										<label class="form-check-label">{% trans "Play as Guest" %}</label>
+									</div>
+									<select class="form-select player-select" required>
+										<option value="" disabled selected>{% trans "Select Player" %}</option>
+										{% for player in users %}
+											<option value="{{ player.id }}">{{ player.display_name }}</option>
+										{% endfor %}
+									</select>
+									<div class="token-container" style="display: none; margin-top: 10px;">
+										<input type="text" class="form-control game-token" placeholder="{% trans 'Player Game Token' %}">
+										<button type="button" class="btn btn-secondary mt-2 validate-token" disabled>{% trans 'Validate' %}</button>
+									</div>
+									<div class="token-warning text-danger mt-2" style="display: none;">{% trans "Invalid game token!" %}</div>
+									<input type="text" class="form-control player-guest" placeholder="{% trans 'Guest' %}" style="display: none;">
+									<div class="validation-success" style="display: none;">
+										<i class="bi bi-check-circle-fill text-success"></i>
+									</div>
+								</div>
+							</div>
+
+
+              <button type="submit" id="create-tournament" class="btn btn-primary" disabled>{% trans "Create Tournament"%}</button>
+            </form>
           </div>
         </div>
-
-        {% include "../components/tournamentForm.html" %}
-        
       </div>
     </div>
   </div>
 </div>
-
-{% endblock content %}
+{% endblock %}

@@ -233,7 +233,7 @@ class Tournament(models.Model):
 		status (CharField): The status of the tournament (open, closed, finished).
 		winner (CharField): The winner of the tournament.
 		match_count (IntegerField): The number of matches in the tournament.
-		actual_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
+		current_match (String) : "$Player1 vs $Player2" of the current match in the tournament.
 		registered_users (ManyToManyField): The users registered for the tournament with a valid account.
 	"""
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -242,7 +242,7 @@ class Tournament(models.Model):
 	status = models.CharField(max_length=50, default='open')
 	winner = models.CharField(max_length=50, blank=True)
 	match_count = models.IntegerField(default=0)
-	actual_match = models.CharField(max_length=50, blank=True)
+	current_match = models.CharField(max_length=50, blank=True)
 	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
 
 	def __str__(self):
@@ -305,6 +305,49 @@ class Match(models.Model):
 		elif self.player2_guest:
 			return self.player2_guest.display_name
 		return 'Unknown'
+
+
+class TournamentMatch(models.Model):
+	"""
+	Model to store the matches of a tournament.
+
+	Attributes:
+		tournament (ForeignKey): The tournament associated with the match.
+		match (ForeignKey): The match in the tournament.
+		position (IntegerField): The position of the match in the tournament.
+
+	Usage:
+		Use this model to store the matches of a tournament in your Django application.
+	"""
+
+	tournament = models.ForeignKey(Tournament, related_name='tournament_matches', on_delete=models.CASCADE)
+	match = models.ForeignKey(Match, related_name='tournament_match', on_delete=models.CASCADE)
+	position = models.IntegerField()
+	player1_display_name = models.CharField(max_length=150, default='Player 1')
+	player2_display_name = models.CharField(max_length=150, default='Player 2')
+	
+	class Meta:
+		unique_together = ('tournament', 'position')
+	
+	def __str__(self):
+		return f"Tournament {self.tournament.id}'s match {self.position} - {self.match.id}"
+
+	def get_tournament_match(self, position):
+		"""
+		Returns the match at the given position in the tournament.
+
+		Args:
+			position (int): The position of the match in the tournament.
+
+		Returns:
+			TournamentMatch: The match at the given position.
+
+		Usage:
+			Use this method to get the match at a specific position in the tournament.
+		"""
+		return self.tournament.tournament_matches.get(position=position).match
+
+
 
 # Match History
 class MatchHistory(models.Model):

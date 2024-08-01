@@ -58,73 +58,73 @@ async function sendNotification(currentMatch, playerL, playerR) {
 }
 
 async function loadTournament() {
-  const quartersString = sessionStorage.getItem("quarters");
-  const quarters = JSON.parse(quartersString);
+  // const quartersString = sessionStorage.getItem("quarters");
+  // const quarters = JSON.parse(quartersString);
 
-  const semiFinalsString = sessionStorage.getItem("semiFinals");
-  const semiFinals = JSON.parse(semiFinalsString);
+  // const semiFinalsString = sessionStorage.getItem("semiFinals");
+  // const semiFinals = JSON.parse(semiFinalsString);
 
-  const finalString = sessionStorage.getItem("final");
-  const final = JSON.parse(finalString);
+  // const finalString = sessionStorage.getItem("final");
+  // const final = JSON.parse(finalString);
 
-  const winner = sessionStorage.getItem("winner");
-  const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
+  // const winner = sessionStorage.getItem("winner");
+  // const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
 
-  const currentMatchString = sessionStorage.getItem("currentMatch");
-  const currentMatch = Number(JSON.parse(currentMatchString));
+  // const currentMatchString = sessionStorage.getItem("currentMatch");
+  // const currentMatch = Number(JSON.parse(currentMatchString));
 
-  if (winner) {
-    sendNotification(currentMatch, winner, winner);
-    showSection("/tournament/winner/");
-  }
+  // if (winner) {
+  //   sendNotification(currentMatch, winner, winner);
+  //   showSection("/tournament/winner/");
+  // }
 
-  if (numPlayers === 8){
-    const quarterDivs = document.querySelectorAll(".quarter > .player");
-    for (let i = 0; i < quarterDivs.length; i++) {
-      quarterDivs[i].innerHTML = quarters[i];
-    }
-  }
-  else if (numPlayers === 4) {
-    const quarterFinalsDiv = document.getElementById("quarterFinals");
-    quarterFinalsDiv.style.display = "none";
-  }
+  // if (numPlayers === 8){
+  //   const quarterDivs = document.querySelectorAll(".quarter > .player");
+  //   for (let i = 0; i < quarterDivs.length; i++) {
+  //     quarterDivs[i].innerHTML = quarters[i];
+  //   }
+  // }
+  // else if (numPlayers === 4) {
+  //   const quarterFinalsDiv = document.getElementById("quarterFinals");
+  //   quarterFinalsDiv.style.display = "none";
+  // }
 
-  const semiFinalDivs = document.querySelectorAll(".semi > .player");
-  if (semiFinals && semiFinals.length > 0) {
-    for (let i = 0; i < semiFinals.length; i++) {
-      const player = semiFinals[i];
-      semiFinalDivs[i].innerHTML = player;
-    }
-  }
+  // const semiFinalDivs = document.querySelectorAll(".semi > .player");
+  // if (semiFinals && semiFinals.length > 0) {
+  //   for (let i = 0; i < semiFinals.length; i++) {
+  //     const player = semiFinals[i];
+  //     semiFinalDivs[i].innerHTML = player;
+  //   }
+  // }
 
-  const finalDivs = document.querySelectorAll("#final > .player");
-  if (final && final.length > 0) {
-    for (let i = 0; i < final.length; i++) {
-      const player = final[i];
-      finalDivs[i].innerHTML = player;
-    }
-  }
+  // const finalDivs = document.querySelectorAll("#final > .player");
+  // if (final && final.length > 0) {
+  //   for (let i = 0; i < final.length; i++) {
+  //     const player = final[i];
+  //     finalDivs[i].innerHTML = player;
+  //   }
+  // }
 
-  const playerL = document.getElementById("player-l");
-  const playerR = document.getElementById("player-r");
+  // const playerL = document.getElementById("player-l");
+  // const playerR = document.getElementById("player-r");
 
-  if (currentMatch >= 0 && currentMatch <= 3) {
-    playerL.innerHTML = quarters[currentMatch * 2];
-    playerR.innerHTML = quarters[currentMatch * 2 + 1];
-    sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  } else if (currentMatch >= 4 && currentMatch <= 5) {
-    playerL.innerHTML = semiFinals[(currentMatch - 4) * 2];
-    playerR.innerHTML = semiFinals[(currentMatch - 4) * 2 + 1];
-    sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  } else if (currentMatch === 6) {
-    playerL.innerHTML = final[0];
-    playerR.innerHTML = final[1];
-    sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  }
+  // if (currentMatch >= 0 && currentMatch <= 3) {
+  //   playerL.innerHTML = quarters[currentMatch * 2];
+  //   playerR.innerHTML = quarters[currentMatch * 2 + 1];
+  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
+  // } else if (currentMatch >= 4 && currentMatch <= 5) {
+  //   playerL.innerHTML = semiFinals[(currentMatch - 4) * 2];
+  //   playerR.innerHTML = semiFinals[(currentMatch - 4) * 2 + 1];
+  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
+  // } else if (currentMatch === 6) {
+  //   playerL.innerHTML = final[0];
+  //   playerR.innerHTML = final[1];
+  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
+  // }
 
-  sessionStorage.setItem("playerL", playerL.innerHTML);
-  sessionStorage.setItem("playerR", playerR.innerHTML);
-  await saveSessionStorageToServer();
+  // sessionStorage.setItem("playerL", playerL.innerHTML);
+  // sessionStorage.setItem("playerR", playerR.innerHTML);
+  // await saveSessionStorageToServer();
 }
 
 window.loadTournament = loadTournament;

@@ -36,24 +36,22 @@ async function loadGameSetup() {
         }
     }
 
-    if (player1GuestSwitch) {
-        player1GuestSwitch.addEventListener("change", function() {
-            if (player1GuestSwitch.checked) {
-                player1Select.style.display = "none";
-                player1Select.removeAttribute('required');
-                player1GuestInput.style.display = "block";
-                player1GuestInput.value = "Guest";
-                player1UserInput.value = "";
-                player1GuestHiddenInput.value = "Guest";
-            } else {
-                player1Select.style.display = "block";
-                player1Select.setAttribute('required', 'required');
-                player1GuestInput.style.display = "none";
-                player1UserInput.value = player1Select.value;
-                player1GuestHiddenInput.value = "";
-            }
-        });
-    }
+    player1GuestSwitch.addEventListener("change", function() {
+        if (player1GuestSwitch.checked) {
+            player1Select.style.display = "none";
+            player1Select.removeAttribute('required');
+            player1GuestInput.style.display = "block";
+            player1GuestInput.value = "Guest";
+            player1UserInput.value = "";
+            player1GuestHiddenInput.value = "Guest";
+        } else {
+            player1Select.style.display = "block";
+            player1Select.setAttribute('required', 'required');
+            player1GuestInput.style.display = "none";
+            player1UserInput.value = player1Select.value;
+            player1GuestHiddenInput.value = "";
+        }
+    });
 
     player2GuestSwitch.addEventListener("change", function() {
         if (player2GuestSwitch.checked) {

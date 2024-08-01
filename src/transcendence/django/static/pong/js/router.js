@@ -39,14 +39,15 @@ function setupSection(section) {
   if (section.startsWith("/game/")) {
     const matchId = getMatchIdFromRoute(section);
     startGame(matchId);
+  // } else if (section.startsWith("/tournament/")) {
+  //   const tournamentId = getTournamentIdFromRoute(section);
+  //   loadTournament(tournamentId);
   } else if (section === "/match/setup/") {
     loadGameSetup();
   } else if (section === "/tournament/game/") {
     startGame();
-  } else if (section === "/tournament/") {
-    loadTournament();
   } else if (section === "/tournament/form/") {
-    loadTournamentForm();
+    loadTournamentSetup();
   } else if (section === "/tournament/winner/") {
     setWinner();
   } else if (section === "/profile/") {
@@ -116,6 +117,12 @@ function updateMatchResultToWO() {
 function getMatchIdFromRoute(route) {
   const match = route.match(/\/game\/([0-9a-fA-F-]+)\//);
   return match ? match[1] : null;
+}
+
+// Function to extract tournament_id from the route
+function getTournamentIdFromRoute(route) {
+  const tournament = route.match(/\/tournament\/([0-9a-fA-F-]+)\//);
+  return tournament ? tournament[1] : null;
 }
 
 // Function to initialize the current tab
