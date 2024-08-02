@@ -35,6 +35,7 @@ urlpatterns = [
     path("stats/", views.get_stats_page, name="stats-page"),
     path("stats/<uuid:user_id>/", views.get_user_stats_page, name="user-stats-page"),
     path("tournament/<uuid:tournament_id>/", views.get_tournament_page, name="tournament-page"),
+    path("tournament/info/", views.get_tournament_info, name="tournament-info"),
     path("tournament/form/", views.get_tournament_form_page, name="tournament-form-page"),
     path("tournament/game/", views.get_tournament_game_page, name="tournament-game-page"),
     path("tournament/winner/", views.get_winner_page, name="tournament-winner-page"),
@@ -45,7 +46,5 @@ urlpatterns = [
     path("profile/edit/", views.edit_profile_field, name="profile-edit-page"),
     path("profile/edit/templates/", views.load_templates, name="profile-edit-templates"),
     path("block/", views.block_user, name="block-user"),
-    path("unblock/", views.unblock_user, name="unblock-user"),
-    path("session/get/", views.get_session, name="get-sessions"),
-    path("session/set/", views.set_session, name="set-session")
+    path("unblock/", views.unblock_user, name="unblock-user")
 ]

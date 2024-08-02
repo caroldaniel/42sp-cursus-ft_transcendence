@@ -241,8 +241,8 @@ class Tournament(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	status = models.CharField(max_length=50, default='open')
 	winner = models.CharField(max_length=50, blank=True)
-	match_count = models.IntegerField(default=0)
-	current_match = models.CharField(max_length=50, blank=True)
+	player_count = models.IntegerField(default=0)
+	current_match = models.IntegerField()
 	registered_users = models.ManyToManyField(User, related_name='registered_tournaments', blank=True)
 
 	def __str__(self):

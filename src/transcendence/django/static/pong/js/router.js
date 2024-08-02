@@ -39,9 +39,9 @@ function setupSection(section) {
   if (section.startsWith("/game/")) {
     const matchId = getMatchIdFromRoute(section);
     startGame(matchId);
-  // } else if (section.startsWith("/tournament/")) {
-  //   const tournamentId = getTournamentIdFromRoute(section);
-  //   loadTournament(tournamentId);
+  } else if (section.match(/^\/tournament\/([0-9a-fA-F-]{36})\/?$/)) {
+    const tournamentId = getTournamentIdFromRoute(section);
+    loadTournament(tournamentId);
   } else if (section === "/match/setup/") {
     loadGameSetup();
   } else if (section === "/tournament/game/") {

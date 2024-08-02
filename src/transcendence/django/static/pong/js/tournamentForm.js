@@ -16,28 +16,28 @@ async function loadTournamentSetup() {
   function updatePlayerFields(count) {
     playerFieldsContainer.innerHTML = ''; // Clear existing fields
     for (let i = 1; i <= count; i++) {
-        // Create player field HTML
-        const fieldHTML = playerFieldTemplate.innerHTML
-            .replace(/Player/g, `Player ${i}`)
-            .replace(/player2/g, `player${i}`)
-            .replace(/tournament-validate-token/g, `tournament-validate-token-${i}`)
-            .replace(/tournament-token-warning/g, `tournament-token-warning-${i}`)
-            .replace(/tournament-player-guest/g, `tournament-player-guest-${i}`)
-            .replace(/tournament-validation-success/g, `tournament-validation-success-${i}`);
-        
-        // Insert player field HTML into the container
-        playerFieldsContainer.insertAdjacentHTML('beforeend', fieldHTML);
+      // Create player field HTML
+      const fieldHTML = playerFieldTemplate.innerHTML
+        .replace(/Player/g, `Player ${i}`)
+        .replace(/player2/g, `player${i}`)
+        .replace(/tournament-validate-token/g, `tournament-validate-token-${i}`)
+        .replace(/tournament-token-warning/g, `tournament-token-warning-${i}`)
+        .replace(/tournament-player-guest/g, `tournament-player-guest-${i}`)
+        .replace(/tournament-validation-success/g, `tournament-validation-success-${i}`);
+      
+      // Insert player field HTML into the container
+      playerFieldsContainer.insertAdjacentHTML('beforeend', fieldHTML);
 
-        // Ensure the last element is selected correctly
-        const lastPlayerField = playerFieldsContainer.lastElementChild;
+      // Ensure the last element is selected correctly
+      const lastPlayerField = playerFieldsContainer.lastElementChild;
 
-        if (lastPlayerField) {
-            const hiddenInputsHTML = `
-                <input type="hidden" name="player${i}_user" id="tournament-player${i}-user" class="player-user-input" value="">
-                <input type="hidden" name="player${i}_guest" id="tournament-player${i}-guest" class="player-guest-input" value="">
-            `;
-            lastPlayerField.insertAdjacentHTML('beforeend', hiddenInputsHTML);
-        }
+      if (lastPlayerField) {
+        const hiddenInputsHTML = `
+          <input type="hidden" name="player${i}_user" id="tournament-player${i}-user" class="player-user-input" value="">
+          <input type="hidden" name="player${i}_guest" id="tournament-player${i}-guest" class="player-guest-input" value="">
+        `;
+        lastPlayerField.insertAdjacentHTML('beforeend', hiddenInputsHTML);
+      }
     }
   
     updateFieldDependencies();
@@ -220,7 +220,7 @@ async function loadTournamentSetup() {
       .then(response => response.json())
       .then(data => {
         if (data.tournament_id) {
-          // showSection(`/tournament/${data.tournament_id}/`);
+          showSection(`/tournament/${data.tournament_id}/`);
           console.log('Tournament created:', data);
         }
       })

@@ -1,37 +1,3 @@
-export async function saveSessionStorageToServer() {
-  console.log('Saving sessionStorage to the server...');
-  // Create an object to store all sessionStorage items
-  const sessionData = {};
-
-  // Iterate over all sessionStorage items
-  for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      const value = sessionStorage.getItem(key);
-      sessionData[key] = value;
-  }
-
-  // Convert the object to JSON
-  const jsonData = JSON.stringify(sessionData);
-  const csrfmiddlewaretoken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
-
-  // Send the JSON to the server using fetch
-  await fetch('/session/set/', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': csrfmiddlewaretoken,
-      },
-      body: jsonData,
-  })
-  .then(response => response.json())
-  .then(data => {
-      return;
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-  });
-}
-
 async function sendNotification(currentMatch, playerL, playerR) {
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -57,53 +23,77 @@ async function sendNotification(currentMatch, playerL, playerR) {
   }
 }
 
-async function loadTournament() {
-  // const quartersString = sessionStorage.getItem("quarters");
-  // const quarters = JSON.parse(quartersString);
+async function loadTournament(tournamentId) {
+  console.log(tournamentId);
 
-  // const semiFinalsString = sessionStorage.getItem("semiFinals");
-  // const semiFinals = JSON.parse(semiFinalsString);
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const formData = new FormData();
+  formData.append("tournamentId", tournamentId);
+  const response = await fetch(`/tournament/info/`, {
+    method: "POST",
+    headers: {
+      "X-CSRFToken": csrfToken
+    },
+    body: formData
+  });
 
-  // const finalString = sessionStorage.getItem("final");
-  // const final = JSON.parse(finalString);
+  if (!response.ok) {
+    console.log("Error loading tournament:", response.status);
+    return;
+  }
 
-  // const winner = sessionStorage.getItem("winner");
-  // const numPlayers = parseInt(sessionStorage.getItem("numPlayers"), 10);
+  const data = await response.json();
+  console.log(data);
 
-  // const currentMatchString = sessionStorage.getItem("currentMatch");
-  // const currentMatch = Number(JSON.parse(currentMatchString));
+  if (data.winner) {
+    sendNotification(currentMatch, data.winner, data.winner);
+    showSection("/tournament/winner/");
+  }
 
-  // if (winner) {
-  //   sendNotification(currentMatch, winner, winner);
-  //   showSection("/tournament/winner/");
-  // }
+  // Get all player names in order
+  const players = [];
+  data.matches.forEach(match => {
+    players.push(match.player1);
+    players.push(match.player2);
+  });
+  console.log(players);
 
-  // if (numPlayers === 8){
-  //   const quarterDivs = document.querySelectorAll(".quarter > .player");
-  //   for (let i = 0; i < quarterDivs.length; i++) {
-  //     quarterDivs[i].innerHTML = quarters[i];
-  //   }
-  // }
-  // else if (numPlayers === 4) {
-  //   const quarterFinalsDiv = document.getElementById("quarterFinals");
-  //   quarterFinalsDiv.style.display = "none";
-  // }
+  let quarters = [];
+  let semiFinals = [];
+  let final = [];
 
-  // const semiFinalDivs = document.querySelectorAll(".semi > .player");
-  // if (semiFinals && semiFinals.length > 0) {
-  //   for (let i = 0; i < semiFinals.length; i++) {
-  //     const player = semiFinals[i];
-  //     semiFinalDivs[i].innerHTML = player;
-  //   }
-  // }
+  if (data.player_count === 8) {
+    quarters = players.slice(0, 8);
+    semiFinals = players.slice(8, 12);
+    final = players.slice(12, 14);
+  } else if (data.player_count === 4) {
+    semiFinals = players.slice(0, 4);
+    final = players.slice(4, 6);
+  }
 
-  // const finalDivs = document.querySelectorAll("#final > .player");
-  // if (final && final.length > 0) {
-  //   for (let i = 0; i < final.length; i++) {
-  //     const player = final[i];
-  //     finalDivs[i].innerHTML = player;
-  //   }
-  // }
+  if (data.player_count === 8){
+    const quarterDivs = document.querySelectorAll(".quarter > .player");
+    for (let i = 0; i < quarters.length ; i++) {
+      quarterDivs[i].innerHTML = quarters[i];
+    }
+  } else if (data.player_count === 4) {
+    const quarterFinalsDiv = document.getElementById("quarterFinals");
+    quarterFinalsDiv.style.display = "none";
+  }
+
+  const semiFinalDivs = document.querySelectorAll(".semi > .player");
+  for (let i = 0; i < semiFinals.length; i++) {
+    if (semiFinals[i] !== 'TBD') {
+      semiFinalDivs[i].innerHTML = semiFinals[i];
+    }
+  }
+
+  const finalDivs = document.querySelectorAll("#final > .player");
+  for (let i = 0; i < final.length; i++) {
+    if (final[i] !== 'TBD') {
+      finalDivs[i].innerHTML = final[i];
+    }
+  }
 
   // const playerL = document.getElementById("player-l");
   // const playerR = document.getElementById("player-r");
@@ -121,10 +111,6 @@ async function loadTournament() {
   //   playerR.innerHTML = final[1];
   //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
   // }
-
-  // sessionStorage.setItem("playerL", playerL.innerHTML);
-  // sessionStorage.setItem("playerR", playerR.innerHTML);
-  // await saveSessionStorageToServer();
 }
 
 window.loadTournament = loadTournament;

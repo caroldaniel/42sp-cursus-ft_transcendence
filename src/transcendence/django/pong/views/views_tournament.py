@@ -38,7 +38,8 @@ def create_tournament(request):
         tournament = Tournament(
             created_by=user,
             status="open",
-            match_count=nb_matches
+            player_count=nb_players,
+            current_match=1
         )
         tournament.save()
 
@@ -92,32 +93,46 @@ def create_tournament(request):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-@login_required
-def tournament_create(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-    
-    try:
-        user = request.user
-        check = Tournament.objects.filter(created_by=user)
-        if check.exists():
-            check.delete()
-        
-        data = json.loads(request.body)
-        players = data.get('players', [])
-        match_count = data.get('match_count')
+@csrf_exempt
+def get_tournament_info(request):
+    if request.method == 'POST':
+        tournament_id = request.POST.get('tournamentId')
+        tournament = Tournament.objects.get(id=tournament_id)
 
-        players_users = [User.objects.get(display_name=player) for player in players if User.objects.filter(display_name=player).exists()]
-        players_users.append(user)
+        matches = TournamentMatch.objects.filter(tournament=tournament).order_by('position')
+        matches_info = []
+        for match in matches:
+            match_info = {
+                'match_id': match.match.id,
+                'position': match.position,
+                'player1': match.player1_display_name,
+                'player2': match.player2_display_name,
+                'score_player1': match.match.score_player1,
+                'score_player2': match.match.score_player2
+            }
+            matches_info.append(match_info)
 
-        tournament = Tournament.objects.create(created_by=user, match_count=match_count)
-        tournament.registered_users.set(players_users)
-        tournament.save()
+        current_match = matches.filter(position=tournament.current_match).first()
+        if current_match:
+            current_match = {
+                'match_id': current_match.match.id,
+                'position': current_match.position,
+                'player1': current_match.player1_display_name,
+                'player2': current_match.player2_display_name,
+                'score_player1': current_match.match.score_player1,
+                'score_player2': current_match.match.score_player2
+            }
 
-        return JsonResponse({'tournament_id': tournament.id})
-    except Exception as e:
-        return JsonResponse({'error': 'Internal server error'}, status=500)
-
+        return JsonResponse({
+            'tournament_id': tournament.id,
+            'status': tournament.status,
+            'player_count': tournament.player_count,
+            'match_count': tournament.match_count,
+            'current_match': current_match,
+            'winner': tournament.winner,
+            'matches': matches_info
+        }, status=200)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @login_required

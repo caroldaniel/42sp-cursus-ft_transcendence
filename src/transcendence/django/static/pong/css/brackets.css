@@ -20,6 +20,7 @@
   font-weight: bold;
   margin-bottom: 10px;
 }
+
 .player {
   width: 24ch;
   background-color: rgba(var(--bs-body-color-rgb), 0.7);
@@ -31,6 +32,19 @@
   transition: background-color 0.3s, color 0.3s;
   font-weight: bold;
 }
+
+.current {
+  width: 24ch;
+  background-color: rgba(var(--bs-primary-rgb));
+  color: white;
+  padding: 0.625rem 2ch;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(196, 195, 195, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold;
+}
+
 .player:hover {
   background-color: rgba(var(--bs-primary-rgb), 0.85);
   color: rgba(var(--bs-white-rgb), 0.95);
