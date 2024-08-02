@@ -1,51 +1,55 @@
-async function registerMatch(
+async function updateMatch(
   matchId,
-  playerLName,
+  tournament,
   playerLScore,
-  playerRName,
   playerRScore,
 ) {
   const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
   const formData = new FormData();
 
-  formData.append("user_display_name", playerLName);
-  formData.append("user_score", playerLScore);
-  formData.append("opponent_display_name", playerRName);
-  formData.append("opponent_score", playerRScore);
+  formData.append("score_player1", playerLScore);
+  formData.append("score_player2", playerRScore);
 
-  const response = await fetch("/game/register/", {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrfToken,
-    },
-    body: formData,
-  });
+  if (tournament) {
+    formData.append("matchId", matchId);
 
-  await response.json(); 
+    // print out the form data
+    for (var pair of formData.entries()) {
+      console.log(pair[0] + ", " + pair[1]);
+    }
 
-  const updateFormData = new FormData();
+    const nextMatchResponse = await fetch(`/tournament/next/${tournament}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      body: formData,
+    });
 
-  updateFormData.append("score_player1", playerLScore);
-  updateFormData.append("score_player2", playerRScore);
-
-  const updateResponse = await fetch(`/match/update/${matchId}/`, {
-    method: "POST",
-    headers: {
-      "X-CSRFToken": csrfToken,
-    },
-    body: updateFormData,
-  });
-
-  await updateResponse.json();
+    await nextMatchResponse.json();
+  } else {
+    const updateMatchResponse = await fetch(`/match/update/${matchId}/`, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      body: formData,
+    });
+    
+    await updateMatchResponse.json();
+  }
 }
 
 export default class GameManager {
-  constructor({ matchId, maxScore, gameMode }) {
-    this.matchId = matchId;
-    this.playerLScore = 0;
-    this.playerRScore = 0;
-    this.maxScore = maxScore;
+  constructor({ matchId, gameData }) {
 
+    this.matchId = matchId;
+    this.playerLScore = gameData.score_player1;
+    this.playerRScore = gameData.score_player2;
+    this.tournament = gameData.tournament;
+    
+    this.maxScore = gameData.max_score;
+    
     this.targetFrameRate = 1000 / 60;
 
     this.deltaTime = 0;
@@ -54,29 +58,57 @@ export default class GameManager {
 
     this.lastTimeStamp = 0;
 
-    if (gameMode === "tournament") {
-      const playerL = sessionStorage.getItem("playerL");
-      const playerR = sessionStorage.getItem("playerR");
-      document.getElementById("player-l-name").innerHTML = playerL;
-      document.getElementById("player-r-name").innerHTML = playerR;
-    }
+    // Set game over buttons
+    this.gameOverButtonsDiv = document.getElementById("gameOverButtons");
 
-    this.playerLName = document.getElementById("player-l-name").innerHTML;
-    this.playerRName = document.getElementById("player-r-name").innerHTML;
+    // Set player name divs
+    this.playerLName = document.getElementById("player-l-name");
+    this.playerLName.textContent = gameData.player1;
+    this.playerRName = document.getElementById("player-r-name");
+    this.playerRName.textContent = gameData.player2;
 
-    this.popupWinnerName = document.getElementById("popup-winner-name");
-
+    // Set initial score on divs
     this.playerLSpan = document.getElementById("player-l-score");
+    this.playerLSpan.innerHTML = gameData.score_player1;
     this.playerRSpan = document.getElementById("player-r-score");
-    this.playerLSpan.innerHTML = 0;
-    this.playerRSpan.innerHTML = 0;
+    this.playerRSpan.innerHTML = gameData.score_player2;
 
-    this.gameOver = false;
-    this.gameOverPopUp = document.getElementById("game-over");
+    if (gameData.tournament) {
+      // Add tournament buttons: Next Match and Back to tournament page
+      const nextMatchButton = document.createElement("button");
+      nextMatchButton.textContent = "Next Match";
+      nextMatchButton.classList.add("btn", "btn-primary", "m-2");
+      const backToTournamentButton = document.createElement("button");
+      backToTournamentButton.textContent = "Back to Tournament";
+      backToTournamentButton.classList.add("btn", "btn-secondary", "m-2");
+      backToTournamentButton.setAttribute("data-bs-dismiss", "modal");
+      backToTournamentButton.addEventListener("click", () => {
+        showSection(`/tournament/${gameData.tournament}/`);
+      });
+      this.gameOverButtonsDiv.appendChild(nextMatchButton);
+      this.gameOverButtonsDiv.appendChild(backToTournamentButton);
+    } else {
+      // Add normal buttons: Restart and Back to match list
+      const newMatchButton = document.createElement("button");
+      newMatchButton.textContent = "New Match";
+      newMatchButton.classList.add("btn", "btn-primary", "m-2");
+      newMatchButton.setAttribute("data-bs-dismiss", "modal");
+      newMatchButton.addEventListener("click", () => {
+        showSection('/match/setup/');
+      });
+      const backToHomeButton = document.createElement("button");
+      backToHomeButton.textContent = "Back to Home Page";
+      backToHomeButton.classList.add("btn", "btn-secondary", "m-2");
+      backToHomeButton.setAttribute("data-bs-dismiss", "modal");
+      backToHomeButton.addEventListener("click", () => {
+        showSection("/");
+      });
+      this.gameOverButtonsDiv.appendChild(newMatchButton);
+      this.gameOverButtonsDiv.appendChild(backToHomeButton);
+    }
+    this.gameOver = gameData.game_over;
 
     this.unpauseFrame = true;
-
-    this.gameMode = gameMode;
   }
 
   resetScore() {
@@ -91,19 +123,13 @@ export default class GameManager {
     this.playerLSpan.innerHTML = this.playerLScore;
     if (this.playerLScore >= this.maxScore) {
       this.gameOver = true;
-      this.popupWinnerName.innerHTML = this.playerLName;
-      if (this.gameMode === "tournament") {
-        this.setTournamentMatchWinner(this.playerLName);
-      } else {
-        registerMatch(
-          this.matchId,
-          this.playerLName,
-          this.playerLScore,
-          this.playerRName,
-          this.playerRScore,
-        );
-      }
-      this.gameOverPopUp.style.display = "flex";
+      updateMatch(
+        this.matchId,
+        this.tournament,
+        this.playerLScore,
+        this.playerRScore
+      );
+      showGameResultModal(this);
     }
   }
 
@@ -112,19 +138,13 @@ export default class GameManager {
     this.playerRSpan.innerHTML = this.playerRScore;
     if (this.playerRScore >= this.maxScore) {
       this.gameOver = true;
-      this.popupWinnerName.innerHTML = this.playerRName;
-      if (this.gameMode === "tournament") {
-        this.setTournamentMatchWinner(this.playerRName);
-      } else {
-        registerMatch(
-          this.matchId,
-          this.playerLName,
-          this.playerLScore,
-          this.playerRName,
-          this.playerRScore,
-        );
-      }
-      this.gameOverPopUp.style.display = "flex";
+      updateMatch(
+        this.matchId,
+        this.tournament,
+        this.playerLScore,
+        this.playerRScore
+      );
+      showGameResultModal(this);
     }
   }
 
@@ -142,35 +162,8 @@ export default class GameManager {
 
   resetGame() {
     this.resetScore();
-    this.gameOverPopUp.style.display = "none";
     this.gameOver = false;
     this.deltaTime = 0;
     this.unpauseFrame = true;
-  }
-
-  setTournamentMatchWinner(winner) {
-    const currentMatch = Number(sessionStorage.getItem("currentMatch"));
-
-    if (currentMatch >= 0 && currentMatch <= 3) {
-      const semiFinals = JSON.parse(sessionStorage.getItem("semiFinals"));
-      if (!semiFinals) {
-        sessionStorage.setItem("semiFinals", JSON.stringify([winner]));
-      } else {
-        semiFinals.push(winner);
-        sessionStorage.setItem("semiFinals", JSON.stringify(semiFinals));
-      }
-    } else if (currentMatch >= 4 && currentMatch <= 5) {
-      const final = JSON.parse(sessionStorage.getItem("final"));
-      if (!final) {
-        sessionStorage.setItem("final", JSON.stringify([winner]));
-      } else {
-        final.push(winner);
-        sessionStorage.setItem("final", JSON.stringify(final));
-      }
-    } else if (currentMatch === 6) {
-      sessionStorage.setItem("winner", winner);
-    }
-
-    sessionStorage.setItem("currentMatch", currentMatch + 1);
   }
 }

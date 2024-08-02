@@ -94,6 +94,7 @@ def create_tournament(request):
 
 
 @csrf_exempt
+@login_required
 def get_tournament_info(request):
     if request.method == 'POST':
         tournament_id = request.POST.get('tournamentId')
@@ -127,11 +128,67 @@ def get_tournament_info(request):
             'tournament_id': tournament.id,
             'status': tournament.status,
             'player_count': tournament.player_count,
-            'match_count': tournament.current_match,
             'current_match': current_match,
             'winner': tournament.winner,
             'matches': matches_info
         }, status=200)
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@csrf_exempt
+@login_required
+def go_to_tournament_next_match(request, tournament_id):
+    if request.method == 'POST':
+        tournament = Tournament.objects.get(id=tournament_id)
+        max_nb_matches = 3 if tournament.player_count == 4 else 7
+
+        match_id = request.POST.get('matchId')
+        match = Match.objects.get(id=match_id)
+        match.score_player1 = request.POST.get('score_player1')
+        match.score_player2 = request.POST.get('score_player2')
+        match.status = 'finished'
+        match.save()
+
+        # Get the winner User of the match
+        if match.score_player1 > match.score_player2:
+            winner_user = match.player1_user
+            winner_guest = match.player1_guest
+            winner = match.player1_user.display_name if match.player1_user else match.player1_guest.display_name
+        else:
+            winner_user = match.player2_user
+            winner_guest = match.player2_guest
+            winner = match.player2_user.display_name if match.player2_user else match.player2_guest.display_name
+
+        # Get all tournament matches
+        tournamentMatches = TournamentMatch.objects.filter(tournament=tournament).order_by('position')
+        next_match = None
+        for tournamentMatch in tournamentMatches:
+            if tournamentMatch.player1_display_name == "TBD":
+                tournamentMatch.player1_display_name = winner
+                tournamentMatch.save()
+                next_match = Match.objects.get(id=tournamentMatch.match.id)
+                next_match.player1_user = winner_user
+                next_match.player1_guest = winner_guest
+                next_match.save()
+                break
+            if tournamentMatch.player2_display_name == "TBD":
+                tournamentMatch.player2_display_name = winner
+                tournamentMatch.save()
+                next_match = Match.objects.get(id=tournamentMatch.match.id)
+                next_match.player2_user = winner_user
+                next_match.player2_guest = winner_guest
+                next_match.save()
+                break
+
+        if not next_match:
+            tournament.status = 'finished'
+            tournament.winner = winner
+            tournament.save()
+            return JsonResponse({'success': 'Tournament finished'}, status=200)
+        else:
+            tournament.current_match += 1
+            tournament.save()
+            return JsonResponse({'success': 'Next match'}, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 

@@ -37,36 +37,20 @@
             style="height: 75vh;">
 
           <canvas id="game-canvas" class="d-block mx-auto position-absolute"></canvas>
-
-          <div id="game-over"
-              class="flex-column align-items-center justify-content-around position-absolute z-1 w-50 h-50 bg-secondary-subtle rounded-3"
-              style="top: 25%;
-                      left: 25%;
-                      display: none;">
-            <div class="text-center fs-3">
-              <span id="popup-winner-name">intra_nickname</span>
-              <span>{% trans "won!" %}</span>
-            </div>
-            <button id="play-again" type="button" class="btn w-75 btn-primary fw-bold">{% trans "Play Again" %}</button>
-            <a type="button"
-              class="btn w-75 btn-secondary fw-bold"
-              onclick="showSection('/')">{% trans "Close" %}</a>
-          </div>
         </div>
 
         <!-- Game Status Modal -->
-        <div class="modal fade" id="game-result-modal" tabindex="-1" aria-labelledby="gameResultModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
+        <div class="modal fade" id="game-result-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="gameResultModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="gameResultModalLabel">Game Result</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="gameResultModalLabel">{% trans "Game is Over" %}</h5>
               </div>
               <div class="modal-body">
                 <!-- Message will be inserted here -->
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <div id="gameOverButtons" class="modal-footer">
+                <!--- Add buttons dinamically -->
               </div>
             </div>
           </div>

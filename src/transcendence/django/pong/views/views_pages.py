@@ -120,10 +120,12 @@ def get_tournament_game_page(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")
-def get_winner_page(request):
+def get_winner_page(request, tournament_id):
+	tournament = Tournament.objects.get(pk=tournament_id)
+	context = {'tournament': tournament}
 	if request.headers.get('X-Custom-Header') != 'self':
-		return render(request, "pages/winner.html")
-	return render(request, "sections/winner.html")
+		return render(request, "pages/winner.html", context)
+	return render(request, "sections/winner.html", context)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url="/login")

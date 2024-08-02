@@ -12,15 +12,46 @@ import Timer from './src/timer.js';
 
 let gameTimer = null;
 
-function showGameResultModal(message) {
+function showGameResultModal(gameManager) {
   const modalElement = document.getElementById('game-result-modal');
-  const modalBody = modalElement.querySelector('.modal-body');
-  modalBody.textContent = message;
+  if (modalElement === null) {
+    return;
+  }
   const modal = new bootstrap.Modal(modalElement);
-  modal.show();
+
+  const modalBody = modalElement.querySelector('.modal-body');
+
+  fetch(`/match/status/${gameManager.matchId}`)
+  .then(response => response.json())
+  .then(data => {
+    if (data.status) {
+      gameManager.gameOver = true;
+      modalBody.textContent = data.status
+      modal.show();
+    } else {
+      if (!gameTimer) {
+        gameTimer = new Timer();
+      }
+      gameTimer.reset();
+      gameTimer.start();
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
 }
 
-function gameSetup(matchId) {
+async function getGameData(matchId) {
+  const response = await fetch(`/match/data/${matchId}`);
+  if (!response.ok) {
+    console.log(`An error has occured: ${response.status}`);
+    return;
+  }
+  const data = await response.json();
+  return data;
+}
+
+async function gameSetup(matchId) {
   const gameWrapper = document.getElementById("game-wrapper");
   const gameWidth = gameWrapper.offsetWidth;
   const gameHeight = gameWrapper.offsetHeight;
@@ -31,8 +62,6 @@ function gameSetup(matchId) {
   const backgroundImage = new THREE.TextureLoader().load(
     "/static/pong/img/arena-background.png",
   );
-  
-  const gameMode = sessionStorage.getItem("gameMode");
   
   // Boilerplate
   const scene = new THREE.Scene();
@@ -49,7 +78,6 @@ function gameSetup(matchId) {
     canvas: gameCanvas,
   });
   renderer.setSize(gameWidth, gameHeight);
-  renderer.setAnimationLoop(animationLoop);
   
   new OrbitControls(camera, renderer.domElement);
   
@@ -74,11 +102,14 @@ function gameSetup(matchId) {
   
   const inputManager = new InputManager({});
   
+
+  const gameData = await getGameData(matchId);
   const gameManager = new GameManager({
     matchId: matchId,
-    maxScore: 5,
-    gameMode: gameMode,
+    gameData: gameData,
   });
+
+  renderer.setAnimationLoop(animationLoop);
   
   const arena = new Arena({
     width: arenaWidth,
@@ -155,42 +186,12 @@ function gameSetup(matchId) {
     gameTimer.reset();
     gameTimer.start();
   }
-  
-  function backToTournament() {
-    showSection("/tournament/");
-  }
-  
-  if (gameMode === "tournament") {
-    const backButton = document.getElementById("back");
-    backButton.addEventListener("click", backToTournament);
-  } else {
-    const playAgainButton = document.getElementById("play-again");
-    playAgainButton.addEventListener("click", resetGame);
-  }
-
-  return gameManager;
+    
+  showGameResultModal(gameManager);
 }
 
 function startGame(matchId) {
-  const gameManager = gameSetup(matchId);
-
-  fetch(`/match/status/${matchId}`)
-  .then(response => response.json())
-  .then(data => {
-    if (data.status) {
-      gameManager.gameOver = true;
-      showGameResultModal(data.status);
-    } else {
-      if (!gameTimer) {
-        gameTimer = new Timer();
-      }
-      gameTimer.reset();
-      gameTimer.start();
-    }
-  })
-  .catch(error => {
-    showGameResultModal('Failed to fetch game status.');
-  });
+  gameSetup(matchId);
 }
   
 function stopGame() {
@@ -202,3 +203,4 @@ function stopGame() {
 
 window.startGame = startGame;
 window.stopGame = stopGame;
+window.showGameResultModal = showGameResultModal;

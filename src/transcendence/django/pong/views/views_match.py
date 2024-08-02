@@ -134,3 +134,26 @@ def get_match_status(request, match_id):
         except Match.DoesNotExist:
             return JsonResponse({'error': 'Match not found'}, status=404)
     return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def get_match_data(request, match_id):
+    if request.method == 'GET':
+        try:
+            match = Match.objects.get(pk=match_id)
+            tournament = match.tournament.id if match.tournament else None
+            player1 = match.player1_user.display_name if match.player1_user else match.player1_guest.display_name
+            player2 = match.player2_user.display_name if match.player2_user else match.player2_guest.display_name
+            game_over = match.status == 'finished' or match.status == 'wo'
+            return JsonResponse({
+                'tournament': tournament,
+                'player1': player1,
+                'score_player1': match.score_player1,
+                'player2': player2,
+                'score_player2': match.score_player2,
+                'difficulty': match.difficulty,
+                'game_over': game_over,
+                'max_score': '5'
+                }, status=200)
+        except Match.DoesNotExist:
+            return JsonResponse({'error': 'Match not found'}, status=404)
+    return JsonResponse({'error': 'Invalid request'}, status=400)

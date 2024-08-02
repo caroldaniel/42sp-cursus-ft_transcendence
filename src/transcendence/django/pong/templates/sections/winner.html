@@ -1,17 +1,24 @@
-{% load static %}
+{% load static i18n %}
 {% block content %}
-  <div class="container text-center mt-5 position-relative">
-    <div class="bg-overlay position-absolute top-0 start-0 w-100 h-100"></div>
 
-    <div class="position-relative z-index-1">
-      <h1 class="text-primary mb-4">🎉 The winner is:</h1>
-      <div class="d-flex justify-content-center align-items-center">
+  <div class="container text-center mt-5 position-relative">
+    <div class="bg-overlay position-absolute w-100 h-100 rounded"></div>
+
+    <div class="position-relative z-index-1 p-3">
+      <h1 class="text-primary mb-4">{% trans "The winner is:" %}</h1>
+      <div class="d-flex justify-content-center align-items-center mb-5">
         <div class="display-3 text-warning fw-bold">
-          <span>🏆</span><span id="winner" class="px-3">Player</span><span>🏆</span>
+          <span>🏆</span><span id="winner" class="px-3">
+            {% if tournament.winner %}
+              {{ tournament.winner }}
+            {% else %}
+              {% trans "No winner for this match yet" %}
+            {% endif %}
+          </span><span>🏆</span>
         </div>
       </div>
-      <div class="mt-4">
-        <button class="btn btn-primary btn-lg" onclick="showSection('/')">Back to Home</button>
+      <div class="mt-5">
+        <button class="btn btn-primary btn-lg" onclick="showSection('/')">{% trans "Back to Home" %}</button>
       </div>
     </div>
   </div>

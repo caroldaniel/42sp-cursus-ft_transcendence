@@ -24,8 +24,6 @@ async function sendNotification(currentMatch, playerL, playerR) {
 }
 
 async function loadTournament(tournamentId) {
-  console.log(tournamentId);
-
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const formData = new FormData();
   formData.append("tournamentId", tournamentId);
@@ -46,8 +44,7 @@ async function loadTournament(tournamentId) {
   console.log(data);
 
   if (data.winner) {
-    sendNotification(currentMatch, data.winner, data.winner);
-    showSection("/tournament/winner/");
+    showSection(`/tournament/winner/${tournamentId}/`);
   }
 
   // Get all player names in order

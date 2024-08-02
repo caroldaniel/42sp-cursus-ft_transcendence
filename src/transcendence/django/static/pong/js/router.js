@@ -29,28 +29,27 @@ async function getSectionHTML(section) {
 }
 
 function setupSection(section) {
+  
   if (currentRoute && currentRoute.startsWith("/game/") && !section.startsWith("/game/")) {
     // User is leaving the game route
     stopGame();
     updateMatchResultToWO();
   }
   currentRoute = section;
-
-  if (section.startsWith("/game/")) {
+  
+  if (section === "/match/setup/") {
+    loadGameSetup();
+  } else if (section.startsWith("/game/")) {
     const matchId = getMatchIdFromRoute(section);
     startGame(matchId);
   } else if (section.match(/^\/tournament\/([0-9a-fA-F-]{36})\/?$/)) {
     const tournamentId = getTournamentIdFromRoute(section);
     loadTournament(tournamentId);
-  } else if (section === "/match/setup/") {
-    loadGameSetup();
   } else if (section.match(/^\/tournament\/game\/([0-9a-fA-F-]{36})\/?$/)) {
     const matchId = getMatchIdFromRoute(section);
     startGame(matchId);
   } else if (section === "/tournament/form/") {
     loadTournamentSetup();
-  } else if (section === "/tournament/winner/") {
-    setWinner();
   } else if (section === "/profile/") {
     setupProfile();
   } else if (section === "/stats/") {
