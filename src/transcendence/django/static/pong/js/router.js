@@ -44,8 +44,9 @@ function setupSection(section) {
     loadTournament(tournamentId);
   } else if (section === "/match/setup/") {
     loadGameSetup();
-  } else if (section === "/tournament/game/") {
-    startGame();
+  } else if (section.match(/^\/tournament\/game\/([0-9a-fA-F-]{36})\/?$/)) {
+    const matchId = getMatchIdFromRoute(section);
+    startGame(matchId);
   } else if (section === "/tournament/form/") {
     loadTournamentSetup();
   } else if (section === "/tournament/winner/") {

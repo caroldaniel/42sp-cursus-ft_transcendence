@@ -80,8 +80,8 @@ function setupHome() {
     });
 
     // Retrieve all items only once per session
-    if (document.getElementById('displayNameSpan')) {
-        redistributeSessionStorageItems();
-    }
+    // if (document.getElementById('displayNameSpan')) {
+    //     redistributeSessionStorageItems();
+    // }
     return;
 }

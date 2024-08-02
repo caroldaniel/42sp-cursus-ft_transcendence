@@ -127,7 +127,7 @@ def get_tournament_info(request):
             'tournament_id': tournament.id,
             'status': tournament.status,
             'player_count': tournament.player_count,
-            'match_count': tournament.match_count,
+            'match_count': tournament.current_match,
             'current_match': current_match,
             'winner': tournament.winner,
             'matches': matches_info

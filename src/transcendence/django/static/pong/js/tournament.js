@@ -95,22 +95,16 @@ async function loadTournament(tournamentId) {
     }
   }
 
-  // const playerL = document.getElementById("player-l");
-  // const playerR = document.getElementById("player-r");
+  const playerL = document.getElementById("player-l");
+  const playerR = document.getElementById("player-r");
 
-  // if (currentMatch >= 0 && currentMatch <= 3) {
-  //   playerL.innerHTML = quarters[currentMatch * 2];
-  //   playerR.innerHTML = quarters[currentMatch * 2 + 1];
-  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  // } else if (currentMatch >= 4 && currentMatch <= 5) {
-  //   playerL.innerHTML = semiFinals[(currentMatch - 4) * 2];
-  //   playerR.innerHTML = semiFinals[(currentMatch - 4) * 2 + 1];
-  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  // } else if (currentMatch === 6) {
-  //   playerL.innerHTML = final[0];
-  //   playerR.innerHTML = final[1];
-  //   sendNotification(currentMatch, playerL.innerHTML, playerR.innerHTML);
-  // }
+  playerL.innerHTML = data.current_match.player1;
+  playerR.innerHTML = data.current_match.player2;
+
+  const playNextMatchButton = document.getElementById("play-next-match");
+  playNextMatchButton.addEventListener("click", () => {
+    showSection("/tournament/game/"+data.current_match.match_id+"/");
+  });
 }
 
 window.loadTournament = loadTournament;
