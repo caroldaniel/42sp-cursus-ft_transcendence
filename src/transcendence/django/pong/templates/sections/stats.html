@@ -40,7 +40,7 @@
                 <tbody>
                   {% for match in matches %}
                     <tr class="align-middle">
-                      <td class="px-3">{{ match.timestamp|date:"Y-m-d" }}</td>
+                      <td class="px-3">{{ match.timestamp }}</td>
                       <td class="px-3">
                         {% if match.player1_user.display_name %}
                           {{ match.player1_user.display_name }}
