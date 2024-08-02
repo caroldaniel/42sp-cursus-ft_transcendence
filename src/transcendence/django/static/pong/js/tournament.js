@@ -1,28 +1,3 @@
-async function sendNotification(currentMatch, playerL, playerR) {
-  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
-  try {
-    const response = await fetch("/tournament/warning/", { 
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken
-      },
-      body: JSON.stringify({
-        currentMatch: currentMatch,
-        playerL: playerL,
-        playerR: playerR,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-  } catch (error) {
-    alert("Error sending notification: " + error);
-  }
-}
-
 async function loadTournament(tournamentId) {
   const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const formData = new FormData();

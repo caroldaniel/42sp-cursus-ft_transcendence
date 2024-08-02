@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-02 14:55-0300\n"
+"POT-Creation-Date: 2024-08-02 14:56-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 #: src/transcendence/django/pong/templates/base.html:23
 #: src/transcendence/django/pong/templates/components/modals/error.html:8
 msgid "Error"
-msgstr "Erro"
+msgstr "Erreur"
 
 #: src/transcendence/django/pong/templates/base.html:24
 #, python-format
@@ -29,104 +29,104 @@ msgstr "%(error)s: %(body_error)s"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfile.html:11
 msgid "Edit"
-msgstr "Editar"
+msgstr "Éditer"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfile.html:22
 msgid "Save changes"
-msgstr "Salvar alterações"
+msgstr "Enregistrer les modifications"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:9
 msgid "Upload New Avatar"
-msgstr "Enviar Novo Avatar"
+msgstr "Télécharger un Nouvel Avatar"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:18
 msgid "Current Password"
-msgstr "Senha Atual"
+msgstr "Mot de Passe Actuel"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:22
 msgid "New Password"
-msgstr "Nova Senha"
+msgstr "Nouveau Mot de Passe"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:26
 msgid "Confirm New Password"
-msgstr "Confirmar Nova Senha"
+msgstr "Confirmer le Nouveau Mot de Passe"
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:42
 msgid "New display name..."
-msgstr "Novo Nome de Exibição..."
+msgstr "Nouveau Nom d'Affichage..."
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:53
 msgid "New first name..."
-msgstr "Novo Primeiro Nome..."
+msgstr "Nouveau Prénom..."
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:64
 msgid "New last name..."
-msgstr "Novo Sobrenome..."
+msgstr "Nouveau Nom de Famille..."
 
 #: src/transcendence/django/pong/templates/components/modals/editProfileTemplates.html:75
 msgid "New e-mail address..."
-msgstr "Novo e-mail..."
+msgstr "Nouvelle adresse e-mail..."
 
 #: src/transcendence/django/pong/templates/components/modals/gameToken.html:11
 msgid "Play Pong"
-msgstr "Jogar Pong"
+msgstr "Jouer à Pong"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:8
 msgid "Register to play"
-msgstr "Registre-se para jogar"
+msgstr "Inscrivez-vous pour jouer"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:17
 #: src/transcendence/django/pong/templates/sections/login.html:17
 msgid "Username"
-msgstr "Nome de usuário"
+msgstr "Nom d'utilisateur"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:21
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:35
 #: src/transcendence/django/pong/templates/sections/profile.html:42
 msgid "Display Name"
-msgstr "Nome de exibição"
+msgstr "Nom d'Affichage"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:25
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:55
 #: src/transcendence/django/pong/templates/sections/profile.html:53
 msgid "First Name"
-msgstr "Primeiro Nome"
+msgstr "Prénom"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:29
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:64
 #: src/transcendence/django/pong/templates/sections/profile.html:64
 msgid "Last Name"
-msgstr "Sobrenome"
+msgstr "Nom de Famille"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:33
 msgid "E-mail"
-msgstr "E-mail"
+msgstr "Adresse e-mail"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:37
 #: src/transcendence/django/pong/templates/sections/login.html:21
 #: src/transcendence/django/pong/templates/sections/profile.html:90
 msgid "Password"
-msgstr "Senha"
+msgstr "Mot de passe"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:41
 msgid "Confirm Password"
-msgstr "Confirmar Senha"
+msgstr "Confirmer le mot de passe"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:48
 msgid "Sign up"
-msgstr "Inscrever-se"
+msgstr "S'inscrire"
 
 #: src/transcendence/django/pong/templates/components/modals/register.html:67
 msgid "Return to register"
-msgstr "Voltar para o registro"
+msgstr "Retourner à l'inscription"
 
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:10
 msgid "User Profile"
-msgstr "Perfil do Usuário"
+msgstr "Profil de l'utilisateur"
 
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:22
 msgid "Username is unique and uneditable"
-msgstr "Nome de usuário é único e não pode ser editado"
+msgstr "Le nom d'utilisateur est unique et non modifiable"
 
 #: src/transcendence/django/pong/templates/components/modals/userProfile.html:29
 msgid "Avatar"
@@ -139,19 +139,19 @@ msgstr "Email"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:37
 msgid "English"
-msgstr "Inglês"
+msgstr "Anglais"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:41
 msgid "Portuguese"
-msgstr "Português"
+msgstr "Portugais"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:45
 msgid "Spanish"
-msgstr "Espanhol"
+msgstr "Espagnol"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:49
 msgid "French"
-msgstr "Francês"
+msgstr "Français"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:66
 msgid "Social"
@@ -159,50 +159,50 @@ msgstr "Social"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:84
 msgid "Welcome,"
-msgstr "Bem-vindo(a),"
+msgstr "Bienvenue,"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:88
 msgid "Profile"
-msgstr "Perfil"
+msgstr "Profil"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:94
 #: src/transcendence/django/pong/templates/sections/stats.html:11
 msgid "Stats"
-msgstr "Estatísticas"
+msgstr "Statistiques"
 
 #: src/transcendence/django/pong/templates/components/navBar.html:103
 msgid "Logout"
-msgstr "Sair"
+msgstr "Se déconnecter"
 
 #: src/transcendence/django/pong/templates/components/social.html:66
 msgid "Type your message"
-msgstr "Digite sua mensagem"
+msgstr "Tapez votre message"
 
 #: src/transcendence/django/pong/templates/components/social.html:68
 msgid "Send"
-msgstr "Enviar"
+msgstr "Envoyer"
 
 #: src/transcendence/django/pong/templates/sections/game.html:24
 msgid "Time Elapsed"
-msgstr "Tempo Decorrido"
+msgstr "Temps Écoulé"
 
 #: src/transcendence/django/pong/templates/sections/game.html:47
 msgid "Game is Over"
-msgstr "O Jogo Acabou"
+msgstr "Le Jeu Est Terminé"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:14
 msgid "Local Game Setup"
-msgstr "Configuração do Jogo Local"
+msgstr "Configuration du Jeu Local"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:21
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:37
 msgid "Difficulty"
-msgstr "Dificuldade"
+msgstr "Difficulté"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:24
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:40
 msgid "Slow"
-msgstr "Lento"
+msgstr "Lent"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:27
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:43
@@ -212,52 +212,52 @@ msgstr "Normal"
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:30
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:46
 msgid "Fast"
-msgstr "Rápido"
+msgstr "Rapide"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:36
 #: src/transcendence/django/pong/templates/sections/stats.html:35
 msgid "Player 1"
-msgstr "Jogador 1"
+msgstr "Joueur 1"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:39
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:52
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:58
 msgid "Play as Guest"
-msgstr "Jogar como Convidado"
+msgstr "Jouer en tant qu'invité"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:49
 #: src/transcendence/django/pong/templates/sections/stats.html:36
 msgid "Player 2"
-msgstr "Jogador 2"
+msgstr "Joueur 2"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:55
 msgid "Select Player 2"
-msgstr "Selecionar Jogador 2"
+msgstr "Sélectionner Joueur 2"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:64
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:68
 msgid "Validate"
-msgstr "Validar"
+msgstr "Valider"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:66
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:70
 msgid "Invalid game token!"
-msgstr "Token de jogo inválido!"
+msgstr "Jeton de jeu invalide!"
 
 #: src/transcendence/django/pong/templates/sections/gameSetup.html:78
 msgid "Start Game"
-msgstr "Iniciar Jogo"
+msgstr "Démarrer le Jeu"
 
 #: src/transcendence/django/pong/templates/sections/home.html:9
 msgid "Let's play!"
-msgstr "Vamos jogar!"
+msgstr "Jouons!"
 
 #: src/transcendence/django/pong/templates/sections/home.html:14
 msgid ""
 "Pong is a classic arcade game where players control paddles to hit a ball "
 "back and forth. The goal is to score points by making the ball pass the "
 "opponent's paddle."
-msgstr "Pong é um jogo de arcade clássico onde os jogadores controlam raquetes para acertar uma bola de um lado para o outro. O objetivo é marcar pontos fazendo com que a bola passe pela raquete do adversário."
+msgstr "Pong est un jeu d'arcade classique où les joueurs contrôlent des raquettes pour frapper une balle d'un côté à l'autre. Le but est de marquer des points en faisant passer la balle au-delà de la raquette de l'adversaire."
 
 #: src/transcendence/django/pong/templates/sections/home.html:23
 msgid "Local"
@@ -267,323 +267,323 @@ msgstr "Local"
 msgid ""
 "You can play 1:1 against someone using the same computer. It's a great way "
 "to challenge friends or family in a quick match."
-msgstr "Você pode jogar 1 contra 1 com alguém usando o mesmo computador. É uma ótima forma de desafiar amigos ou familiares em uma partida rápida."
+msgstr "Vous pouvez jouer en 1 contre 1 avec quelqu'un en utilisant le même ordinateur. C'est un excellent moyen de défier des amis ou des membres de la famille lors d'une partie rapide."
 
 #: src/transcendence/django/pong/templates/sections/home.html:29
 msgid "Play Now"
-msgstr "Jogar Agora"
+msgstr "Jouer Maintenant"
 
 #: src/transcendence/django/pong/templates/sections/home.html:37
 #: src/transcendence/django/pong/templates/sections/tournament.html:13
 msgid "Tournament"
-msgstr "Torneio"
+msgstr "Tournoi"
 
 #: src/transcendence/django/pong/templates/sections/home.html:39
 msgid ""
 "Create a tournament with up to 8 friends. Compete in rounds until only one "
 "player remains as the winner. It's an exciting way to test your skills "
 "against others!"
-msgstr "Crie um torneio com até 8 amigos. Competir em rodadas até que reste apenas um jogador como vencedor. É uma maneira emocionante de testar suas habilidades contra os outros!"
+msgstr "Créez un tournoi avec jusqu'à 8 amis. Compétitionnez en manches jusqu'à ce qu'il ne reste qu'un seul joueur comme gagnant. C'est une manière excitante de tester vos compétences contre les autres !"
 
 #: src/transcendence/django/pong/templates/sections/home.html:43
 msgid "Create"
-msgstr "Criar"
+msgstr "Créer"
 
 #: src/transcendence/django/pong/templates/sections/home.html:57
 msgid "Your Game Token"
-msgstr "Seu Token de Jogo"
+msgstr "Votre Jeton de Jeu"
 
 #: src/transcendence/django/pong/templates/sections/home.html:65
 msgid "Copy to clipboard"
-msgstr "Copiar para o clipboard"
+msgstr "Copier dans le clipboard"
 
 #: src/transcendence/django/pong/templates/sections/login.html:8
 msgid "Log in"
-msgstr "Entrar"
+msgstr "Se connecter"
 
 #: src/transcendence/django/pong/templates/sections/login.html:10
 msgid "New to PaddlePro?"
-msgstr "Novo no PaddlePro?"
+msgstr "Nouveau sur PaddlePro ?"
 
 #: src/transcendence/django/pong/templates/sections/login.html:10
 msgid "Sign up for free"
-msgstr "Cadastre-se gratuitamente"
+msgstr "Inscrivez-vous gratuitement"
 
 #: src/transcendence/django/pong/templates/sections/login.html:24
 msgid "Login"
-msgstr "Entrar"
+msgstr "Se connecter"
 
 #: src/transcendence/django/pong/templates/sections/login.html:26
 msgid "Login with 42 Intra"
-msgstr "Entrar com 42 Intra"
+msgstr "Se connecter avec 42 Intra"
 
 #: src/transcendence/django/pong/templates/sections/profile.html:13
 msgid "Your Profile"
-msgstr "Seu Perfil"
+msgstr "Votre Profil"
 
 #: src/transcendence/django/pong/templates/sections/profile.html:21
 msgid "Username is not editable"
-msgstr "Nome de usuário não pode ser editado"
+msgstr "Le nom d'utilisateur ne peut pas être modifié"
 
 #: src/transcendence/django/pong/templates/sections/profile.html:94
 msgid "Password is not editable"
-msgstr "A senha não pode ser editada"
+msgstr "Le mot de passe ne peut pas être modifié"
 
 #: src/transcendence/django/pong/templates/sections/profile.html:110
 msgid "Game Token"
-msgstr "Token de Jogo"
+msgstr "Jeton de Jeu"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:26
 msgid "Victories:"
-msgstr "Vitórias:"
+msgstr "Victoires :"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:27
 msgid "Losses:"
-msgstr "Derrotas:"
+msgstr "Défaites :"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:29
 msgid "Match History"
-msgstr "Histórico de Partidas"
+msgstr "Historique des Matchs"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:34
 msgid "Date"
-msgstr "Data"
+msgstr "Date"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:37
 msgid "Player 1 Score"
-msgstr "Pontuação do Jogador 1"
+msgstr "Score du Joueur 1"
 
 #: src/transcendence/django/pong/templates/sections/stats.html:38
 msgid "Player 2 Score"
-msgstr "Pontuação do Jogador 2"
+msgstr "Score du Joueur 2"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:20
 msgid "Quarter-Finals"
-msgstr "Quartas de Final"
+msgstr "Quarts de Finale"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:42
 msgid "Semi-Finals"
-msgstr "Semifinais"
+msgstr "Demi-Finales"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:45
 msgid "Winner Match 1"
-msgstr "Vencedor da Partida 1"
+msgstr "Vainqueur du Match 1"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:47
 msgid "Winner Match 2"
-msgstr "Vencedor da Partida 2"
+msgstr "Vainqueur du Match 2"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:50
 msgid "Winner Match 3"
-msgstr "Vencedor da Partida 3"
+msgstr "Vainqueur du Match 3"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:52
 msgid "Winner Match 4"
-msgstr "Vencedor da Partida 4"
+msgstr "Vainqueur du Match 4"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:55
 #: src/transcendence/django/pong/views/views_tournament.py:217
 msgid "Final"
-msgstr "Final"
+msgstr "Finale"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:58
 msgid "Winner Semi-final 1"
-msgstr "Vencedor Semi-final 1"
+msgstr "Vainqueur Demi-finale 1"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:60
 msgid "Winner Semi-final 2"
-msgstr "Vencedor Semi-final 2"
+msgstr "Vainqueur Demi-finale 2"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:66
 msgid "Next Match"
-msgstr "Próxima Partida"
+msgstr "Prochain Match"
 
 #: src/transcendence/django/pong/templates/sections/tournament.html:80
 msgid "Play Next Match"
-msgstr "Jogar Próxima Partida"
+msgstr "Jouer Prochain Match"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:13
 msgid "Tournament Setup"
-msgstr "Configuração do Torneio"
+msgstr "Configuration du Tournoi"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:21
 msgid "4 Players"
-msgstr "4 Jogadores"
+msgstr "4 Joueurs"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:22
 msgid "3 Matches: Semifinals followed by a final."
-msgstr "3 Partidas: Semifinais seguidas de uma final."
+msgstr "3 Matches : Demi-finales suivies d’une finale."
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:27
 msgid "8 Players"
-msgstr "8 Jogadores"
+msgstr "8 Joueurs"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:28
 msgid "7 Matches: Quarterfinals, semifinals, followed by a final."
-msgstr "7 Partidas: Quartas de final, semifinais e, em seguida, uma final."
+msgstr "7 Matches : Quarts de finale, demi-finales, suivis d’une finale."
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:55
 msgid "Player"
-msgstr "Jogador"
+msgstr "Joueur"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:61
 msgid "Select Player"
-msgstr "Selecionar Jogador"
+msgstr "Sélectionner Joueur"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:67
 msgid "Player Game Token"
-msgstr "Token de Jogo do Jogador"
+msgstr "Jeton de Jeu du Joueur"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:71
 msgid "Guest"
-msgstr "Convidado"
+msgstr "Invité"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:79
 msgid "Create Tournament"
-msgstr "Criar Torneio"
+msgstr "Créer un Tournoi"
 
 #: src/transcendence/django/pong/templates/sections/winner.html:8
 msgid "The winner is:"
-msgstr "O vencedor é:"
+msgstr "Le gagnant est :"
 
 #: src/transcendence/django/pong/templates/sections/winner.html:15
 msgid "No winner for this match yet"
-msgstr "Nenhum vencedor para esta partida ainda"
+msgstr "Pas encore de gagnant pour ce match"
 
 #: src/transcendence/django/pong/templates/sections/winner.html:21
 msgid "Back to Home"
-msgstr "Voltar para a Home"
+msgstr "Retour à l'accueil"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:162
 msgid "Username already exists"
-msgstr "Nome de usuário já existe"
+msgstr "Nom d'utilisateur déjà existant"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:165
 msgid "E-mail already registered"
-msgstr "E-mail já registrado"
+msgstr "E-mail déjà enregistré"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:168
 msgid "Display name already taken"
-msgstr "Nome de exibição já em uso"
+msgstr "Nom d'affichage déjà pris"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:187
 msgid "User registered successfully"
-msgstr "Usuário registrado com sucesso"
+msgstr "Utilisateur enregistré avec succès"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:190
 msgid "Invalid request"
-msgstr "Solicitação inválida"
+msgstr "Demande invalide"
 
 #: src/transcendence/django/pong/views/views_login_manager.py:221
 msgid ""
 "No account found with the provided username. Please check username field or "
 "sign up to continue."
-msgstr "Nenhuma conta encontrada com o nome de usuário fornecido. Por favor, verifique o campo de nome de usuário ou registre-se para continuar."
+msgstr "Aucun compte trouvé avec le nom d'utilisateur fourni. Veuillez vérifier le champ du nom d'utilisateur ou inscrivez-vous pour continuer."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:223
 msgid "An error occurred while trying to log in. Please try again later."
-msgstr "Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde."
+msgstr "Une erreur est survenue lors de la tentative de connexion. Veuillez réessayer plus tard."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:226
 msgid ""
 "This account is registered with 42 Intra. Please use the Intra login button "
 "to log in."
-msgstr "Esta conta está registrada no 42 Intra. Por favor, use o botão de login do Intra para fazer login."
+msgstr "Ce compte est enregistré sur 42 Intra. Veuillez utiliser le bouton de connexion Intra pour vous connecter."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:237
 msgid ""
 "Invalid login credentials. Please check your username and password and try "
 "again."
-msgstr "Credenciais de login inválidas. Por favor, verifique seu nome de usuário e senha e tente novamente."
+msgstr "Identifiants de connexion invalides. Veuillez vérifier votre nom d'utilisateur et votre mot de passe et réessayez."
 
 #: src/transcendence/django/pong/views/views_match.py:129
 msgid "{} has won"
-msgstr "{} ganhou"
+msgstr "{} a gagné"
 
 #: src/transcendence/django/pong/views/views_match.py:131
 msgid "Game has been forfeited"
-msgstr "O jogo foi perdido por W.O."
+msgstr "Le match a été abandonné"
 
 #: src/transcendence/django/pong/views/views_tournament.py:215
 msgid "Finished"
-msgstr "Concluído"
+msgstr "Terminé"
 
 #: src/transcendence/django/pong/views/views_tournament.py:220
 #: src/transcendence/django/pong/views/views_tournament.py:222
 msgid "Semifinals"
-msgstr "Semifinais"
+msgstr "Demi-finale"
 
 #: src/transcendence/django/pong/views/views_tournament.py:222
 msgid "Quarterfinals"
-msgstr "Quartas de Final"
+msgstr "Quarts de finale"
 
 #: src/transcendence/django/pong/views/views_tournament.py:231
 msgid "'s tournament"
-msgstr "torneio"
+msgstr "tournoi"
 
 #: src/transcendence/django/pong/views/views_user.py:86
 msgid "No file was uploaded."
-msgstr "Nenhum arquivo foi enviado."
+msgstr "Aucun fichier n'a été téléchargé."
 
 #: src/transcendence/django/pong/views/views_user.py:91
 msgid "The uploaded file is too large. Maximum allowed size is 5MB."
-msgstr "O arquivo enviado é muito grande. O tamanho máximo permitido é 5MB."
+msgstr "Le fichier téléchargé est trop volumineux. La taille maximale autorisée est de 5 Mo."
 
 #: src/transcendence/django/pong/views/views_user.py:98
 msgid "Invalid file type. Only SVG, PNG, JPG, and JPEG files are allowed."
-msgstr "Tipo de arquivo inválido. Apenas arquivos SVG, PNG, JPG e JPEG são permitidos."
+msgstr "Type de fichier invalide. Seuls les fichiers SVG, PNG, JPG et JPEG sont autorisés."
 
 #: src/transcendence/django/pong/views/views_user.py:105
 msgid "Your avatar has been updated successfully."
-msgstr "Seu avatar foi atualizado com sucesso."
+msgstr "Votre avatar a été mis à jour avec succès."
 
 #: src/transcendence/django/pong/views/views_user.py:108
 msgid ""
 "An unexpected error occurred while updating the avatar. Please try again "
 "later."
-msgstr "Ocorreu um erro inesperado ao atualizar o avatar. Por favor, tente novamente mais tarde."
+msgstr "Une erreur est survenue lors de la mise à jour du mot de passe. Veuillez réessayer plus tard."
 
 #: src/transcendence/django/pong/views/views_user.py:148
 msgid "An error occurred while trying to update password. Try again later."
-msgstr "Ocorreu um erro ao tentar atualizar a senha. Tente novamente mais tarde."
+msgstr "Une erreur inattendue s'est produite lors de la mise à jour de l'avatar. Veuillez réessayer plus tard."
 
 #: src/transcendence/django/pong/views/views_user.py:154
 msgid "Field updated successfully."
-msgstr "Campo atualizado com sucesso."
+msgstr "Champ mis à jour avec succès."
 
 #: src/transcendence/django/pong/views/views_user.py:157
 msgid "New value is not in a valid format."
-msgstr "O novo valor não está em um formato válido."
+msgstr "La nouvelle valeur n'est pas au format valide."
 
 #: src/transcendence/django/pong/views/views_user.py:159
 msgid "An error occurred while trying to update field. Try again later."
-msgstr "Ocorreu um erro ao tentar atualizar o campo. Tente novamente mais tarde."
+msgstr "Une erreur est survenue lors de la tentative de mise à jour du champ. Veuillez réessayer plus tard."
 
 #: src/transcendence/django/pong/views/views_user.py:172
 #: src/transcendence/django/pong/views/views_user.py:194
 msgid "User not found."
-msgstr "Usuário não encontrado."
+msgstr "Utilisateur non trouvé."
 
 #: src/transcendence/django/pong/views/views_user.py:174
 msgid "You cannot block yourself."
-msgstr "Você não pode bloquear a si mesmo."
+msgstr "Vous ne pouvez pas vous bloquer vous-même."
 
 #: src/transcendence/django/pong/views/views_user.py:176
 msgid "User already blocked."
-msgstr "Usuário já bloqueado."
+msgstr "Utilisateur déjà bloqué."
 
 #: src/transcendence/django/pong/views/views_user.py:181
 msgid "User blocked successfully."
-msgstr "Usuário bloqueado com sucesso."
+msgstr "Utilisateur bloqué avec succès."
 
 #: src/transcendence/django/pong/views/views_user.py:198
 msgid "User not blocked."
-msgstr "Usuário não bloqueado."
+msgstr "Utilisateur non bloqué."
 
 #: src/transcendence/django/pong/views/views_user.py:200
 msgid "User unblocked successfully."
-msgstr "Usuário desbloqueado com sucesso."
+msgstr "Utilisateur débloqué avec succès."
 
 #: src/transcendence/django/pong/views/views_user.py:209
 msgid "Token renewed successfully."
-msgstr "Token renovado com sucesso."
+msgstr "Token renouvelé avec succès."

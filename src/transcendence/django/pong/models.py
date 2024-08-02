@@ -261,6 +261,32 @@ class Tournament(models.Model):
 
 
 class Match(models.Model):
+	"""
+	Represents a match in the Pong game.
+
+	Attributes:
+		MATCH_TYPE_CHOICES (list): Choices for the match type.
+		MATCH_DIFFICULTY_CHOICES (list): Choices for the match difficulty.
+		MATCH_STATUS_CHOICES (list): Choices for the match status.
+		id (UUIDField): The unique identifier for the match.
+		tournament (ForeignKey): The tournament the match belongs to (nullable).
+		player1_user (ForeignKey): The first player as a registered user (nullable).
+		player1_guest (ForeignKey): The first player as a guest (nullable).
+		player2_user (ForeignKey): The second player as a registered user (nullable).
+		player2_guest (ForeignKey): The second player as a guest (nullable).
+		score_player1 (IntegerField): The score of the first player.
+		score_player2 (IntegerField): The score of the second player.
+		timestamp (DateTimeField): The timestamp when the match was created.
+		status (CharField): The status of the match.
+		difficulty (CharField): The difficulty level of the match.
+		walkover (BooleanField): Indicates if the match was a walkover.
+
+	Methods:
+		__str__(): Returns a string representation of the match.
+		get_player1_display(): Returns the display name of the first player.
+		get_player2_display(): Returns the display name of the second player.
+	"""
+
 	MATCH_TYPE_CHOICES = [
 		('local', 'Local'),
 		('tournament', 'Tournament'),
@@ -346,32 +372,6 @@ class TournamentMatch(models.Model):
 			Use this method to get the match at a specific position in the tournament.
 		"""
 		return self.tournament.tournament_matches.get(position=position).match
-
-
-
-# Match History
-class MatchHistory(models.Model):
-	"""
-	Model to store the match history of 1v1 games.
-
-	Attributes:
-		user (ForeignKey): The user associated with the match.
-		user_display_name (CharField): The display name of the user.
-		user_score (IntegerField): The score of the user.
-		opponent_display_name (CharField): The display name of the opponent.
-		opponent_score (IntegerField): The score of the opponent.
-		finished_at (DateTimeField): The datetime when the match was finished.
-
-	Usage:
-		Use this model to store the match history of 1v1 games in your Django application.
-	"""
-
-	user = models.ForeignKey(User, related_name='matches', on_delete=models.CASCADE)
-	user_display_name = models.CharField(max_length=150, default='You')
-	user_score = models.IntegerField(default=0)
-	opponent_display_name = models.CharField(max_length=150)
-	opponent_score = models.IntegerField(default=0)
-	finished_at = models.DateTimeField(default=timezone.now)
 
 
 # Relationship Model
@@ -483,19 +483,3 @@ class BlockList(models.Model):
 		if BlockList.objects.filter(blocker=self.blocker, blocked=self.blocked).exists():
 			raise ValidationError('Block already exists')
 		super().save(*args, **kwargs)
-
-# Session storage model
-class Session(models.Model):
-
-	"""
-	Model to store session data for the application.
-
-	Attributes:
-		session_user (ForeignKey): The user associated with the session.
-		session_data (JsonField): The session data.
-	"""
-	user = models.ForeignKey(User, related_name='sessions', on_delete=models.CASCADE)
-	data = models.JSONField()
-
-	def __str__(self):
-		return f"Session for {self.user}"

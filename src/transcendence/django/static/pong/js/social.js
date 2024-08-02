@@ -397,9 +397,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function createTournamentCardBody(tournament) {
     // Create the main card div
     const cardDiv = document.createElement('div');
-    cardDiv.className = 'card text-center h-100';
-    cardDiv.style.marginBottom = '10px';
-    cardDiv.style.marginTop = '10px'; 
+    cardDiv.className = 'card text-center h-100 mb-2 mt-2';
 
     // Create the card body div
     const cardBody = document.createElement('div');
@@ -409,42 +407,35 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create the card title h3
     const cardTitle = document.createElement('h3');
     cardTitle.className = 'card-title';
-    cardTitle.textContent = tournament.created_by + '\'s Tournament';
+    cardTitle.textContent = tournament.name;
     cardBody.appendChild(cardTitle);
 
     // Create the card text p
     const cardText = document.createElement('p');
     cardText.className = 'card-text';
 
-    if (tournament.match_count >= 0 && tournament.match_count <= 3) {
-      cardText.textContent = 'Quarterfinals';
-    } else if (tournament.match_count >= 4 && tournament.match_count <= 5) {
-      cardText.textContent = 'Semifinals';
-    } else if (tournament.match_count === 6) {
-      cardText.textContent = 'Finals';
+    cardText.textContent = tournament.current_stage;
+    if (tournament.current_stage === 'Finished') {
+      cardText.className = 'fw-bold text-success';
     } else {
-      cardText.className = 'card-text';
-      cardText.textContent = "Winner: " + tournament.winner + " 🏆 ";
+      cardText.className = 'fw-bold text-danger';
     }
     cardBody.appendChild(cardText);
 
     const cardText2 = document.createElement('p');
     cardText2.className = 'card-text';
 
-    if (tournament.match_count <= 6)
-      cardText2.textContent = tournament.current_match;
-    else
-      cardText2.textContent = 'Finished';
+    cardText2.textContent = tournament.current_match;
     cardBody.appendChild(cardText2);
 
     // Create the button if the tournament creator is the current user
-    if (tournament.created_by === currentUser && tournament.match_count <= 6) {
+    if (tournament.was_created_by_me && tournament.current_stage !== 'Finished') {
       const button = document.createElement('button');
       button.className = 'btn btn-primary';
-      button.textContent = 'View Tournament';
+      button.textContent = 'View';
       button.addEventListener('click', () => {
         socialOffCanvas.hide();
-        showSection('/tournament/');
+        showSection(`/tournament/${tournament.id}/`);
       });
       cardBody.appendChild(button);
     }
@@ -454,7 +445,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function populateTournament(data) {
     console.log('Populating tournament with data:', data);
-    const tournaments = data.tournaments;
     tournamentTableBody.innerHTML = '';
 
     // Check if there's any tournament registered
@@ -468,7 +458,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     
-    tournaments.forEach(tournament => {
+    data.tournaments.forEach(tournament => {
       tournamentTableBody.appendChild(createTournamentCardBody(tournament));
     });
   }

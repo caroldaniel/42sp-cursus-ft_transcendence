@@ -49,6 +49,8 @@ export default class GameManager {
     this.tournament = gameData.tournament;
     
     this.maxScore = gameData.max_score;
+
+    this.difficulty = gameData.difficulty;
     
     this.targetFrameRate = 1000 / 60;
 

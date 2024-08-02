@@ -27,6 +27,14 @@ export default class Ball extends THREE.Mesh {
 
     this.position.set(position.x, position.y, position.z);
 
+    if (gameManager.difficulty === "slow") {
+      this.speed = speed * 0.5;
+    } else if (gameManager.difficulty === "normal") {
+      this.speed = speed;
+    } else if (gameManager.difficulty === "fast") {
+      this.speed = speed * 1.5;
+    }
+
     this.speed = speed;
     this.startSpeed = speed * 0.5;
     this.fastSpeed = speed * 1.35;

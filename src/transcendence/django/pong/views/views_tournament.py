@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import gettext as _
 from django.db.models import Q
 from django.http import JsonResponse
 from pong.models import Tournament, Match, TournamentMatch, User, Guest
@@ -42,6 +43,13 @@ def create_tournament(request):
             current_match=1
         )
         tournament.save()
+
+        # Get all registered users from players list
+        registered_users = [player[0] for player in players if player[0]]
+        for user in registered_users:
+            tournament.registered_users.add(user)
+            tournament.save()
+
 
         # Create initial matches
         initial_matches = nb_players // 2
@@ -124,13 +132,16 @@ def get_tournament_info(request):
                 'score_player2': current_match.match.score_player2
             }
 
+        registered_users = tournament.registered_users.all()
+
         return JsonResponse({
             'tournament_id': tournament.id,
             'status': tournament.status,
             'player_count': tournament.player_count,
             'current_match': current_match,
             'winner': tournament.winner,
-            'matches': matches_info
+            'matches': matches_info,
+            'registered_users': [user.display_name for user in registered_users]
         }, status=200)
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
@@ -183,6 +194,7 @@ def go_to_tournament_next_match(request, tournament_id):
         if not next_match:
             tournament.status = 'finished'
             tournament.winner = winner
+            tournament.current_match = 0
             tournament.save()
             return JsonResponse({'success': 'Tournament finished'}, status=200)
         else:
@@ -193,40 +205,43 @@ def go_to_tournament_next_match(request, tournament_id):
 
 
 @login_required
-def tournament_warning(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Invalid request'}, status=400)
-
-    try:
-        data = json.loads(request.body)
-        playerL = data.get('playerL')
-        playerR = data.get('playerR')
-        currentMatch = data.get('currentMatch')
-
-        tournament = Tournament.objects.get(created_by=request.user)
-        if playerL == playerR:
-            tournament.winner = playerL
-            tournament.status = 'finished'
-        tournament.match_count = currentMatch
-        tournament.current_match = f"{playerL} vs {playerR}"
-        tournament.save()
-        
-        return JsonResponse({'success': 'Match updated'})
-    except Tournament.DoesNotExist:
-        return JsonResponse({'error': 'Tournament not found'}, status=404)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=400)
-
-@login_required
 def tournament_list(request):
     tournaments = Tournament.objects.filter(Q(registered_users=request.user) | 
                                             Q(created_by=request.user)).distinct()
-    return JsonResponse({'tournaments': [{
-        'id': tournament.id, 
-        'created_by': tournament.created_by.display_name, 
-        'created_at': tournament.created_at,
-        'status': tournament.status,
-        'winner': tournament.winner,
-        'match_count': tournament.match_count, 
-        'current_match': tournament.current_match,
-        } for tournament in tournaments]})
+    tournament_list = []
+    for tournament in tournaments:
+        nb_matches = 3 if tournament.player_count == 4 else 7
+        if tournament.current_match == 0:
+            current_stage = _('Finished')
+        elif tournament.current_match == nb_matches:
+            current_stage = _('Final')
+        else:
+            if nb_matches == 3:
+                current_stage = _('Semifinals')
+            else:
+                current_stage = _('Semifinals') if tournament.current_match < 4 else _('Quarterfinals')
+
+        # Get current match in tournament match
+        current_match = None
+        if tournament.current_match > 0:
+            current_match = TournamentMatch.objects.get(tournament=tournament, position=tournament.current_match)
+
+        item = {
+            'id': tournament.id,
+            'name': tournament.created_by.display_name + _("'s tournament"),
+            'current_stage': current_stage,
+            'current_match': f'{current_match.player1_display_name} VS {current_match.player2_display_name}' if current_match else f'🏆: {tournament.winner}',
+            'was_created_by_me': tournament.created_by == request.user
+        }
+
+        tournament_list.append(item)
+    return JsonResponse({'tournaments': tournament_list}, status=200)
+
+
+@login_required
+def delete_tournament(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    if tournament.created_by == request.user:
+        tournament.delete()
+        return JsonResponse({'success': 'Tournament deleted'}, status=200)
+    return JsonResponse({'error': 'Unauthorized'}, status=401)

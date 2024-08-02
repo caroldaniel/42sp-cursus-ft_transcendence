@@ -77,7 +77,7 @@ async function loadGameSetup() {
     player2Select.addEventListener("change", function() {
         tokenContainer.style.display = player2Select.value ? "block" : "none";
         player2UserInput.value = player2Select.value;
-        tokenValidated = false; // Reset token validation status
+        tokenValidated = false;
         updateStartButtonState();
     });
 

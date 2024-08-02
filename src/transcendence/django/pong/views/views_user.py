@@ -7,14 +7,11 @@ from django.http import JsonResponse
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.utils.translation import gettext as _
-from django.contrib.auth import update_session_auth_hash, login, authenticate
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .relationship.views_relationships import get_relationships_context
-from pong.models import BlockList, Session
-import json
+from pong.models import User, BlockList
 
-# Project imports
-from pong.models import User
 
 @login_required
 def user_list(request):
@@ -210,35 +207,3 @@ def renew_token(request):
     user.save()
 
     return JsonResponse({'success': _('Token renewed successfully.')}, status=200)
-
-@login_required
-def get_session(request):
-    try:
-        session = Session.objects.get(user=request.user)
-        return JsonResponse(json.loads(session.data), status=200)
-    except Session.DoesNotExist:
-        return JsonResponse({'success': 'Session not found'}, status=204)
-
-@login_required
-def set_session(request):
-    if request.method != "POST":
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
-
-    try:
-        body_data = json.loads(request.body.decode('utf-8'))
-        
-        data = body_data
-
-        if data is None:
-            return JsonResponse({'error': 'Session data is required'}, status=400)
-        else:
-            data = json.dumps(data)
-            session, _ = Session.objects.get_or_create(user=request.user, defaults={'data': data})
-            session.data = data
-            session.save()
-
-        return JsonResponse({'success': 'Session data updated successfully.'}, status=200)
-    except json.JSONDecodeError:
-        return JsonResponse({'error': 'Invalid JSON format'}, status=400)
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)

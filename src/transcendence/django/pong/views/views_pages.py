@@ -3,7 +3,6 @@ from django.shortcuts import redirect, render
 from django.views.decorators.cache import cache_control
 from django.conf import settings
 from pong.views.views_match import get_match_context
-from pong.views.views_match_history import get_match_history_context
 from pong.models import User, Match, Tournament, TournamentMatch
 
 
