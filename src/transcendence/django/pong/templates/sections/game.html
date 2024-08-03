@@ -11,7 +11,7 @@
 <div class="container">
   <div class="row justify-content-center">
     <div class="col-md-12">
-      <div class="p-4 mt-5", style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
+      <div class="p-4 mt-5 mb-5" style="background-color: rgba(var(--bs-body-bg-rgb), 0.9); border-radius: 20px;">
         
         <!-- Game title and score -->
         <div class="d-flex justify-content-around mt-2 p-3 bg-light rounded shadow">
@@ -27,12 +27,55 @@
           </div>
         </div>
 
-        <!-- Game Canvas -->
-        <div id="game-wrapper"
-            class="position-relative d-flex justify-content-center align-items-center"
-            style="height: 75vh;">
+        <div class="d-flex align-items-center bg-light rounded shadow canvas-display">
+          <!-- Player 1 Controls -->
+          <div id="player1-controls" class="d-flex align-items-center p-3">
+            <div id="player1-control-buttons" class="d-flex align-items-center">
+              <div class="d-flex align-items-center control-button">
+                <div>
+                  <span class="badge bg-secondary control-key">W</span>
+                </div>
+                <div>
+                  <button id="left-up" class="btn btn-primary m-2"><i class="bi bi-arrow-up"></i></button>
+                </div>
+              </div>
+              <div class="d-flex align-items-center control-button">
+                <div>
+                  <span class="badge bg-secondary control-key">S</span>
+                </div>
+                <div>
+                  <button id="left-down" class="btn btn-primary m-2"><i class="bi bi-arrow-down"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Game Canvas -->
+          <div id="game-wrapper" class="d-flex justify-content-center align-items-center">
+            <canvas id="game-canvas" class="d-block"></canvas>
+          </div>
 
-          <canvas id="game-canvas" class="d-block mx-auto position-absolute"></canvas>
+          <!-- Player 2 Controls -->
+          <div id="player2-controls" class="d-flex align-items-center p-3">
+            <div id="player2-control-buttons" class="d-flex align-items-center">
+              <div class="d-flex align-items-center control-button">
+                <div>
+                  <button id="right-up" class="btn btn-danger m-2"><i class="bi bi-arrow-up"></i></button>
+                </div>
+                <div>
+                  <span class="badge bg-secondary control-key">I</span>
+                </div>
+              </div>
+              <div class="d-flex align-items-center control-button">
+                <div>
+                  <button id="right-down" class="btn btn-danger m-2"><i class="bi bi-arrow-down"></i></button>
+                </div>
+                <div>
+                  <span class="badge bg-secondary control-key">K</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Game Status Modal -->
@@ -46,7 +89,7 @@
                 <!-- Message will be inserted here -->
               </div>
               <div id="gameOverButtons" class="modal-footer">
-                <!--- Add buttons dinamically -->
+                <!--- Add buttons dynamically -->
               </div>
             </div>
           </div>

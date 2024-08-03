@@ -168,6 +168,24 @@ async function gameSetup(matchId) {
   }
     
   showGameResultModal(gameManager);
+
+  function onResize() {
+    // Update the size of the renderer and camera aspect ratio
+    const width = gameWrapper.offsetWidth;
+    const height = gameWrapper.offsetHeight;
+    
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(window.devicePixelRatio); // For high-DPI displays
+    
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+
+  // Add event listener for window resize
+  window.addEventListener('resize', onResize);
+
+  // Initial call to set up size correctly
+  onResize();
 }
 
 function startGame(matchId) {

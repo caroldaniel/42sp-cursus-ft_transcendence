@@ -1,5 +1,5 @@
 export default class InputManager {
-  constructor({}) {
+  constructor() {
     this.keys = {
       leftUp: {
         code: 'KeyW',
@@ -10,21 +10,22 @@ export default class InputManager {
         pressed: false,
       },
       rightUp: {
-        code: 'KeyK',
+        code: 'KeyI',
         pressed: false,
       },
       rightDown: {
-        code: 'KeyJ',
+        code: 'KeyK',
         pressed: false,
       },
     };
     this.paddleLInputZ = 0;
     this.paddleRInputZ = 0;
 
-    this.setupKeyListerners();
+    this.setupKeyListeners();
+    this.setupTouchListeners();
   }
 
-  setupKeyListerners() {
+  setupKeyListeners() {
     window.addEventListener('keydown', (event) => {
       switch (event.code) {
         case this.keys.leftUp.code:
@@ -57,6 +58,48 @@ export default class InputManager {
           this.keys.rightDown.pressed = false;
           break;
       }
+    });
+  }
+
+  setupTouchListeners() {
+    document.getElementById('left-up').addEventListener('touchstart', () => {
+      console.log('Left Up Pressed');
+      this.keys.leftUp.pressed = true;
+    });
+
+    document.getElementById('left-up').addEventListener('touchend', () => {
+      console.log('Left Up Released');
+      this.keys.leftUp.pressed = false;
+    });
+
+    document.getElementById('left-down').addEventListener('touchstart', () => {
+      console.log('Left Down Pressed');
+      this.keys.leftDown.pressed = true;
+    });
+
+    document.getElementById('left-down').addEventListener('touchend', () => {
+      console.log('Left Down Released');
+      this.keys.leftDown.pressed = false;
+    });
+
+    document.getElementById('right-up').addEventListener('touchstart', () => {
+      console.log('Right Up Pressed');
+      this.keys.rightUp.pressed = true;
+    });
+
+    document.getElementById('right-up').addEventListener('touchend', () => {
+      console.log('Right Up Released');
+      this.keys.rightUp.pressed = false;
+    });
+
+    document.getElementById('right-down').addEventListener('touchstart', () => {
+      console.log('Right Down Pressed');
+      this.keys.rightDown.pressed = true;
+    });
+
+    document.getElementById('right-down').addEventListener('touchend', () => {
+      console.log('Right Down Released');
+      this.keys.rightDown.pressed = false;
     });
   }
 

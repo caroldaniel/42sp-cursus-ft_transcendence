@@ -1,0 +1,72 @@
+.container {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .canvas-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+    width: 100%;
+  }
+  
+  #player1-control-buttons,
+  #player2-control-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }    
+  
+  .control-key {
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+  }
+  
+  #game-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  #game-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+  
+  @media (orientation: landscape) {
+    #player1-control-buttons,
+    #player2-control-buttons {
+      flex-direction: column;
+    }
+  
+    .control-button {
+      flex-direction: row;
+    }
+  
+    .canvas-display {
+      flex-direction: row;
+    }
+  }
+  
+  @media (orientation: portrait) {
+    #player1-control-buttons,
+    #player2-control-buttons {
+      flex-direction: row;
+    }
+  
+    .control-button {
+      flex-direction: column;
+    }
+  
+    .canvas-display {
+      flex-direction: column;
+    }
+  }
+  
