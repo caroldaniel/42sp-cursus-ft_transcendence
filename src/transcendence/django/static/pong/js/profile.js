@@ -1,8 +1,29 @@
 function setupProfile() {
-  createPopover('username-info', 'Your username is your unique identifier. It cannot be changed.')
-  createPopover('password-info', 'You are logged in with 42 Intranet. You cannot change your password.')
+  var languageDropdown = document.getElementById('languageDropdown');
+  var languageCode = languageDropdown.getAttribute('data-language');
+
+  switch (languageCode) {
+    case 'en':
+      createPopover('username-info', 'Your username is your unique identifier. It cannot be changed.');
+      createPopover('password-info', 'You are logged in with 42 Intranet. You cannot change your password.');
+      break;
+    case 'fr':
+      createPopover('username-info', 'Votre nom d\'utilisateur est votre identifiant unique. Il ne peut pas être modifié.');
+      createPopover('password-info', 'Vous êtes connecté avec 42 Intranet. Vous ne pouvez pas changer votre mot de passe.');
+      break;
+    case 'es':
+      createPopover('username-info', 'Tu nombre de usuario es tu identificador único. No se puede cambiar.');
+      createPopover('password-info', 'Estás conectado con 42 Intranet. No puedes cambiar tu contraseña.');
+      break;
+    case 'pt':
+      createPopover('username-info', 'Seu nome de usuário é seu identificador exclusivo. Não pode ser alterado.');
+      createPopover('password-info', 'Você está conectado com 42 Intranet. Você não pode alterar sua senha.');
+      break;
+    default:
+      console.warn('Unsupported language code:', languageCode);
+  }
+
   editProfile();
-  return;
 }
 
 // Function to load templates from an external HTML file

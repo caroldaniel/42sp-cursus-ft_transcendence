@@ -21,19 +21,33 @@ document.addEventListener('DOMContentLoaded', function () {
       .catch(error => console.error('Error fetching data:', error));
   }
 
-  function populateUserList(data) {
+  function populateUserList(data) {        
+    var languageDropdown = document.getElementById('languageDropdown');
+    var languageCode = languageDropdown.getAttribute('data-language');
+
+    const messages = {
+        'en': "No users found",
+        'pt': "Nenhum usuário encontrado",
+        'es': "No se encontraron usuarios",
+        'fr': "Aucun utilisateur trouvé"
+    };
+
+    const content = messages[languageCode] || messages['en'];
+
     const users = data.users;
     userTableBody.innerHTML = '';
-    // Check if there's any user registered
+
+    // Verificar se há algum usuário registrado
     if (users.length === 0) {
-      const row = document.createElement('tr');
-      const cell = document.createElement('td');
-      cell.colSpan = 3;
-      cell.textContent = 'No users found';
-      row.appendChild(cell);
-      userTableBody.appendChild(row);
-      return;
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 3;
+        cell.textContent = content;
+        row.appendChild(cell);
+        userTableBody.appendChild(row);
+        return;
     }
+
     users.forEach(user => {
       const row = document.createElement('tr');
       row.classList.add(`user_${user.id}`);
@@ -91,59 +105,106 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function createButton(iconClass, buttonClass, onClick, badgeId = null) {
+    var languageDropdown = document.getElementById('languageDropdown');
+    var languageCode = languageDropdown.getAttribute('data-language');
+
+    const buttonContentMap = {
+        'en': {
+            'bi bi-chat-dots-fill': 'Chat',
+            'bi bi-joystick': 'Play Pong',
+            'bi bi-person-lines-fill': 'View Profile',
+            'bi bi-person-plus-fill': 'Add Friend',
+            'bi bi-person-dash-fill': 'Remove Friend',
+            'bi bi-person-check-fill': 'Accept Friend Request',
+            'bi bi-person-x-fill': 'Deny Friend Request',
+            'bi bi-person-fill-exclamation': 'Friend Request Sent',
+            'bi bi-lock': 'Block User',
+            'bi bi-unlock': 'Unblock User'
+        },
+        'pt': {
+            'bi bi-chat-dots-fill': 'Chat',
+            'bi bi-joystick': 'Jogar Pong',
+            'bi bi-person-lines-fill': 'Ver Perfil',
+            'bi bi-person-plus-fill': 'Adicionar Amigo',
+            'bi bi-person-dash-fill': 'Remover Amigo',
+            'bi bi-person-check-fill': 'Aceitar Pedido de Amizade',
+            'bi bi-person-x-fill': 'Recusar Pedido de Amizade',
+            'bi bi-person-fill-exclamation': 'Pedido de Amizade Enviado',
+            'bi bi-lock': 'Bloquear Usuário',
+            'bi bi-unlock': 'Desbloquear Usuário'
+        },
+        'es': {
+            'bi bi-chat-dots-fill': 'Chat',
+            'bi bi-joystick': 'Jugar Pong',
+            'bi bi-person-lines-fill': 'Ver Perfil',
+            'bi bi-person-plus-fill': 'Agregar Amigo',
+            'bi bi-person-dash-fill': 'Eliminar Amigo',
+            'bi bi-person-check-fill': 'Aceptar Solicitud de Amistad',
+            'bi bi-person-x-fill': 'Rechazar Solicitud de Amistad',
+            'bi bi-person-fill-exclamation': 'Solicitud de Amistad Enviada',
+            'bi bi-lock': 'Bloquear Usuario',
+            'bi bi-unlock': 'Desbloquear Usuario'
+        },
+        'fr': {
+            'bi bi-chat-dots-fill': 'Chat',
+            'bi bi-joystick': 'Jouer à Pong',
+            'bi bi-person-lines-fill': 'Voir le Profil',
+            'bi bi-person-plus-fill': 'Ajouter un Ami',
+            'bi bi-person-dash-fill': 'Supprimer un Ami',
+            'bi bi-person-check-fill': 'Accepter la Demande d\'Ami',
+            'bi bi-person-x-fill': 'Refuser la Demande d\'Ami',
+            'bi bi-person-fill-exclamation': 'Demande d\'Ami Envoyée',
+            'bi bi-lock': 'Bloquer l\'Utilisateur',
+            'bi bi-unlock': 'Débloquer l\'Utilisateur'
+        }
+    };
+
+    // Pega o conteúdo do botão com base no idioma atual
+    let buttonContent = buttonContentMap[languageCode]?.[iconClass] || buttonContentMap['en'][iconClass];
+
     const button = document.createElement('button');
     button.className = buttonClass;
     button.setAttribute('data-bs-toggle', 'popover');
     button.setAttribute('data-bs-placement', 'bottom');
     button.setAttribute('data-popover', 'true');
-    const buttonContentMap = {
-      'bi bi-chat-dots-fill': 'Chat',
-      'bi bi-joystick': 'Play Pong',
-      'bi bi-person-lines-fill': 'View Profile',
-      'bi bi-person-plus-fill': 'Add Friend',
-      'bi bi-person-dash-fill': 'Remove Friend',
-      'bi bi-person-check-fill': 'Accept Friend Request',
-      'bi bi-person-x-fill': 'Deny Friend Request',
-      'bi bi-person-fill-exclamation': 'Friend Request Sent',
-      'bi bi-lock': 'Block User',
-      'bi bi-unlock': 'Unblock User'
-    };
 
-    const buttonContent = buttonContentMap[iconClass];
     if (buttonContent) {
-      button.setAttribute('data-bs-content', buttonContent);
+        button.setAttribute('data-bs-content', buttonContent);
     }
+
     const icon = document.createElement('i');
     icon.className = iconClass;
     button.appendChild(icon);
+
     if (badgeId) {
-      button.classList.add('position-relative');
-      const badge = document.createElement('span');
-      badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
-      badge.setAttribute('hidden', true);
-      badge.id = badgeId;
-      button.appendChild(badge);
+        button.classList.add('position-relative');
+        const badge = document.createElement('span');
+        badge.className = 'position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger';
+        badge.setAttribute('hidden', true);
+        badge.id = badgeId;
+        button.appendChild(badge);
     }
+
     button.addEventListener('click', onClick);
-    
+
     var popover = new bootstrap.Popover(button, {
-      trigger: 'manual'
+        trigger: 'manual'
     });
 
     button.addEventListener('mouseenter', function() {
-      popover.show();
+        popover.show();
     });
 
     button.addEventListener('mouseleave', function() {
-      popover.hide();
+        popover.hide();
     });
 
     button.addEventListener('click', function() {
-      popover.hide();
+        popover.hide();
     });
 
     return button;
-  }
+}
 
   function playPong(user) {
     const gameTokenModal = document.getElementById('gameTokenModal');
@@ -271,13 +332,11 @@ document.addEventListener('DOMContentLoaded', function () {
       }
   });
 
-    // Append input field, button, and error message to the infos div
     infosDiv.appendChild(tokenInput);
     infosDiv.appendChild(errorMessage);
     infosDiv.appendChild(submitButton);
     infosDiv.appendChild(startGameButton);
 
-    // Append elements to the modal content
     modalgameTokenContent.appendChild(infosDiv);
   }
 
@@ -312,7 +371,6 @@ document.addEventListener('DOMContentLoaded', function () {
           const infosDiv = document.createElement('div');
           infosDiv.className = 'text-center';
           modalUserStatsContent.appendChild(infosDiv);
-          // put the content of the userStatsContent div in the modalUserProfileContent div
           infosDiv.appendChild(profileUserContent);
           modalUserStatsContent.appendChild(infosDiv);
         } else {
@@ -329,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatTab = document.getElementById('chat-tab');
     setNewUserDefault(user.id);
 
-    // Open chat tab
     chatTab.click();
   }
 
@@ -386,27 +443,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function createTournamentCardBody(tournament) {
-    // Create the main card div
     const cardDiv = document.createElement('div');
     cardDiv.className = 'card text-center h-100 mb-2 mt-2';
 
-    // Create the card body div
     const cardBody = document.createElement('div');
     cardBody.className = 'card-body';
     cardDiv.appendChild(cardBody);
 
-    // Create the card title h3
     const cardTitle = document.createElement('h3');
     cardTitle.className = 'card-title';
     cardTitle.textContent = tournament.name;
     cardBody.appendChild(cardTitle);
 
-    // Create the card text p
     const cardText = document.createElement('p');
     cardText.className = 'card-text';
 
+    const finishedStages = ['Finished', 'Terminé', 'Terminado', 'Concluído'];
     cardText.textContent = tournament.current_stage;
-    if (tournament.current_stage === 'Finished') {
+
+    if (finishedStages.includes(tournament.current_stage)) {
       cardText.className = 'fw-bold text-success';
     } else {
       cardText.className = 'fw-bold text-danger';
@@ -419,7 +474,6 @@ document.addEventListener('DOMContentLoaded', function () {
     cardText2.textContent = tournament.current_match;
     cardBody.appendChild(cardText2);
 
-    // Create the button if the tournament creator is the current user
     if (tournament.was_created_by_me && tournament.current_stage !== 'Finished') {
       const button = document.createElement('button');
       button.className = 'btn btn-primary';
@@ -436,13 +490,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function populateTournament(data) {
     tournamentTableBody.innerHTML = '';
+    var languageDropdown = document.getElementById('languageDropdown');
+    var languageCode = languageDropdown.getAttribute('data-language');
 
-    // Check if there's any tournament registered
+    const messages = {
+        'en': "No tournaments found",
+        'pt': "Nenhum torneio encontrado",
+        'es': "No se encontraron torneos",
+        'fr': "Aucun utilisateur trouvé"
+    };
+
+    const content = messages[languageCode] || messages['en'];
+
     if (data.tournaments.length === 0) {
       const row = document.createElement('tr');
       const cell = document.createElement('td');
       cell.colSpan = 3;
-      cell.textContent = 'No tournaments found';
+      cell.textContent = content;
       row.appendChild(cell);
       tournamentTableBody.appendChild(row);
       return;
