@@ -19,7 +19,7 @@
       <!-- Language Dropdown -->
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown"
-          aria-expanded="false">
+          aria-expanded="false" data-language="{{ request.LANGUAGE_CODE }}">
           {% if request.LANGUAGE_CODE == 'en' %}
           <img src="{% static 'pong/img/flags/us.png' %}" alt="US Flag" width="20" height="20">
           {% elif request.LANGUAGE_CODE == 'pt' %}
