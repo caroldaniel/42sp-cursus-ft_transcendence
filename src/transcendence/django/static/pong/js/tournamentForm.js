@@ -204,12 +204,6 @@ async function loadTournamentSetup() {
     const formData = new FormData(tournamentSetupForm);
     const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
-    console.log('Form fields being sent to the server:');
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-    });
-
-
     fetch('/tournament/create/', {
       method: 'POST',
       headers: {
@@ -221,7 +215,6 @@ async function loadTournamentSetup() {
       .then(data => {
         if (data.tournament_id) {
           showSection(`/tournament/${data.tournament_id}/`);
-          console.log('Tournament created:', data);
         }
       })
       .catch(error => {

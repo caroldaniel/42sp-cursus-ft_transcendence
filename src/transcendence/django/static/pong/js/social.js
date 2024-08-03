@@ -146,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function playPong(user) {
-    console.log(`Playing pong with ${user.display_name}...`);
     const gameTokenModal = document.getElementById('gameTokenModal');
     const modal = new bootstrap.Modal(gameTokenModal);
     fetch(`/users/${user.id}/`)
@@ -240,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add event listener to the start game button
     startGameButton.addEventListener('click', async () => {
-        console.log('Starting game...');
         modal.hide();
         socialOffCanvas.hide();
         const formData = new FormData();
@@ -284,12 +282,10 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function addFriend(user) {
-    console.log(`Adding ${user.display_name} as a friend...`);
     sendFriendRequest(user.display_name);
   }
 
   function viewProfile(user) {
-    console.log(`Viewing profile of ${user.display_name}...`);
     const userProfileModal = document.getElementById('userProfileModal');
     const modal = new bootstrap.Modal(userProfileModal);
     const modalBody = userProfileModal.querySelector('.modal-body');
@@ -311,7 +307,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const doc = parser.parseFromString(data, 'text/html');
         const profileUserContent = doc.getElementById('userStatsContent');
         if (profileUserContent) {
-          console.log('userProfileContent div found in the response:', profileUserContent);
           const modalUserStatsContent = modalBody.querySelector('#modalUserStatsContent');
           modalUserStatsContent.innerHTML = '';
           const infosDiv = document.createElement('div');
@@ -339,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function blockUser(user) {
-    console.log(`Blocking ${user.display_name}...`);
     try {
       const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
       const formData = new FormData();
@@ -359,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function () {
         throw new Error(data.error || 'Failed to block user');
       }
       
-      console.log(data.success);  // Log the success message from the server
       fetchData('/users/list/', populateUserList);
       } catch (error) {
         console.error('Error fetching block user:', error.message);
@@ -367,7 +360,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function unblockUser(user) {
-    console.log(`Unblocking ${user.display_name}...`);
     try {
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         const formData = new FormData();
@@ -387,7 +379,6 @@ document.addEventListener('DOMContentLoaded', function () {
             throw new Error(data.error || 'Failed to unblock user');
         }
 
-        console.log(data.success);  // Log the success message from the server
         fetchData('/users/list/', populateUserList);
       } catch (error) {
         console.error('Error fetching unblock user:', error.message);
@@ -444,7 +435,6 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function populateTournament(data) {
-    console.log('Populating tournament with data:', data);
     tournamentTableBody.innerHTML = '';
 
     // Check if there's any tournament registered
@@ -560,7 +550,6 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     const data = await response.json();
     if (!response.ok) {
-      console.log(data.message);
       return false;
     }
     fetchData('/users/list/', populateUserList);

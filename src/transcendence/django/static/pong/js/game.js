@@ -8,9 +8,6 @@ import Paddle from "./src/paddle.js";
 import PostProcessing from "./src/post-processing.js";
 import InputManager from "./src/input-manager.js";
 import GameManager from "./src/game-manager.js";
-import Timer from './src/timer.js';
-
-let gameTimer = null;
 
 function showGameResultModal(gameManager) {
   const modalElement = document.getElementById('game-result-modal');
@@ -28,12 +25,6 @@ function showGameResultModal(gameManager) {
       gameManager.gameOver = true;
       modalBody.textContent = data.status
       modal.show();
-    } else {
-      if (!gameTimer) {
-        gameTimer = new Timer();
-      }
-      gameTimer.reset();
-      gameTimer.start();
     }
   })
   .catch(error => {
@@ -44,7 +35,6 @@ function showGameResultModal(gameManager) {
 async function getGameData(matchId) {
   const response = await fetch(`/match/data/${matchId}`);
   if (!response.ok) {
-    console.log(`An error has occured: ${response.status}`);
     return;
   }
   const data = await response.json();
@@ -167,7 +157,6 @@ async function gameSetup(matchId) {
   
   function animationLoop(timestamp) {
     if (gameManager.gameOver) {
-      stopGame();
       return;
     }
     gameManager.updateDeltaTime(timestamp);
@@ -177,15 +166,6 @@ async function gameSetup(matchId) {
     ball.update(arena, paddleL, paddleR);
     postProcessing.render();
   }
-  
-  function resetGame() {
-    ball.resetGame();
-    paddleL.resetGame();
-    paddleR.resetGame();
-    gameManager.resetGame();
-    gameTimer.reset();
-    gameTimer.start();
-  }
     
   showGameResultModal(gameManager);
 }
@@ -193,14 +173,6 @@ async function gameSetup(matchId) {
 function startGame(matchId) {
   gameSetup(matchId);
 }
-  
-function stopGame() {
-  if (gameTimer) {
-    gameTimer.stop();
-    gameTimer = null; 
-  }
-}
 
 window.startGame = startGame;
-window.stopGame = stopGame;
 window.showGameResultModal = showGameResultModal;

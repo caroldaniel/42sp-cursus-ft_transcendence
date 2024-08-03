@@ -218,12 +218,12 @@ def manual_login(request: HttpRequest):
 		try:
 			user = User.objects.get(username=username)
 		except User.DoesNotExist:
-			return JsonResponse({'error': _('No account found with the provided username. Please check username field or sign up to continue.')}, status=401)
+			return JsonResponse({'error': _('No account found with the provided username. Please check username field or sign up to continue.')}, status=200)
 		except Exception as e:
 			return JsonResponse({'error': _('An error occurred while trying to log in. Please try again later.')}, status=500)
 
 		if user.is_intra_user:
-			return JsonResponse({'error': _('This account is registered with 42 Intra. Please use the Intra login button to log in.')}, status=401)
+			return JsonResponse({'error': _('This account is registered with 42 Intra. Please use the Intra login button to log in.')}, status=200)
 
 		user = authenticate(
 			request, 
@@ -234,7 +234,7 @@ def manual_login(request: HttpRequest):
 			login(request, user)
 			return JsonResponse({'success': True, 'redirect': '/'}, status=200)
 		else:
-			return JsonResponse({'error': _('Invalid login credentials. Please check your username and password and try again.')}, status=401)
+			return JsonResponse({'error': _('Invalid login credentials. Please check your username and password and try again.')}, status=200)
 	return JsonResponse({'error': 'Invalid request'}, status=400)
 
 # Logout the user

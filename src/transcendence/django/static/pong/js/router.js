@@ -32,7 +32,6 @@ function setupSection(section) {
   
   if (currentRoute && currentRoute.startsWith("/game/") && !section.startsWith("/game/")) {
     // User is leaving the game route
-    stopGame();
     updateMatchResultToWO();
   }
   currentRoute = section;
@@ -105,9 +104,6 @@ function updateMatchResultToWO() {
     }
   })
     .then(response => response.json())
-    .then(data => {
-      console.log("Match result updated to 'wo':", data);
-    })
     .catch(error => {
       console.error("Error updating match result to 'wo':", error);
     });
@@ -136,7 +132,6 @@ window.addEventListener("beforeUnload", () => {
   if (currentRoute.startsWith("/game/")) {
     const matchId = getMatchIdFromRoute(currentRoute);
     if (matchId) {
-      stopGame();
       updateMatchResultToWO(matchId);
     }
   }

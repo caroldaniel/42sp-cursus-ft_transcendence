@@ -519,7 +519,7 @@ msgstr "Quarts de finale"
 
 #: src/transcendence/django/pong/views/views_tournament.py:231
 msgid "'s tournament"
-msgstr "tournoi"
+msgstr " tournoi"
 
 #: src/transcendence/django/pong/views/views_user.py:86
 msgid "No file was uploaded."

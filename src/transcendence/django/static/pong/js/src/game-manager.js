@@ -13,11 +13,6 @@ async function updateMatch(
   if (tournament) {
     formData.append("matchId", matchId);
 
-    // print out the form data
-    for (var pair of formData.entries()) {
-      console.log(pair[0] + ", " + pair[1]);
-    }
-
     const nextMatchResponse = await fetch(`/tournament/next/${tournament}/`, {
       method: "POST",
       headers: {
@@ -76,18 +71,13 @@ export default class GameManager {
     this.playerRSpan.innerHTML = gameData.score_player2;
 
     if (gameData.tournament) {
-      // Add tournament buttons: Next Match and Back to tournament page
-      const nextMatchButton = document.createElement("button");
-      nextMatchButton.textContent = "Next Match";
-      nextMatchButton.classList.add("btn", "btn-primary", "m-2");
       const backToTournamentButton = document.createElement("button");
       backToTournamentButton.textContent = "Back to Tournament";
-      backToTournamentButton.classList.add("btn", "btn-secondary", "m-2");
+      backToTournamentButton.classList.add("btn", "btn-primary", "m-2");
       backToTournamentButton.setAttribute("data-bs-dismiss", "modal");
       backToTournamentButton.addEventListener("click", () => {
         showSection(`/tournament/${gameData.tournament}/`);
       });
-      this.gameOverButtonsDiv.appendChild(nextMatchButton);
       this.gameOverButtonsDiv.appendChild(backToTournamentButton);
     } else {
       // Add normal buttons: Restart and Back to match list

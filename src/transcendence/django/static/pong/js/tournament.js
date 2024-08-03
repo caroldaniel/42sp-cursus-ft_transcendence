@@ -11,15 +11,13 @@ async function loadTournament(tournamentId) {
   });
 
   if (!response.ok) {
-    console.log("Error loading tournament:", response.status);
     return;
   }
 
   const data = await response.json();
-  console.log(data);
-
   if (data.winner) {
     showSection(`/tournament/winner/${tournamentId}/`);
+    return;
   }
 
   // Get all player names in order
@@ -28,7 +26,6 @@ async function loadTournament(tournamentId) {
     players.push(match.player1);
     players.push(match.player2);
   });
-  console.log(players);
 
   let quarters = [];
   let semiFinals = [];

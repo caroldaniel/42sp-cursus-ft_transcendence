@@ -219,7 +219,7 @@ def tournament_list(request):
             if nb_matches == 3:
                 current_stage = _('Semifinals')
             else:
-                current_stage = _('Semifinals') if tournament.current_match < 4 else _('Quarterfinals')
+                current_stage = _('Quarterfinals') if tournament.current_match < 4 else _('Semifinals')
 
         # Get current match in tournament match
         current_match = None

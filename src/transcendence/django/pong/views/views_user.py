@@ -88,14 +88,14 @@ def edit_profile_field(request):
         try:
             # Validate if file size is too large
             if avatar_file.size > settings.MAX_UPLOAD_SIZE:
-                return JsonResponse({'error': _('The uploaded file is too large. Maximum allowed size is 5MB.')}, status=400)
+                return JsonResponse({'error': _('The uploaded file is too large. Maximum allowed size is 5MB.')}, status=200)
 
             # Validate uploaded avatar file extension
             validator = FileExtensionValidator(allowed_extensions=['svg', 'png', 'jpg', 'jpeg'])
             try:
                 validator(avatar_file)
             except ValidationError:
-                return JsonResponse({'error': _('Invalid file type. Only SVG, PNG, JPG, and JPEG files are allowed.')}, status=400)
+                return JsonResponse({'error': _('Invalid file type. Only SVG, PNG, JPG, and JPEG files are allowed.')}, status=200)
 
             # Save the file with a name based on a UUID
             random_id = uuid.uuid4()
@@ -127,10 +127,10 @@ def edit_profile_field(request):
                 user = request.user
 
                 if not user.check_password(old_password):
-                    return JsonResponse({'error': 'Current password is incorrect.'}, status=400)
+                    return JsonResponse({'error': 'Current password is incorrect.'}, status=200)
 
                 if old_password == new_password:
-                    return JsonResponse({'error': 'New password cannot be the same as the old password.'}, status=400)
+                    return JsonResponse({'error': 'New password cannot be the same as the old password.'}, status=200)
 
                 try:
                     # Update the user's password
