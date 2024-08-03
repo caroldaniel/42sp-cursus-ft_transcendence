@@ -1,20 +1,4 @@
 /**
- * Sets the language for the application.
- * @param {string} language - The language to set.
- */
-function setLanguage(language) {
-  fetch(`/set_language?language=${language}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 'success') {
-        location.reload();
-      } else {
-        console.error('Failed to set language');
-      }
-    });
-}
-
-/**
  * Sets the theme for the application.
  */
 
