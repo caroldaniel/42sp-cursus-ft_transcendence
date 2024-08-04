@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-02 14:55-0300\n"
+"POT-Creation-Date: 2024-08-04 12:38-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-#: src/transcendence/django/pong/templates/base.html:23
+
+#: src/transcendence/django/pong/templates/base.html:24
 #: src/transcendence/django/pong/templates/components/modals/error.html:8
 msgid "Error"
 msgstr "Error"
 
-#: src/transcendence/django/pong/templates/base.html:24
+#: src/transcendence/django/pong/templates/base.html:25
 #, python-format
 msgid "%(error)s: %(body_error)s"
 msgstr "%(error)s: %(body_error)s"
@@ -108,15 +109,25 @@ msgstr "Correo Electrónico"
 msgid "Password"
 msgstr "Contraseña"
 
-#: src/transcendence/django/pong/templates/components/modals/register.html:41
+#: src/transcendence/django/pong/templates/components/modals/register.html:38
+msgid "Password Requirements"
+msgstr "Requisitos de contraseña"
+
+#: src/transcendence/django/pong/templates/components/modals/register.html:38
+msgid ""
+"Password must be at least 8 characters, include an uppercase letter, a "
+"lowercase letter, a number, and a special character."
+msgstr "La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una letra minúscula, un número y un carácter especial."
+
+#: src/transcendence/django/pong/templates/components/modals/register.html:44
 msgid "Confirm Password"
 msgstr "Confirmar Contraseña"
 
-#: src/transcendence/django/pong/templates/components/modals/register.html:48
+#: src/transcendence/django/pong/templates/components/modals/register.html:51
 msgid "Sign up"
 msgstr "Registrarse"
 
-#: src/transcendence/django/pong/templates/components/modals/register.html:67
+#: src/transcendence/django/pong/templates/components/modals/register.html:70
 msgid "Return to register"
 msgstr "Volver a registrarse"
 
@@ -182,11 +193,7 @@ msgstr "Escribe tu mensaje"
 msgid "Send"
 msgstr "Enviar"
 
-#: src/transcendence/django/pong/templates/sections/game.html:24
-msgid "Time Elapsed"
-msgstr "Tiempo Transcurrido"
-
-#: src/transcendence/django/pong/templates/sections/game.html:47
+#: src/transcendence/django/pong/templates/sections/game.html:86
 msgid "Game is Over"
 msgstr "El Juego Ha Terminado"
 
@@ -257,7 +264,10 @@ msgid ""
 "Pong is a classic arcade game where players control paddles to hit a ball "
 "back and forth. The goal is to score points by making the ball pass the "
 "opponent's paddle."
-msgstr "Pong es un juego de arcade clásico donde los jugadores controlan palas para golpear una pelota de un lado a otro. El objetivo es marcar puntos haciendo que la pelota pase la pala del oponente."
+msgstr ""
+"Pong es un juego de arcade clásico donde los jugadores controlan palas para "
+"golpear una pelota de un lado a otro. El objetivo es marcar puntos haciendo "
+"que la pelota pase la pala del oponente."
 
 #: src/transcendence/django/pong/templates/sections/home.html:23
 msgid "Local"
@@ -267,7 +277,9 @@ msgstr "Local"
 msgid ""
 "You can play 1:1 against someone using the same computer. It's a great way "
 "to challenge friends or family in a quick match."
-msgstr "Puedes jugar 1 contra 1 con alguien usando el mismo ordenador. Es una excelente manera de desafiar a amigos o familiares en una partida rápida."
+msgstr ""
+"Puedes jugar 1 contra 1 con alguien usando el mismo ordenador. Es una "
+"excelente manera de desafiar a amigos o familiares en una partida rápida."
 
 #: src/transcendence/django/pong/templates/sections/home.html:29
 msgid "Play Now"
@@ -283,7 +295,10 @@ msgid ""
 "Create a tournament with up to 8 friends. Compete in rounds until only one "
 "player remains as the winner. It's an exciting way to test your skills "
 "against others!"
-msgstr "Crea un torneo con hasta 8 amigos. Compite en rondas hasta que solo quede un jugador como ganador. ¡Es una forma emocionante de probar tus habilidades contra los demás!"
+msgstr ""
+"Crea un torneo con hasta 8 amigos. Compite en rondas hasta que solo quede un "
+"jugador como ganador. ¡Es una forma emocionante de probar tus habilidades "
+"contra los demás!"
 
 #: src/transcendence/django/pong/templates/sections/home.html:43
 msgid "Create"
@@ -420,7 +435,8 @@ msgstr "8 Jugadores"
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:28
 msgid "7 Matches: Quarterfinals, semifinals, followed by a final."
-msgstr "7 Partidos: Cuartos de final, semifinales y, a continuación, una final."
+msgstr ""
+"7 Partidos: Cuartos de final, semifinales y, a continuación, una final."
 
 #: src/transcendence/django/pong/templates/sections/tournamentForm.html:55
 msgid "Player"
@@ -478,23 +494,31 @@ msgstr "Solicitud inválida"
 msgid ""
 "No account found with the provided username. Please check username field or "
 "sign up to continue."
-msgstr "No se encontró ninguna cuenta con el nombre de usuario proporcionado. Por favor, verifique el campo de nombre de usuario o regístrese para continuar."
+msgstr ""
+"No se encontró ninguna cuenta con el nombre de usuario proporcionado. Por "
+"favor, verifique el campo de nombre de usuario o regístrese para continuar."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:223
 msgid "An error occurred while trying to log in. Please try again later."
-msgstr "Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo más tarde."
+msgstr ""
+"Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo "
+"más tarde."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:226
 msgid ""
 "This account is registered with 42 Intra. Please use the Intra login button "
 "to log in."
-msgstr "Esta cuenta está registrada en 42 Intra. Por favor, usa el botón de inicio de sesión de Intra para iniciar sesión."
+msgstr ""
+"Esta cuenta está registrada en 42 Intra. Por favor, usa el botón de inicio "
+"de sesión de Intra para iniciar sesión."
 
 #: src/transcendence/django/pong/views/views_login_manager.py:237
 msgid ""
 "Invalid login credentials. Please check your username and password and try "
 "again."
-msgstr "Credenciales de inicio de sesión inválidas. Por favor, verifica tu nombre de usuario y contraseña e inténtalo de nuevo."
+msgstr ""
+"Credenciales de inicio de sesión inválidas. Por favor, verifica tu nombre de "
+"usuario y contraseña e inténtalo de nuevo."
 
 #: src/transcendence/django/pong/views/views_match.py:129
 msgid "{} has won"
@@ -527,11 +551,13 @@ msgstr "No se subió ningún archivo."
 
 #: src/transcendence/django/pong/views/views_user.py:91
 msgid "The uploaded file is too large. Maximum allowed size is 5MB."
-msgstr "El archivo subido es demasiado grande. El tamaño máximo permitido es 5MB."
+msgstr ""
+"El archivo subido es demasiado grande. El tamaño máximo permitido es 5MB."
 
 #: src/transcendence/django/pong/views/views_user.py:98
 msgid "Invalid file type. Only SVG, PNG, JPG, and JPEG files are allowed."
-msgstr "Tipo de archivo no válido. Solo se permiten archivos SVG, PNG, JPG y JPEG."
+msgstr ""
+"Tipo de archivo no válido. Solo se permiten archivos SVG, PNG, JPG y JPEG."
 
 #: src/transcendence/django/pong/views/views_user.py:105
 msgid "Your avatar has been updated successfully."
@@ -541,11 +567,15 @@ msgstr "Tu avatar se ha actualizado correctamente."
 msgid ""
 "An unexpected error occurred while updating the avatar. Please try again "
 "later."
-msgstr "Se produjo un error al intentar actualizar la contraseña. Inténtalo de nuevo más tarde."
+msgstr ""
+"Se produjo un error al intentar actualizar la contraseña. Inténtalo de nuevo "
+"más tarde."
 
 #: src/transcendence/django/pong/views/views_user.py:148
 msgid "An error occurred while trying to update password. Try again later."
-msgstr "Ocurrió un error inesperado al actualizar el avatar. Por favor, inténtalo de nuevo más tarde."
+msgstr ""
+"Ocurrió un error inesperado al actualizar el avatar. Por favor, inténtalo de "
+"nuevo más tarde."
 
 #: src/transcendence/django/pong/views/views_user.py:154
 msgid "Field updated successfully."
@@ -557,7 +587,9 @@ msgstr "El nuevo valor no está en un formato válido."
 
 #: src/transcendence/django/pong/views/views_user.py:159
 msgid "An error occurred while trying to update field. Try again later."
-msgstr "Ocurrió un error al intentar actualizar el campo. Inténtalo de nuevo más tarde."
+msgstr ""
+"Ocurrió un error al intentar actualizar el campo. Inténtalo de nuevo más "
+"tarde."
 
 #: src/transcendence/django/pong/views/views_user.py:172
 #: src/transcendence/django/pong/views/views_user.py:194
@@ -587,3 +619,6 @@ msgstr "Usuario desbloqueado exitosamente."
 #: src/transcendence/django/pong/views/views_user.py:209
 msgid "Token renewed successfully."
 msgstr "Token renovado con éxito."
+
+#~ msgid "Time Elapsed"
+#~ msgstr "Tiempo Transcurrido"

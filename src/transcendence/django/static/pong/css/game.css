@@ -69,4 +69,15 @@
       flex-direction: column;
     }
   }
-  
+
+  @media (max-width: 768px) {
+    #game-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 90vw;
+      height: 40vh;
+      padding: 0;
+      box-sizing: border-box;
+    }
+  }

@@ -160,9 +160,6 @@ def register(request: HttpRequest):
 		# Error handling for input
 		if User.objects.filter(username=username).exists():
 			return JsonResponse({'error': _('Username already exists')}, status=400)
-
-		if User.objects.filter(email=email).exists():
-			return JsonResponse({'error': _('E-mail already registered')}, status=400)
 		
 		if User.objects.filter(display_name=display_name).exists():
 			return JsonResponse({'error': _('Display name already taken')}, status=400)

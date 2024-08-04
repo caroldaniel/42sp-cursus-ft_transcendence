@@ -32,9 +32,12 @@
 							<input type="email" class="form-control" id="email" name="email" placeholder="" required>
 							<label for="email" class="form-label">{% trans "E-mail" %}</label>
 						</div>
-						<div class="form-floating mb-3">
+						<div class="form-floating mb-3 position-relative">
 							<input type="password" class="form-control" id="password" name="password" placeholder="" required>
 							<label for="password" class="form-label">{% trans "Password" %}</label>
+							<button id="password-info" type="button" class="btn btn-link p-0 position-absolute top-50 end-0 translate-middle-y me-3" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-placement="left" title="{% trans 'Password Requirements' %}" data-bs-content="{% trans 'Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character.' %}">
+								<i class="bi bi-info-circle"></i>
+							</button>
 						</div>
 						<div class="form-floating mb-3">
 							<input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="" required>

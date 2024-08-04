@@ -3,74 +3,108 @@
 **/
 
 document.addEventListener('DOMContentLoaded', function() {
-    const registerForm = document.getElementById('registerForm');
-    const returnToRegisterButton = document.getElementById('returnToRegister');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm_password');
-    const passwordMatchWarning = document.getElementById('passwordMatchWarning');
-    const registerButton = document.getElementById('registerButton');
-    
-    const registerModalElement = document.getElementById('registerModal');
-    
-    if (!registerModalElement) {
-        console.error('Error: #registerModal not found');
-        return;
-    }
+    var languageDropdown = document.getElementById('languageDropdown');
+        var languageCode = languageDropdown.getAttribute('data-language');
 
-    const registerModal = new bootstrap.Modal(registerModalElement);
+        // Translation dictionaries
+        const translations = {
+            en: {
+                passwordCriteria: 'Password does not meet the criteria.',
+                passwordsDoNotMatch: 'Passwords do not match.',
+                passwordsMatch: 'Passwords match.',
+                registerError: 'An unexpected error occurred.',
+                error: 'Error',
+                success: 'Success'
+            },
+            pt: {
+                passwordCriteria: 'A senha não atende aos critérios.',
+                passwordsDoNotMatch: 'As senhas não coincidem.',
+                passwordsMatch: 'As senhas coincidem.',
+                registerError: 'Ocorreu um erro inesperado.',
+                error: 'Erro',
+                success: 'Sucesso',
+            },
+            es: {
+                passwordCriteria: 'La contraseña no cumple con los criterios.',
+                passwordsDoNotMatch: 'Las contraseñas no coinciden.',
+                passwordsMatch: 'Las contraseñas coinciden.',
+                registerError: 'Ocurrió un error inesperado.',
+                error: 'Error',
+                success: 'Éxito'
+            },
+            fr: {
+                passwordCriteria: 'Le mot de passe ne répond pas aux critères.',
+                passwordsDoNotMatch: 'Les mots de passe ne correspondent pas.',
+                passwordsMatch: 'Les mots de passe correspondent.',
+                registerError: 'Une erreur inattendue est survenue.',
+                error: 'Erreur',
+                success: 'Succès',
+            }
+        };
 
-    const registerModalResponseElement = document.getElementById('registerModalResponse');
-    
-    if (!registerModalResponseElement) {
-        console.error('Error: #registerModalResponse not found');
-        return;
-    }
+        const currentTranslations = translations[languageCode] || translations['en'];
 
-    const registerModalResponse = new bootstrap.Modal(registerModalResponseElement);
+        // Initialize popovers
+        const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+        const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
 
+        const registerForm = document.getElementById('registerForm');
+        const returnToRegisterButton = document.getElementById('returnToRegister');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const passwordMatchWarning = document.getElementById('passwordMatchWarning');
+        const registerModalElement = document.getElementById('registerModal');
+        const passwordPolicy = new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{8,})');
 
-    const closeButtons = document.querySelectorAll('.modal .btn-close');
-
-    function resetForm() {
-        registerForm.reset();
-        passwordMatchWarning.textContent = '';
-        registerButton.disabled = true;
-    }
-
-    closeButtons.forEach(button => {
-        button.addEventListener('click', resetForm);
-    });
-
-
-    passwordInput.addEventListener('input', () => {
-        if (confirmPasswordInput === '' || passwordInput.value === '') {
-            passwordMatchWarning.textContent = '';
-            registerButton.disabled = true;
-        } else if (passwordInput.value === confirmPasswordInput.value) {
-            passwordMatchWarning.textContent = 'Passwords match';
-            passwordMatchWarning.style.color = 'green';
-            registerButton.disabled = false;
-        } else {
-            passwordMatchWarning.textContent = 'Passwords do not match';
-            passwordMatchWarning.style.color = 'red';
-            registerButton.disabled = true;
+        if (!registerModalElement) {
+            console.error('Error: #registerModal not found');
+            return;
         }
-    });
 
-    confirmPasswordInput.addEventListener('input', () => {
-        if (confirmPasswordInput === '' || passwordInput.value === '') {
-            passwordMatchWarning.textContent = '';
-            registerButton.disabled = true;
-        } else if (passwordInput.value === confirmPasswordInput.value) {
-            passwordMatchWarning.textContent = 'Passwords match';
-            passwordMatchWarning.style.color = 'green';
-            registerButton.disabled = false;
-        } else {
-            passwordMatchWarning.textContent = 'Passwords do not match';
-            passwordMatchWarning.style.color = 'red';
-            registerButton.disabled = true;
+        const registerModal = new bootstrap.Modal(registerModalElement);
+
+        const registerModalResponseElement = document.getElementById('registerModalResponse');
+    
+        if (!registerModalResponseElement) {
+            console.error('Error: #registerModalResponse not found');
+            return;
         }
-    });
+
+        const registerModalResponse = new bootstrap.Modal(registerModalResponseElement);
+
+        function validatePassword() {
+            if (!passwordPolicy.test(passwordInput.value)) {
+                passwordMatchWarning.textContent = currentTranslations.passwordCriteria;
+                passwordMatchWarning.style.color = 'red';
+                return false;
+            } else {
+                passwordMatchWarning.textContent = '';
+            }
+            return true;
+        }
+
+        function validatePasswordConfirmation() {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                passwordMatchWarning.textContent = currentTranslations.passwordsDoNotMatch;
+                passwordMatchWarning.style.color = 'red';
+                return false;
+            } else if (passwordInput.value && confirmPasswordInput.value) {
+                passwordMatchWarning.textContent = currentTranslations.passwordsMatch;
+                passwordMatchWarning.style.color = 'green';
+            }
+            return true;
+        }
+
+        passwordInput.addEventListener('input', () => {
+            validatePassword();
+            validatePasswordConfirmation();
+            document.getElementById('registerButton').disabled = !validatePassword() || !validatePasswordConfirmation();
+        });
+
+        confirmPasswordInput.addEventListener('input', () => {
+            validatePasswordConfirmation();
+            document.getElementById('registerButton').disabled = !validatePassword() || !validatePasswordConfirmation();
+        });
 
     registerForm.addEventListener('submit', function(event) {
         event.preventDefault();
@@ -86,14 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                document.getElementById('registerModalResponseLabel').textContent = 'Error';
+                document.getElementById('registerModalResponseLabel').textContent = currentTranslations.error;
                 document.getElementById('registerModalResponseContent').textContent = data.error;
                 registerModal.hide(); // Hide registerModal
                 registerModalResponse.show(); // Show registerModalResponse
                 returnToRegisterButton.style.display = 'block'; // Ensure returnToRegister button is visible
             } else if (data.success) {
-                document.getElementById('registerModalResponseLabel').textContent = 'Success';
-                document.getElementById('registerModalResponseContent').textContent = 'User registered successfully';
+                document.getElementById('registerModalResponseLabel').textContent = currentTranslations.success;
+                document.getElementById('registerModalResponseContent').textContent = data.success;
                 registerModal.hide(); // Hide registerModal
                 registerModalResponse.show(); // Show registerModalResponse
                 returnToRegisterButton.style.display = 'none'; // Hide returnToRegister button
@@ -103,8 +137,8 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById('registerModalResponseLabel').textContent = 'Error';
-            document.getElementById('registerModalResponseContent').textContent = 'An unexpected error occurred.';
+            document.getElementById('registerModalResponseLabel').textContent = currentTranslations.error;
+            document.getElementById('registerModalResponseContent').textContent = currentTranslations.registerError;
             registerModal.hide(); // Hide registerModal
             registerModalResponse.show(); // Show registerModalResponse
             returnToRegisterButton.style.display = 'block'; // Ensure returnToRegister button is visible

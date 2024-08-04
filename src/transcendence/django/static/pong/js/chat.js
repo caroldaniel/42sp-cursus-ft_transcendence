@@ -113,13 +113,24 @@ async function updateUnreadMessages() {
 // Function to populate the chat log with messages
 function populateChatLog(messages) {
     const chatLog = document.getElementById('chatLog');
+    var languageDropdown = document.getElementById('languageDropdown');
+    var languageCode = languageDropdown.getAttribute('data-language');
+
+    const noMessages = {
+        'en': "No messages yet",
+        'pt': "Nenhuma mensagem ainda",
+        'es': "No hay mensajes todavía",
+        'fr': "Pas encore de messages",
+    }
+
+    const content = noMessages[languageCode] || messages['en'];
     chatLog.innerHTML = '';
 
     // If no messages, display no messages div
     if (messages.length === 0) {
         const noMessagesDiv = document.createElement('div');
         noMessagesDiv.classList.add('no-messages');
-        noMessagesDiv.textContent = 'No messages yet';
+        noMessagesDiv.textContent = content;
         chatLog.appendChild(noMessagesDiv);
         return;
     }

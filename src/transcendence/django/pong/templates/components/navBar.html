@@ -84,13 +84,13 @@
             {% trans "Welcome," %} {{ user.username }}!
           </li>
           <li>
-            <a class="dropdown-item d-flex justify-content-between align-items-center" href="/profile/">
+            <a class="dropdown-item d-flex justify-content-between align-items-center" onclick="showSection('/profile/')">
               <span class="text-end w-100">{% trans "Profile" %}</span>
               <i class="bi bi-person ms-2"></i>
             </a>
           </li>
           <li>
-            <a class="dropdown-item d-flex justify-content-between align-items-center" href="/stats/">
+            <a class="dropdown-item d-flex justify-content-between align-items-center" onclick="showSection('/stats/')">
               <span class="text-end w-100">{% trans "Stats" %}</span>
               <i class="bi bi-graph-up ms-2"></i>
             </a>
