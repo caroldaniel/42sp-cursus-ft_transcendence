@@ -11,7 +11,7 @@ import random
 @login_required
 def create_tournament(request):
     if request.method == 'POST':
-        user = request.user
+        request_user = request.user
         difficulty = request.POST.get('difficulty')
         players = []
 
@@ -37,7 +37,7 @@ def create_tournament(request):
 
         # Create the Tournament
         tournament = Tournament(
-            created_by=user,
+            created_by=request_user,
             status="open",
             player_count=nb_players,
             current_match=1
