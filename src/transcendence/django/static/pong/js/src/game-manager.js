@@ -1,3 +1,7 @@
+function sleep(callback, milliseconds) {
+  setTimeout(callback, milliseconds);
+}
+
 async function updateMatch(
   matchId,
   tournament,
@@ -121,7 +125,9 @@ export default class GameManager {
         this.playerLScore,
         this.playerRScore
       );
-      showGameResultModal(this);
+      sleep(() => {
+        showGameResultModal(this);
+      }, 500);
     }
   }
 
@@ -136,7 +142,9 @@ export default class GameManager {
         this.playerLScore,
         this.playerRScore
       );
-      showGameResultModal(this);
+      sleep(() => {
+        showGameResultModal(this);
+      }, 500);
     }
   }
 
