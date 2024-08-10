@@ -73,3 +73,15 @@ Each minor module correspond to 2 major modules.
 > - **[Minor module]** Support on all devices.
 > - **[Minor module]** Expanding Browser Compatibility.
 > - **[Minor module]** Multiple language supports.
+
+---
+<h2 align=center>
+	The project
+</h2>
+
+![Login](./images/00-login.png)
+![Home](./images/01-home.png)
+![Social](./images/02-social.png)
+![User](./images/03-user_profile.png)
+![Game](./images/04-play.png)
+![Tournament](./images/05-tournament.png)
